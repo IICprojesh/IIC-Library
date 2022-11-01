@@ -23,11 +23,15 @@ export class StudentService {
     }
   }
 
-  findAll(limit: number, skip: number) {
-    return this.studentRepository.find({
+  async findAll(limit: number, skip: number) {
+    const result = { data: null, total: 0 };
+    const students = await this.studentRepository.find({
       skip,
       take: limit,
     });
+    result.data = students;
+    result.total = students.length;
+    return result;
   }
 
   findOne(id: string) {

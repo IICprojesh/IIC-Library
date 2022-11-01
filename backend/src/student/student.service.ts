@@ -5,16 +5,24 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 
 import { Repository } from 'typeorm';
 import { StudentEntity } from './entities/student.entity';
+import { SettingsService } from 'src/settings/settings.service';
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(StudentEntity)
     private readonly studentRepository: Repository<StudentEntity>,
+
+    private readonly settingService: SettingsService,
   ) {}
 
   async create(createStudentDto: CreateStudentDto) {
+    const setting = await this.settingService.findOne();
+    if (!setting) {
+      throw new BadRequestException('initial setting must be created!!');
+    }
     try {
-      return await this.studentRepository.save(createStudentDto);
+      const email = `${createStudentDto.id}@${setting.emailSuffix}`;
+      return await this.studentRepository.save({ ...createStudentDto, email });
     } catch (err) {
       const ERR_ALREADY_EXIST = 19;
       if (err.errno === ERR_ALREADY_EXIST) {

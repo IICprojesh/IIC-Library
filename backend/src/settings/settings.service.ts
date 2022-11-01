@@ -27,8 +27,6 @@ export class SettingsService {
   }
 
   update(id: number, updateSettingDto: UpdateSettingDto) {
-  remove(id: number) {
-    return `This action removes a #${id} setting`;
     return this.settingRepository.update({ id }, updateSettingDto);
   }
 }

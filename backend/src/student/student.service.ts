@@ -35,7 +35,7 @@ export class StudentService {
   }
 
   findOne(id: string) {
-    return this.studentRepository.find({ where: { id } });
+    return this.studentRepository.findOne({ where: { id } });
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {

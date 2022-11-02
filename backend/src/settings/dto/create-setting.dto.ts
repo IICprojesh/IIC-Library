@@ -10,6 +10,15 @@ export class CreateSettingDto {
   maxRenew?: number;
 
   @IsNumber()
-	@IsOptional()
+  @IsOptional()
   renewDay?: number;
+
+  @IsString()
+  @IsOptional()
+  adminName?: string;
+
+  @IsString()
+  @IsOptional()
+  adminProfile?: string;
+
 }

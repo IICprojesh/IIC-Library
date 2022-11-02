@@ -18,7 +18,7 @@ export class SettingsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSettingDto: UpdateSettingDto) {
-    return this.settingsService.update(+id, updateSettingDto);
+  update(@Param('id') id: number, @Body() updateSettingDto: UpdateSettingDto) {
+    return this.settingsService.update(id, updateSettingDto);
   }
 }

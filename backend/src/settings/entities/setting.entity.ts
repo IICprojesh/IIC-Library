@@ -12,4 +12,10 @@ export class SettingEntity {
 
   @Column({ default: 7 })
   renewDay: number;
+
+  @Column()
+  adminProfile: string;
+
+  @Column()
+  adminName: string;
 }

@@ -10,8 +10,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
-      skipMissingProperties: true,
+      skipNullProperties: true,
     }),
   );
   const PORT = 3500;

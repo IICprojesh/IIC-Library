@@ -13,9 +13,9 @@ export class SettingEntity {
   @Column({ default: 7 })
   renewDay: number;
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   adminProfile: string;
 
-  @Column()
+  @Column({nullable: true})
   adminName: string;
 }

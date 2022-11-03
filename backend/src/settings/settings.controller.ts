@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('settings')
 export class SettingsController {
@@ -12,9 +22,15 @@ export class SettingsController {
     return this.settingsService.create(createSettingDto);
   }
 
+  @Patch('profile')
+  @UseInterceptors(FileInterceptor('profile'))
+  updateProfile(@UploadedFile() profile: Express.Multer.File) {
+    return this.settingsService.uploadProfile(profile);
+  }
+
   @Get()
   findOne() {
-    return this.settingsService.findOne();
+    return this.settingsService.getProfile();
   }
 
   @Patch(':id')

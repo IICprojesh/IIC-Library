@@ -16,9 +16,4 @@ export class CreateSettingDto {
   @IsString()
   @IsOptional()
   adminName?: string;
-
-  @IsString()
-  @IsOptional()
-  adminProfile?: string;
-
 }

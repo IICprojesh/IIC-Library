@@ -1,8 +1,8 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateSettingDto {
-  @IsOptional()
   @IsString()
+  @IsOptional()
   emailSuffix?: string;
 
   @IsOptional()
@@ -11,9 +11,17 @@ export class CreateSettingDto {
 
   @IsNumber()
   @IsOptional()
-  renewDay?: number;
+  renewBefore?: number;
 
   @IsString()
   @IsOptional()
-  adminName?: string;
+  firstName?: string;
+
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  fineAmount?: number;
 }

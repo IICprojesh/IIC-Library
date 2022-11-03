@@ -7,7 +7,9 @@ import {
   Param,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
+
 import { SettingsService } from './settings.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
@@ -23,7 +25,20 @@ export class SettingsController {
   }
 
   @Patch('profile')
-  @UseInterceptors(FileInterceptor('profile'))
+  @UseInterceptors(
+    FileInterceptor('profile', {
+      fileFilter: (_, file, callback) => {
+        const validMimeTypes = ['image/jpeg', 'image/png'];
+        if (validMimeTypes.find((mimetype) => mimetype === file.mimetype))
+          callback(null, true);
+        else
+          callback(
+            new BadRequestException('File is not valid image type'),
+            false,
+          );
+      },
+    }),
+  )
   updateProfile(@UploadedFile() profile: Express.Multer.File) {
     return this.settingsService.uploadProfile(profile);
   }

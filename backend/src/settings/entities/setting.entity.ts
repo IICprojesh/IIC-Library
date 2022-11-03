@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
 @Entity()
 export class SettingEntity {
   @PrimaryGeneratedColumn()
@@ -11,11 +12,17 @@ export class SettingEntity {
   maxRenew: number;
 
   @Column({ default: 7 })
-  renewDay: number;
+  renewBefore: number;
 
   @Column({ type: 'text', nullable: true })
-  adminProfile: string;
+  avatar: string;
 
-  @Column({nullable: true})
-  adminName: string;
+  @Column({ default: 'john' })
+  firstName: string;
+
+  @Column({ default: 'doe' })
+  lastName: string;
+
+  @Column({ default: 5 })
+  fineAmount: number;
 }

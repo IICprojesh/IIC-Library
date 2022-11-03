@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  padding: 0;
+  height: 40px;
+  width: 120px;
+  border: none;
+  border-radius: 5%;
+  background-color: var(--color-primary);
+  color: white;
+  margin-right: 2vw;
+  margin-top: 2vh;
+  font-size: 18px;
+
+
+}
+
+.active {
+  border: 1px solid var(--color-primary) !important;
+  background-color: transparent !important;
+}
+
+.profile {
+  background-color: rgb(255, 255, 255);
+  border-radius: 1%;
+  padding: 10px 25px;
+  border: 1px solid #ffff;
+  width: 20vw;
+  height: 40vh;
+  margin-right: 2vw;
+  box-shadow: 2px 2px 10px #ccccccd8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.p,
+.pname {
+  padding-top: 6px;
+  font-weight: 400;
+}
+
+.pname {
+  font-size: 1.25em;
+  font-weight: 800;
+  color: var(--color-primary);
+
+}
+
+.profiledata {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.setting {
+  background-color: rgb(255, 255, 255);
+  border-radius: 1%;
+  padding: 10px 25px;
+  border: 1px solid #ffff;
+  width: 53vw;
+  height: 65vh;
+  margin-right: 2vw;
+  box-shadow: 2px 2px 10px #ccccccd8;
+}
+
+.inputfield {
+  width: 22vw;
+  padding: 8px 5px 8px 15px;
+  margin-right: 20px;
+  margin-top: 12px;
+  border: 1px solid #fff;
+  background-color: #f0f0f3d8;
+  color: black;
+  font-weight: 300;
+  transition: border 200ms;
+}
+
+.boxtitle {
+  color: var(--color-primary);
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.input {
+  padding: 12px 12px 12px 0;
+  margin-top: 10px;
+}
+
+.hr {
+  border-top: 1px solid #383c7a;
+  height: 2vh;
+  width: 100%;
+  padding-right: 1vw;
+}
+
+.imgupload {
+  box-shadow: 1px 5px 30px rgb(143, 141, 141);
+  height: 150px;
+  border-radius: 50%;
+  width: 150px;
+  border: 1px solid var(--color-primary);
+}
+
+.usersetting {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.librarysetting {}

@@ -1,0 +1,54 @@
+
+> library_management_system@0.1.0 start
+> react-scripts start
+
+Starting the development server...
+
+Compiled successfully!
+
+You can now view library_management_system in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.18.67:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+
+> library_management_system@0.1.0 dev
+> concurrently -k "BROWSER=none npm start" "npm:electron"
+
+[electron] 
+[electron] > library_management_system@0.1.0 electron
+[electron] > wait-on tcp:3000 && electron .
+[electron] 
+[0] 
+[0] > library_management_system@0.1.0 start
+[0] > react-scripts start
+[0] 
+[0] (node:22736) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[0] (Use `node --trace-deprecation ...` to show where the warning was created)
+[0] (node:22736) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[0] Starting the development server...
+[0] 
+[0] Compiled successfully!
+[0] 
+[0] You can now view library_management_system in the browser.
+[0] 
+[0]   Local:            http://localhost:3000
+[0]   On Your Network:  http://192.168.18.67:3000
+[0] 
+[0] Note that the development build is not optimized.
+[0] To create a production build, use npm run build.
+[0] 
+[0] webpack compiled successfully
+[0] Files successfully emitted, waiting for typecheck results...
+[0] Issues checking in progress...
+[0] No issues found.
+[electron] npm run electron exited with code SIGINT
+--> Sending SIGTERM to other processes..
+[0] BROWSER=none npm start exited with code SIGINT

@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;900&family=Ubuntu:ital,wght@0,300;0,500;1,400&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #fff;
+  font-family: var(--font-primary);
+}
+
+:root { 
+  --color-primary: #383c7a;
+  --color-secondary:#6369bb;
+  --color-button:#6369bb4d;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --text-color: var(--color-white);
+  --font-primary: 'Inter', sans-serif;
+}

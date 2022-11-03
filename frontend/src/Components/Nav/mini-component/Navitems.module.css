@@ -1,0 +1,14 @@
+.Navitems {
+  display: flex;
+  color: white;
+  text-align: center;
+  align-items: center;
+  text-decoration: none;
+
+}
+
+
+.icon {
+  font-size: 2vw;
+  padding-right: 2vw;
+}

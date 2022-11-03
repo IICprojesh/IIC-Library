@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;900&family=Ubuntu:ital,wght@0,300;0,500;1,400&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  height: 100vh;
+  background-color: #383c7a;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.navitems {
+  margin-top: 3em;
+  list-style: none;
+}
+
+.logo {
+  margin-top: 2em;
+  margin-left: 2em;
+  width: 10vw;
+}
+
+.listitems {
+  padding: 12px 20px;
+}
+
+.listitems:hover,
+.active {
+  background-color: #6369bb;
+
+}
+
+.navfooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1vh;
+  color: white;
+}
+
+.footeritems {
+  display: inline-block;
+  width: 3vw;
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+  border: 1px solid white;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.footercontains {
+  display: flex;
+  align-items: center;
+  padding: 1vw;
+}
+h4 {
+  padding-right: 1vw;
+}
+.version{
+  padding-top:1vh;
+}
+
+.hr {
+  border-left: 1px solid rgb(255, 255, 255);
+  height: 2vh;
+  padding-right: 1vw;
+}

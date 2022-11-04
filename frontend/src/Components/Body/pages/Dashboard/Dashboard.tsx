@@ -17,7 +17,7 @@ export default function Dashboard() {
         <Card
           title="Total Borrowed"
           subtitle="80 Books were Borrowed"
-          icon="books"
+          icon="bookOpen"
         />
         <Card
           title="Total Students"

@@ -57,7 +57,10 @@ export class SettingsService {
     const settings = await this.findOne();
     settings.avatar = profile.buffer.toString('base64');
     const saved = await this.settingRepository.save(settings);
-    return saved;
+    return {
+      ...saved,
+      avatar: saved.avatar && `data:image/jpeg;base64, ${saved.avatar}`,
+    };
   }
 
   async getProfile() {

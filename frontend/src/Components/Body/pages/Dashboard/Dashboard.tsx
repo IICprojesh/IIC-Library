@@ -1,6 +1,6 @@
 import Card from '../../mini-component/Dashboardcard';
 import Issuebook from '../../mini-component/Issuebook/Issuebook';
-import Notification from '../../mini-component/Notification/Notification';
+import Expire from '../../mini-component/Expire/Expire';
 import Title from '../../mini-component/Title';
 import styles from "./Dashboard.module.css"
 
@@ -16,7 +16,7 @@ export default function Dashboard() {
       <div className={styles.middlecontainer}>
 
         <Issuebook/>
-        <Notification/>
+        <Expire/>
       </div>
 
 

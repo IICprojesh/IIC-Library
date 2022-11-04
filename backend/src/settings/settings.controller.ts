@@ -26,7 +26,7 @@ export class SettingsController {
 
   @Patch('profile')
   @UseInterceptors(
-    FileInterceptor('profile', {
+    FileInterceptor('file', {
       fileFilter: (_, file, callback) => {
         const validMimeTypes = ['image/jpeg', 'image/png'];
         if (validMimeTypes.find((mimetype) => mimetype === file.mimetype))
@@ -40,6 +40,7 @@ export class SettingsController {
     }),
   )
   updateProfile(@UploadedFile() profile: Express.Multer.File) {
+    console.log(profile);
     return this.settingsService.uploadProfile(profile);
   }
 

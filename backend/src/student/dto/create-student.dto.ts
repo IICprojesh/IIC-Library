@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsString, Length, Max, Validate } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class CreateStudentDto {
   @IsString()

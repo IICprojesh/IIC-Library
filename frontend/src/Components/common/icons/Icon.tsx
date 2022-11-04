@@ -1,13 +1,23 @@
 import { IconBaseProps } from "react-icons";
-import { AiOutlineSetting, AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineBook,
+  AiOutlineFileAdd,
+  AiOutlineSetting,
+  AiOutlineUser,
+} from "react-icons/ai";
+import { HiOutlineUsers } from "react-icons/hi";
 import { RiDashboardLine } from "react-icons/ri";
 import { TbBooks } from "react-icons/tb";
+import { FiBookOpen } from "react-icons/fi";
 
 export const icons = {
   dashboard: RiDashboardLine,
   books: TbBooks,
   student: AiOutlineUser,
   setting: AiOutlineSetting,
+  add: AiOutlineFileAdd,
+  students: HiOutlineUsers,
+  bookOpen: FiBookOpen,
 };
 
 export type CustomIconType = keyof typeof icons;

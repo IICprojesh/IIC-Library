@@ -1,13 +1,13 @@
 import Card from "../../mini-component/Dashboardcard";
 import Issuebook from "../../mini-component/Issuebook/Issuebook";
 import Expire from "../../mini-component/Expire/Expire";
-import Title from "../../mini-component/Title";
 import styles from "./Dashboard.module.css";
+import { Title } from "../../../common/title/Title";
 
 export default function Dashboard() {
   return (
-    <div>
-      <Title text="Dashboard" />
+    <>
+      <Title title="Dashboard" />
       <div className={styles.cards}>
         <Card
           title="Add New Book"
@@ -29,6 +29,6 @@ export default function Dashboard() {
         <Issuebook />
         <Expire />
       </div>
-    </div>
+    </>
   );
 }

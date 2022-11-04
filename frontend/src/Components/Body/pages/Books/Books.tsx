@@ -1,11 +1,10 @@
-import Title from "../../mini-component/Title";
+import { Title } from "../../../common/title/Title";
 import styles from "./Books.module.css";
 
 export default function Books() {
   return (
     <>
-      <Title text="Books" />
-      <div className={styles.container}></div>
+      <Title title="Books" />
     </>
   );
 }

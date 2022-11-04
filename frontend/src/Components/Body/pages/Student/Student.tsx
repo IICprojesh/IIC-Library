@@ -1,9 +1,9 @@
-import Title from "../../mini-component/Title";
+import { Title } from "../../../common/title/Title";
 
 export default function Student() {
   return (
     <div>
-      <Title text="student" />
+      <Title title="Students" />
     </div>
   );
 }

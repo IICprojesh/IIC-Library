@@ -8,11 +8,11 @@
 .container {
   height: 100vh;
   background-color: #383c7a;
-  width: 280px;
   min-width: 280px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+	area: 'sidebar';
 }
 
 .navitems {

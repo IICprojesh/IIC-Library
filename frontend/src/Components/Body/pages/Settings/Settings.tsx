@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import Title from "../../mini-component/Title";
 import styles from "./Settings.module.css";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import FormData from "form-data";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { AiOutlineEdit } from "react-icons/ai";
 import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
+import { Title } from "../../../common/title/Title";
 
 function Input(props: any) {
   const { title, placeholder, type, isDisabled } = props;
@@ -49,6 +48,7 @@ function Profiledata(props: any) {
 
 export default function Settings() {
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{
     avatar: string;
     firstName: string;
@@ -66,24 +66,29 @@ export default function Settings() {
   });
   const { register, handleSubmit } = useForm();
 
+  function fetched(data: any) {
+    setData(data);
+    setLoading(false);
+  }
+
   useEffect(() => {
     const settings = localStorage.getItem("settings");
     if (settings) {
       const parsed = JSON.parse(settings);
-      return setData(parsed);
+      return fetched(parsed);
     }
     axios({ method: "get", url: "//localhost:3500/settings" })
       .then((res) => {
         localStorage.setItem("settings", JSON.stringify(res.data));
         toast.success("Information fetch Completed", { autoClose: 2000 });
-        setData(res.data);
+        fetched(res.data);
       })
       .catch((err) => {
-        if (err.code === "ERR_NETWORK") {
+        if (err.code === CODE_NETWORK_ERROR) {
           return notifyNetworkError();
         } else {
           toast.error(
-            "Something Unexpected happend! Contact to the maintainer."
+            "Something Unexpected happened! Contact to the maintainer."
           );
         }
       });
@@ -115,12 +120,14 @@ export default function Settings() {
   };
   return (
     <>
-      <div className={styles.header}>
-        <Title text="Settings" />
-        <button className={styles.button} onClick={handleSetting}>
-          {edit ? "Save" : "Edit"}
-        </button>
-      </div>
+      <Title
+        title="Settings"
+        leading={
+          <button className={styles.button} onClick={handleSetting}>
+            {edit ? "Save" : "Edit"}
+          </button>
+        }
+      />
       <div className={styles.container}>
         <div className={styles.profile}>
           <Boxtitle title="Admin Profile" />

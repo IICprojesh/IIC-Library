@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import Title from "../../mini-component/Title";
 import styles from "./Settings.module.css";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormData from "form-data";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { AiOutlineEdit } from "react-icons/ai"
-
+import { AiOutlineEdit } from "react-icons/ai";
+import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
+import { notifyNetworkError } from "../../../../utils/notify";
 
 function Input(props: any) {
   const { title, placeholder, type, isDisabled } = props;
@@ -66,61 +67,70 @@ export default function Settings() {
   const { register, handleSubmit } = useForm();
 
   useEffect(() => {
-    console.log("hell");
+    const settings = localStorage.getItem("settings");
+    if (settings) {
+      const parsed = JSON.parse(settings);
+      return setData(parsed);
+    }
     axios({ method: "get", url: "//localhost:3500/settings" })
       .then((res) => {
-        console.log(res.data);
-        toast.success("Information fetch Completed",{autoClose:2000})
-
+        localStorage.setItem("settings", JSON.stringify(res.data));
+        toast.success("Information fetch Completed", { autoClose: 2000 });
         setData(res.data);
       })
       .catch((err) => {
-        console.log("oh hell its an error");
+        if (err.code === "ERR_NETWORK") {
+          return notifyNetworkError();
+        } else {
+          toast.error(
+            "Something Unexpected happend! Contact to the maintainer."
+          );
+        }
       });
   }, []);
 
-  const buttonHandler = () => {
-    console.log(edit);
+  const handleSetting = () => {
     setEdit((current) => !current);
-    toast.success("Go to hell");
   };
-  const onSubmit = async (datas: any) => {
+  const handleProfileSubmit = async (datas: any) => {
     const formData = new FormData();
     formData.append("file", datas.file[0]);
-    console.log("this is data:- ", formData);
-    const data = formData;
-
     axios({
       method: "patch",
       url: "http://localhost:3500/settings/profile",
-      data,
+      data: formData,
       headers: { "Content-Type": "multipart/form-data" },
-    }).then((res) => {
-      console.log(res);
-      setData(res.data);
-      toast.success("Admin Profile Change");
-    });
+    })
+      .then((res) => {
+        localStorage.setItem("settings", JSON.stringify(res.data));
+        setData(res.data);
+        toast.success("Profile Avatar changed!");
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.code === CODE_NETWORK_ERROR) {
+          notifyNetworkError();
+        }
+      });
   };
   return (
     <>
       <div className={styles.header}>
         <Title text="Settings" />
-        {/* <a href='#' onClick={()=>buttonHandler}> */}
-        <a href="#" onClick={buttonHandler}>
-          <button className={styles.button}>{edit ? "Save" : "Edit"}</button>
-        </a>
+        <button className={styles.button} onClick={handleSetting}>
+          {edit ? "Save" : "Edit"}
+        </button>
       </div>
       <div className={styles.container}>
         <div className={styles.profile}>
           <Boxtitle title="Admin Profile" />
-          <img
-            src={data.avatar}
-            className={styles.imgupload}
-            alt="Profile Image"
-          />
-          <form onChange={handleSubmit(onSubmit)} className={styles.inputform}>
+          <img src={data.avatar} className={styles.imgupload} alt="Profile" />
+          <form
+            onChange={handleSubmit(handleProfileSubmit)}
+            className={styles.inputform}
+          >
             <label className={styles.label}>
-              <AiOutlineEdit className={styles.lableicon}/>
+              <AiOutlineEdit className={styles.lableicon} />
               <input
                 type="file"
                 accept="image/*"

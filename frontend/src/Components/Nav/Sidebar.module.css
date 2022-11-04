@@ -15,24 +15,13 @@
 }
 
 .navitems {
-  margin-top: 3em;
-  list-style: none;
+  margin-top: 40px;
 }
 
 .logo {
-  margin-top: 2em;
-  margin-left: 2em;
-  width: 10vw;
-}
-
-.listitems {
-  padding: 12px 20px;
-}
-
-.listitems:hover,
-.active {
-  background-color: #6369bb;
-
+  margin-top: 16px;
+  margin-left: 16px;
+  width: 150px;
 }
 
 .navfooter {

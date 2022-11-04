@@ -1,10 +1,4 @@
 import styles from "./Issuebook.module.css";
-import {
-  ReactElement,
-  JSXElementConstructor,
-  ReactFragment,
-  ReactPortal,
-} from "react";
 
 function Input(props: any) {
   const { title, placeholder, type, isDisabled } = props;

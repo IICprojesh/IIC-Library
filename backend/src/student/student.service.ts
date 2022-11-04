@@ -4,13 +4,13 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
 import { Repository } from 'typeorm';
-import { StudentEntity } from './entities/student.entity';
+import { Student } from './entities/student.entity';
 import { SettingsService } from 'src/settings/settings.service';
 @Injectable()
 export class StudentService {
   constructor(
-    @InjectRepository(StudentEntity)
-    private readonly studentRepository: Repository<StudentEntity>,
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
 
     private readonly settingService: SettingsService,
   ) {}

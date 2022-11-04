@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 @Entity()
-export class StudentEntity {
+export class Student {
   @PrimaryColumn({ unique: true, primary: true })
   id: string;
 

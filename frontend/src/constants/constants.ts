@@ -1,0 +1,1 @@
+export const CODE_NETWORK_ERROR = "ERR_NETWORK";

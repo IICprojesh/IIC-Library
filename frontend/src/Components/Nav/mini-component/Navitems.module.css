@@ -4,13 +4,13 @@
   text-align: center;
   align-items: center;
   text-decoration: none;
-	padding: 12px 16px;
-	transition: all 100ms ease-in;
+  padding: 12px 16px;
+  transition: all 100ms ease-in;
 }
-.Navitems:hover, .NavItemsActive {
-	background: #6369bb;
+.Navitems:hover,
+.NavItemsActive {
+  background: #6369bb;
 }
-
 
 .icon {
   font-size: 2vw;

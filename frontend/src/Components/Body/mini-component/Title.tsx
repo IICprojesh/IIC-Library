@@ -4,5 +4,5 @@ export default function Title(props: { text: string }) {
     <>
       <p className={styles.text}>{props.text}</p>
     </>
-  )
+  );
 }

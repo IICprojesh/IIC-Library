@@ -1,11 +1,11 @@
-import React from "react";
 import Sidebar from "./Components/Nav/Sidebar";
 import Body from "./Components/Body/Body";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <div className="App" style={{ display: "flex" }}>
+    <>
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -18,9 +18,11 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <Sidebar />
-      <Body />
-    </div>
+      <div className="App">
+        <Sidebar />
+        <Body />
+      </div>
+    </>
   );
 }
 

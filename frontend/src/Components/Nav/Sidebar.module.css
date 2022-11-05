@@ -8,7 +8,7 @@
 .container {
   height: 100vh;
   background-color: #383c7a;
-  min-width: 280px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

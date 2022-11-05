@@ -4,20 +4,35 @@
   margin-top: 4vh;
   padding: 10px 25px;
   border: 1px solid #ffff;
-  width: 35.8vw;
+  width: 36vw;
+  height: 38vh;
   margin-right: 2vw;
-	padding-bottom: 30px;
   box-shadow: 2px 2px 10px #ccccccd8;
 }
-
-.buttoncontainer {
-  display: flex;
-  justify-content: end;
+.boxtitle {
+  color: var(--color-primary);
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.hr {
+  border-top: 1px solid #383c7a;
+  height: 2vh;
+  width: 100%;
+  padding-right: 1vw;
 }
 .issuedetail {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+}
+.input {
+  padding: 12px 12px 12px 0;
+  margin-top: 10px;
+}
+
+.buttoncontainer {
+  display: flex;
+  justify-content: end;
 }
 
 .button {
@@ -32,8 +47,9 @@
   margin-top: 2vh;
   font-size: 18px;
 }
+
 .inputfield {
-  width: 32vw;
+  width: 14vw;
   padding: 15px;
   margin-right: 30px;
   margin-top: 12px;
@@ -41,25 +57,4 @@
   color: black;
   font-weight: 300;
   transition: border 200ms;
-}
-
-.boxtitle {
-  color: var(--color-primary);
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.hr {
-  border-top: 1px solid #383c7a;
-  height: 2vh;
-  width: 100%;
-  padding-right: 1vw;
-}
-
-.input {
-  padding: 12px 12px 12px 0;
-  margin-top: 10px;
-}
-.uploadavatar {
-  background-color: red;
 }

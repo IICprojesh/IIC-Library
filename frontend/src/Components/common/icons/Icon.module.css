@@ -1,5 +1,5 @@
-.icon:active,
-.icon.active {
+.icon:hover,
+.icon.active{
   animation: rotation 10s infinite linear;
 }
 

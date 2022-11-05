@@ -1,6 +1,6 @@
 import Card from "../../mini-component/Dashboardcard";
 import Issuebook from "../../mini-component/Issuebook/Issuebook";
-import Expire from "../../mini-component/Expire/Expire";
+import Addstudents from "../../mini-component/Expire/Addstudent";
 import styles from "./Dashboard.module.css";
 import { Title } from "../../../common/title/Title";
 
@@ -20,6 +20,11 @@ export default function Dashboard() {
           icon="bookOpen"
         />
         <Card
+          title="Expired Borrow"
+          subtitle="20 Expire Return/Renew Book"
+          icon="students"
+        />
+        <Card
           title="Total Students"
           subtitle="300 Students Registered in Library"
           icon="students"
@@ -27,6 +32,7 @@ export default function Dashboard() {
       </div>
       <div className={styles.middlecontainer}>
         <Issuebook />
+        <Addstudents />
       </div>
     </>
   );

@@ -43,9 +43,12 @@ export default function Issuebook() {
               title="ISBN Number"
             />
           </div>
-          <a href="/Books" className={styles.buttoncontainer}>
-            <button className={styles.button}>Issue Book</button>
-          </a>
+          <div className={styles.buttoncontainer}>
+            <a href="/Books" >
+              <button className={styles.button}>Issue Book</button>
+            </a>
+          </div>
+
         </div>
       </div>
     </>

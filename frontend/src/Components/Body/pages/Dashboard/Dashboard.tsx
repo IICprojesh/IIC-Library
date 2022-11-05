@@ -27,7 +27,6 @@ export default function Dashboard() {
       </div>
       <div className={styles.middlecontainer}>
         <Issuebook />
-        <Expire />
       </div>
     </>
   );

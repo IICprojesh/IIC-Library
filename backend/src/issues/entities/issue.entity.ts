@@ -1,4 +1,4 @@
-import { Book } from 'src/book/entities/book.entity';
+// import { Book } from 'src/book/entities/book.entity';
 import { Student } from 'src/student/entities/student.entity';
 
 import {
@@ -21,9 +21,9 @@ export class Issue {
   @Column()
   bookId!: string;
 
-  @ManyToOne(() => Book, (book) => book.issue)
-  @JoinColumn({ name: 'bookId' })
-  book: Book;
+  // @ManyToOne(() => Book, (book) => book.issue)
+  // @JoinColumn({ name: 'bookId' })
+  // book: Book;
 
   @ManyToOne(() => Student, (student) => student.issue)
   @JoinColumn({ name: 'studentId' })

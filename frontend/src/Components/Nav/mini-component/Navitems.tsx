@@ -18,7 +18,7 @@ export default function Navitems(props: {
         }}
       >
         <Icon icon={props.icon} className={styles.icon} />
-        <span className="text">{props.text}</span>
+        <span className={styles.text}>{props.text}</span>
       </NavLink>
     </div>
   );

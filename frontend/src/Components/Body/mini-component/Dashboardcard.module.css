@@ -13,19 +13,20 @@
 }
 .title {
   color: #383c7a;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 .carditems {
   display: flex;
 	align-items: center;
+  justify-content: space-between;
 }
 .icon {
   color: #383c7a;
-  font-size: 2rem;
+  font-size: 3rem;
 	margin-left: .7rem;
 }
 .subtitle {
-	padding-top: .2rem;
-	font-size: .9rem;
+	padding-top: 3rem;
+	font-size: 1rem;
 }

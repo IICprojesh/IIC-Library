@@ -9,6 +9,8 @@ import { HiOutlineUsers } from "react-icons/hi";
 import { RiDashboardLine } from "react-icons/ri";
 import { TbBooks } from "react-icons/tb";
 import { FiBookOpen } from "react-icons/fi";
+import styles from "./Icon.module.css"
+
 
 export const icons = {
   dashboard: RiDashboardLine,
@@ -20,6 +22,7 @@ export const icons = {
   bookOpen: FiBookOpen,
 };
 
+
 export type CustomIconType = keyof typeof icons;
 
 export interface IconProps extends IconBaseProps {
@@ -27,5 +30,5 @@ export interface IconProps extends IconBaseProps {
 }
 export function Icon({ icon, ...rest }: IconProps) {
   const I = icons[icon];
-  return <I {...rest} />;
+  return <I className={styles.icon} {...rest} />;
 }

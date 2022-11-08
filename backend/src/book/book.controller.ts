@@ -23,14 +23,15 @@ export class BookController {
 
   @Get()
   search(
-    @Query('isbn') isbn: string,
+    @Query('from') isbn: string,
     @Query('limit') limit: number,
     @Query('skip') skip: number,
+    @Query('search') search: string,
   ) {
     if (isbn) {
       return this.bookService.seachBook(isbn);
     } else {
-      return this.bookService.findAll({ limit, skip });
+      return this.bookService.findAll({ limit, skip, search });
     }
   }
 

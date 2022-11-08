@@ -22,8 +22,11 @@ export class StudentController {
   }
 
   @Get()
-  findAll(@Query() { limit, skip }: { limit: number; skip: number }) {
-    return this.studentService.findAll(limit, skip);
+  findAll(
+    @Query()
+    { limit, skip, search }: { limit: number; skip: number; search: string },
+  ) {
+    return this.studentService.findAll({ limit, skip, search });
   }
 
   @Get(':id')

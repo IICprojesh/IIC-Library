@@ -40,7 +40,7 @@ export class SettingsController {
 
   @Get()
   findOne() {
-    return this.settingsService.getProfile();
+    return this.settingsService.findOne();
   }
 
   @Patch(':id')

@@ -1,34 +1,103 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource, FindOneOptions } from 'typeorm';
 import { SettingsService } from 'src/settings/settings.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { Issue } from './entities/issue.entity';
+import { Renew } from 'src/renew/entities/renew.entity';
+import { getDateAfter } from 'src/utils/date-difference';
 
 @Injectable()
 export class IssuesService {
   constructor(
     private readonly settingsService: SettingsService,
-
     @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
+    @InjectRepository(Renew) private readonly renewRepo: Repository<Renew>,
+    private readonly dataSource: DataSource,
   ) {}
 
-  create(createIssueDto: CreateIssueDto) {}
+  async create(createIssueDto: CreateIssueDto) {
+    const found = await this.issueRepo.findOne({
+      where: {
+        bookId: createIssueDto.bookId,
+        studentId: createIssueDto.studentId,
+        returned: false,
+      },
+    });
+    if (found) {
+      throw new BadRequestException('User has already borrowed this book');
+    }
+    const setting = await this.settingsService.findOne();
+    const issue = this.issueRepo.create({
+      ...createIssueDto,
+      maxIssue: setting.maxIssue,
+    });
 
-  findAll() {
-    return `This action returns all issues`;
+    try {
+      return await this.dataSource.manager.transaction(
+        async (tranasactionalEntityManager) => {
+          const _issue = await tranasactionalEntityManager.save(issue);
+          const renew = this.renewRepo.create({
+            issueId: _issue.id,
+            returnDate: getDateAfter(setting.renewBefore),
+            fineAmount: setting.fineAmount,
+          });
+          await tranasactionalEntityManager.save(renew);
+          return _issue;
+        },
+      );
+    } catch (err) {
+      throw new BadRequestException(
+        'Something went wrong while creating issue.',
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} issue`;
+  findAll({
+    limit,
+    skip,
+    studentId,
+  }: {
+    limit: number;
+    skip: number;
+    studentId: string;
+  }) {
+    return this.issueRepo.find({
+      where: {
+        studentId,
+      },
+      skip,
+      take: limit,
+      relations: {
+        student: true,
+        book: true,
+      },
+      select: {
+        student: {
+          id: true,
+          name: true,
+        },
+        book: {
+          isbn: true,
+          title: true,
+        },
+      },
+    });
   }
 
-  update(id: number, updateIssueDto: UpdateIssueDto) {
-    return `This action updates a #${id} issue`;
+  findOne(id: number, option?: FindOneOptions<Issue>) {
+    const { where, ...rest } = option;
+    return this.issueRepo.findOne({
+      where: {
+        id,
+        ...where,
+      },
+      ...rest,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} issue`;
+  async update(id: number, updateIssueDto: UpdateIssueDto) {
+    return this.issueRepo.update({ id }, updateIssueDto);
   }
 }

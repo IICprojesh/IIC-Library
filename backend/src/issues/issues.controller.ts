@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Query,
 } from '@nestjs/common';
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
@@ -13,7 +13,6 @@ import { UpdateIssueDto } from './dto/update-issue.dto';
 
 @Controller('issues')
 export class IssuesController {
-
   constructor(private readonly issuesService: IssuesService) {}
 
   @Post()
@@ -22,22 +21,25 @@ export class IssuesController {
   }
 
   @Get()
-  findAll() {
-    return this.issuesService.findAll();
+  findAll(
+    @Query('studentId') studentId: string,
+    @Query('limit') limit: number,
+    @Query('skip') skip: number,
+  ) {
+    return this.issuesService.findAll({ limit, skip, studentId });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.issuesService.findOne(+id);
+  findOne(@Param('id') id: string, @Query('studentId') studentId: string) {
+    return this.issuesService.findOne(+id, {
+      where: {
+        studentId,
+      },
+    });
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateIssueDto: UpdateIssueDto) {
     return this.issuesService.update(+id, updateIssueDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.issuesService.remove(+id);
   }
 }

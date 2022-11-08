@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -11,7 +10,6 @@ import {
 } from '@nestjs/common';
 
 import { SettingsService } from './settings.service';
-import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -19,16 +17,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-  @Post()
-  create(@Body() createSettingDto: CreateSettingDto) {
-    return this.settingsService.create(createSettingDto);
-  }
-
   @Patch('profile')
   @UseInterceptors(
     FileInterceptor('profile', {
       fileFilter: (_, file, callback) => {
-				if(!file) callback(new BadRequestException('File is not valide image.'), false);
+        if (!file)
+          callback(new BadRequestException('File is not valide image.'), false);
         const validMimeTypes = ['image/jpeg', 'image/png'];
         if (validMimeTypes.find((mimetype) => mimetype === file.mimetype))
           callback(null, true);

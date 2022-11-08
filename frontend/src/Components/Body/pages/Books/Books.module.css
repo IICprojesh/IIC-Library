@@ -1,4 +1,7 @@
 .container {
   background-color: rgb(255, 255, 255);
   box-shadow: 2px 2px 10px #ccccccd8;
+  width: 80vw;
+  margin-top:50px;
+  height: 850px;
 }

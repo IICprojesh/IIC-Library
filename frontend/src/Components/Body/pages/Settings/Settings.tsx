@@ -8,14 +8,20 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
+import env from "react-dotenv";
 
 function Input(props: any) {
-  const { title, placeholder, type, isDisabled } = props;
+  const [input, setInput] = useState('')
+  console.log(input)
+  const { title,name, placeholder, type, isDisabled } = props;
   return (
     <div className={styles.input}>
       <p className={styles.inputtitle}>{title}</p>
       <input
         type={type}
+        name={name}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
         defaultValue={placeholder}
         className={`${styles.inputfield} ${!isDisabled && styles.active}`}
         disabled={isDisabled}
@@ -47,6 +53,7 @@ function Profiledata(props: any) {
 }
 
 export default function Settings() {
+  const [input, setInput] = useState([])
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{
@@ -77,7 +84,8 @@ export default function Settings() {
       const parsed = JSON.parse(settings);
       return fetched(parsed);
     }
-    axios({ method: "get", url: "//localhost:3500/settings" })
+    console.log(`${env.url}/settings`)
+    axios({ method: "get", url: `${env.url}/settings` })
       .then((res) => {
         localStorage.setItem("settings", JSON.stringify(res.data));
         toast.success("Information fetch Completed", { autoClose: 2000 });
@@ -88,10 +96,15 @@ export default function Settings() {
           return notifyNetworkError();
         } else {
           toast.error(
-            "Something Unexpected happened! Contact to the maintainer."
+            "Something Unexpected happened! Contact to the maintainer @ 9804385646", { autoClose: 10000 }
           );
         }
       });
+
+
+
+
+
   }, []);
 
   const handleSetting = () => {
@@ -158,12 +171,14 @@ export default function Settings() {
             <div className={styles.usersetting}>
               <Input
                 type="text"
+                name="firstname"
                 placeholder="Librarian"
                 title="First Name"
                 isDisabled={!edit}
               />
               <Input
                 type="text"
+                name="lastname"
                 placeholder="Mam"
                 title="Last Name"
                 isDisabled={!edit}
@@ -188,12 +203,14 @@ export default function Settings() {
             <div className={styles.usersetting}>
               <Input
                 type="email"
+                name="emailSufix"
                 placeholder={data.emailSuffix}
                 title="Email Suffix"
                 isDisabled={!edit}
               />
               <Input
                 type="number"
+                name="maxRenew"
                 placeholder="2"
                 title="Maximum Book Renew"
                 isDisabled={!edit}
@@ -201,7 +218,7 @@ export default function Settings() {
               <Input
                 type="number"
                 placeholder="7"
-                title="Maximum Book Renew Day ( /perday)"
+                title="Maximum Book Renew Day "
                 isDisabled={!edit}
               />
               <Input
@@ -212,6 +229,7 @@ export default function Settings() {
               />
               <Input
                 type="number"
+                name="fineAmount"
                 placeholder="5"
                 title="Fine On Delay (RS./day)"
                 isDisabled={!edit}

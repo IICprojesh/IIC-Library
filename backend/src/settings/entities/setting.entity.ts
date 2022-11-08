@@ -11,6 +11,9 @@ export class SettingEntity {
   @Column({ default: 2 })
   maxRenew: number;
 
+  @Column({ default: 2 })
+  maxIssue: number;
+
   @Column({ default: 7 })
   renewBefore: number;
 

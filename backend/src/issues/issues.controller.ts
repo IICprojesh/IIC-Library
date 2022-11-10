@@ -10,7 +10,9 @@ import {
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('issues')
 @Controller('issues')
 export class IssuesController {
   constructor(private readonly issuesService: IssuesService) {}

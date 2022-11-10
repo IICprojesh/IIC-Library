@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -23,12 +23,28 @@ export class BookController {
     return this.bookService.create(createBookDto);
   }
 
+  @ApiQuery({
+    name: 'network',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+  })
   @Get()
   search(
-    @Query('network') isbn: string,
-    @Query('limit') limit: number,
-    @Query('skip') skip: number,
-    @Query('search') search: string,
+    @Query('network') isbn?: string,
+    @Query('limit') limit?: number,
+    @Query('skip') skip?: number,
+    @Query('search') search?: string,
   ) {
     if (isbn) {
       return this.bookService.seachBook(isbn);

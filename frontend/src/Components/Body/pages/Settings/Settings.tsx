@@ -8,20 +8,26 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import env from "react-dotenv";
 
+const queryClient = new QueryClient()
+
 function Input(props: any) {
-  const [input, setInput] = useState('')
-  console.log(input)
-  const { title,name, placeholder, type, isDisabled } = props;
+  const { title, names, placeholder, type, isDisabled } = props;
+
   return (
     <div className={styles.input}>
       <p className={styles.inputtitle}>{title}</p>
       <input
         type={type}
-        name={name}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        name={names}
         defaultValue={placeholder}
         className={`${styles.inputfield} ${!isDisabled && styles.active}`}
         disabled={isDisabled}
@@ -75,7 +81,7 @@ export default function Settings() {
 
   function fetched(data: any) {
     setData(data);
-    setLoading(false);
+    setLoading(true);
   }
 
   useEffect(() => {
@@ -83,15 +89,16 @@ export default function Settings() {
     if (settings) {
       const parsed = JSON.parse(settings);
       return fetched(parsed);
-    }
+    }       
     console.log(`${env.url}/settings`)
-    axios({ method: "get", url: `${env.url}/settings` })
+    axios({ method: "get", url: "https://localhost:3500/settings" })
       .then((res) => {
         localStorage.setItem("settings", JSON.stringify(res.data));
         toast.success("Information fetch Completed", { autoClose: 2000 });
         fetched(res.data);
       })
       .catch((err) => {
+        console.log("here is error")
         if (err.code === CODE_NETWORK_ERROR) {
           return notifyNetworkError();
         } else {
@@ -100,11 +107,6 @@ export default function Settings() {
           );
         }
       });
-
-
-
-
-
   }, []);
 
   const handleSetting = () => {
@@ -162,7 +164,7 @@ export default function Settings() {
           <Profiledata
             name={`${data.firstName} ${data.lastName}`}
             email="Nepal ko email"
-            number="chha 0 chhaina 0 "
+            phone='99999999'
           />
         </div>
         <div className={styles.setting}>
@@ -171,12 +173,14 @@ export default function Settings() {
             <div className={styles.usersetting}>
               <Input
                 type="text"
+
                 name="firstname"
                 placeholder="Librarian"
                 title="First Name"
                 isDisabled={!edit}
               />
               <Input
+                val={data.lastName}
                 type="text"
                 name="lastname"
                 placeholder="Mam"
@@ -185,12 +189,15 @@ export default function Settings() {
               />
               <Input
                 type="number"
+                name='phone'
                 placeholder="+977 9800000000"
                 title="Phone"
                 isDisabled={!edit}
               />
               <Input
                 type="email"
+                name='email'
+
                 placeholder="Library@iic.edu.np"
                 title="Email"
                 isDisabled={!edit}
@@ -212,7 +219,7 @@ export default function Settings() {
                 type="number"
                 name="maxRenew"
                 placeholder="2"
-                title="Maximum Book Renew"
+                title=" Maximun Times Book Renew"
                 isDisabled={!edit}
               />
               <Input
@@ -224,6 +231,7 @@ export default function Settings() {
               <Input
                 type="number"
                 placeholder="3"
+                name="borrow"
                 title="Maximum Book Borrow"
                 isDisabled={!edit}
               />

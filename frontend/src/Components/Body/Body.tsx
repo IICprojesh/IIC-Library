@@ -14,6 +14,10 @@ export default function Body() {
           <Route path="/Books" element={<Books />}></Route>
           <Route path="/Students" element={<Student />}></Route>
           <Route path="/settings" element={<Settings />}></Route>
+          <Route
+            path="/error"
+            element={<h1>Network error. Contact your developer!!!</h1>}
+          ></Route>
         </Routes>
       </div>
     </>

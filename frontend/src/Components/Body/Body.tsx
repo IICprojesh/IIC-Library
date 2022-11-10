@@ -4,6 +4,7 @@ import Books from "./pages/Books/Books";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Student from "./pages/Student/Student";
 import Settings from "./pages/Settings/Settings";
+import NetworkError from '../common/networkerror';
 
 export default function Body() {
   return (
@@ -16,7 +17,7 @@ export default function Body() {
           <Route path="/settings" element={<Settings />}></Route>
           <Route
             path="/error"
-            element={<h1>Network error. Contact your developer!!!</h1>}
+            element={<NetworkError/>}
           ></Route>
         </Routes>
       </div>

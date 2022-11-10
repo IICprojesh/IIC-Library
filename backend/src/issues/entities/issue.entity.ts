@@ -1,5 +1,6 @@
 // import { Book } from 'src/book/entities/book.entity';
 import { Student } from 'src/student/entities/student.entity';
+import { Renew } from 'src/renew/entities/renew.entity';
 
 import {
   Entity,
@@ -8,18 +9,19 @@ import {
   CreateDateColumn,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
 export class Issue {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id!: number;
 
   @Column()
-  studentId!: string;
+  studentId: string;
 
   @Column()
-  bookId!: string;
+  bookId: string;
 
   // @ManyToOne(() => Book, (book) => book.issue)
   // @JoinColumn({ name: 'bookId' })
@@ -29,11 +31,11 @@ export class Issue {
   @JoinColumn({ name: 'studentId' })
   student: Student;
 
+  @OneToMany(() => Renew, (renew) => renew.issue)
+  renew: Renew[];
+
   @Column({ default: false })
   returned: boolean;
-
-  @Column({ default: 0 })
-  fine: number;
 
   @Column()
   maxIssue: number;

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { SettingsService } from 'src/settings/settings.service';
 @Injectable()
@@ -31,15 +31,25 @@ export class StudentService {
     }
   }
 
-  async findAll(limit: number, skip: number) {
-    const result = { data: null, total: 0 };
+  async findAll({
+    skip,
+    limit,
+    search,
+  }: {
+    skip: number;
+    limit: number;
+    search: string;
+  }) {
+    let where: FindOptionsWhere<Student>[] = [];
+    if (search) {
+      where = [{ name: Like(`%${search}%`) }, { id: Like(`%${search}%`) }];
+    }
     const students = await this.studentRepository.find({
+      where,
       skip,
       take: limit,
     });
-    result.data = students;
-    result.total = students.length;
-    return result;
+    return students;
   }
 
   findOne(id: string) {

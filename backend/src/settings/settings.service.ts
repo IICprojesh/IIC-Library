@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { SettingEntity } from './entities/setting.entity';
 
@@ -12,14 +11,8 @@ export class SettingsService {
     private readonly settingRepository: Repository<SettingEntity>,
   ) {}
 
-  async create(createSettingDto: CreateSettingDto) {
-    const exist = await this.findOne();
-    if (exist) {
-      return exist;
-    }
-    const { avatar, ...rest } = await this.settingRepository.save(
-      createSettingDto,
-    );
+  async create() {
+    const { avatar, ...rest } = await this.settingRepository.save({});
     return {
       ...rest,
       avatar: avatar && `data:image/jpeg;base64, ${avatar}`,
@@ -33,8 +26,8 @@ export class SettingsService {
         id: 'SETTING_DEFAULT',
       },
     });
-    const _setting = setting?.[0];
-    if (!_setting) return null;
+    let _setting = setting?.[0];
+    if (!_setting) _setting = await this.create();
     if (_setting) {
       return {
         ..._setting,
@@ -44,7 +37,6 @@ export class SettingsService {
   }
 
   async update(id: number, updateSettingDto: UpdateSettingDto) {
-    console.log(updateSettingDto);
     return await this.settingRepository.update(
       {
         id,
@@ -61,11 +53,5 @@ export class SettingsService {
       ...saved,
       avatar: saved.avatar && `data:image/jpeg;base64, ${saved.avatar}`,
     };
-  }
-
-  async getProfile() {
-    let settings = await this.findOne();
-    if (!settings) settings = await this.create({});
-    return settings;
   }
 }

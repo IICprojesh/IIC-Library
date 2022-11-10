@@ -11,7 +11,9 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('students')
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -21,6 +23,21 @@ export class StudentController {
     return this.studentService.create(createStudentDto);
   }
 
+  @ApiQuery({
+    name: 'limit',
+    example: 20,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'skip',
+    example: 5,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'search',
+    example: 'np05',
+    type: String,
+  })
   @Get()
   findAll(
     @Query()

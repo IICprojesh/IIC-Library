@@ -8,10 +8,12 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
+@ApiTags('books')
 @Controller('books')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
@@ -23,7 +25,7 @@ export class BookController {
 
   @Get()
   search(
-    @Query('from') isbn: string,
+    @Query('network') isbn: string,
     @Query('limit') limit: number,
     @Query('skip') skip: number,
     @Query('search') search: string,

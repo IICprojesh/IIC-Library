@@ -10,7 +10,9 @@ import {
 import { RenewService } from './renew.service';
 import { CreateRenewDto } from './dto/create-renew.dto';
 import { UpdateRenewDto } from './dto/update-renew.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('renew')
 @Controller('renew')
 export class RenewController {
   constructor(private readonly renewService: RenewService) {}

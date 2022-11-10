@@ -31,7 +31,7 @@ export class BookService {
     };
   }
 
-  findAll({
+  async findAll({
     limit,
     skip,
     search,
@@ -40,7 +40,7 @@ export class BookService {
     skip: number;
     search: string;
   }) {
-    let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = [];
+    let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
     if (search) {
       where = [
         { title: Like(`%${search}%`) },
@@ -48,12 +48,13 @@ export class BookService {
         { isbn: Like(`%${search}%`) },
       ];
     }
-
-    return this.bookRepo.find({
+    const total = await this.bookRepo.count();
+    const books = await this.bookRepo.find({
       skip,
-      take: limit,
+      take: limit || 10,
       where,
     });
+    return { total, data: books };
   }
 
   findOne(isbn: string, options?: FindOneOptions<Book>) {

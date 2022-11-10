@@ -40,7 +40,7 @@ export class StudentService {
     limit: number;
     search: string;
   }) {
-    let where: FindOptionsWhere<Student>[] = [];
+    let where: FindOptionsWhere<Student>[] = null;
     if (search) {
       where = [{ name: Like(`%${search}%`) }, { id: Like(`%${search}%`) }];
     }
@@ -49,7 +49,8 @@ export class StudentService {
       skip,
       take: limit,
     });
-    return students;
+    const total = await this.studentRepository.count();
+    return { total, data: students };
   }
 
   findOne(id: string) {

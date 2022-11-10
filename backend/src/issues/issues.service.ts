@@ -54,7 +54,7 @@ export class IssuesService {
     }
   }
 
-  findAll({
+  async findAll({
     limit,
     skip,
     studentId,
@@ -63,7 +63,8 @@ export class IssuesService {
     skip: number;
     studentId: string;
   }) {
-    return this.issueRepo.find({
+    const total = await this.issueRepo.count();
+    const data = await this.issueRepo.find({
       where: {
         studentId,
       },
@@ -84,6 +85,7 @@ export class IssuesService {
         },
       },
     });
+    return { total, data };
   }
 
   findOne(id: number, option?: FindOneOptions<Issue>) {

@@ -25,7 +25,7 @@ export class BookController {
 
   @Get()
   search(
-    @Query('from') isbn: string,
+    @Query('network') isbn: string,
     @Query('limit') limit: number,
     @Query('skip') skip: number,
     @Query('search') search: string,

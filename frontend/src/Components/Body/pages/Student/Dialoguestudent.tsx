@@ -10,6 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import LanguageIcon from '@mui/icons-material/Language';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const handleOnline = () => {
 
@@ -25,8 +26,11 @@ export default function FormDialog(props: any) {
       data,
     }).then((res) => {
       props.onSuccess(res.data)
+      toast.success("Student Added")
       setData(null)
       console.log(res.data)
+    }).catch((err)=>{
+      toast.error(err.response.data.message)
     })
   }
   return (

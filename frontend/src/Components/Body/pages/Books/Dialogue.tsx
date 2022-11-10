@@ -10,6 +10,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { fetchData } from "../../../../utils/fetch";
+import { toast } from 'react-toastify';
 
 export default function FormDialog(props: any) {
   const [loading, setLoading] = React.useState(false);
@@ -20,10 +21,20 @@ export default function FormDialog(props: any) {
 
     fetchData(`books?network=${data.isbn}`)
       .then((data) => {
-        setData(data);
+        if (!data.title) {
+          toast.error("ISBN Cannot found Online",{autoClose:5000})
+          toast.info("Enter Book Data manually",{autoClose:5000})
+        }else{
+          setData(data);
+          toast.success("Data fetched from Online")
+        }
       })
       .catch((err) => {
         console.log(err);
+        toast.error("ISBN Cannot found Online")
+        toast.info("Enter Book Data manually")
+
+
       })
       .finally(() => {
         setLoading(false);
@@ -37,8 +48,11 @@ export default function FormDialog(props: any) {
       data,
     }).then((res) => {
       props.onSuccess(res.data);
+      toast.success("Book Added")
       setData(null);
       console.log(res.data);
+    }).catch((err)=>{
+      toast.error(err.response.data.message[0])
     });
   };
   return (
@@ -88,6 +102,7 @@ export default function FormDialog(props: any) {
             value={data?.authors}
             sx={{ marginRight: 2 }}
             label="Author Name"
+            onChange={(e) => setData({ ...data, authors: e.target.value })}
             type="text"
             InputLabelProps={{
               shrink: true,

@@ -4,18 +4,18 @@ import styles from "./Issuebook.module.css";
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function Input(props: any) {
-  useEffect(() => {
 
-  }, [])
   const { label, options } = props;
   return (
     <>
       <Autocomplete
-        disablePortal
+        onChange={props.onChange}
+        value={props?.value??""}
         sx={{ width: 780, marginBottom: "25px", marginTop: "12px" }}
-        renderInput={(params) => <TextField {...params} label={label} />} options={options} />
+        renderInput={(params) => <TextField {...params} {...props}  label={label} />} options={options} />
     </>
 
   );
@@ -32,32 +32,39 @@ function Boxtitle(props: any) {
 }
 
 export default function Issuebook() {
-  const [isbn, setIsbn] = useState([])
-  const [studentid, setStudentid] = useState([])
-  const [issuedetail, setIssuedetail] = useState<any>(null)
+  const [isbn, setIsbn] = useState<any[]>([])
+  const [studentid, setStudentid] = useState<any[]>([])
+  const [issuedetail, setIssuedetail] = useState<any>(null);
   const [loading, setloading] = useState(false)
-  const [open, setOpen] = useState(false);
-  const handleClose = () => {
-    setOpen(false);
-  };
+
+
 
   useEffect(() => {
     axios({
       method: 'get',
       url: "http://localhost:3500/students"
     }).then((res) => {
-      setStudentid(res.data.data.map((each: any) => each?.id))
+      setStudentid([...res.data.data.map((each: any) => each?.id),""])
     });
     axios({
       method: 'get',
       url: "http://localhost:3500/books"
     }).then((res) => {
-      setIsbn(res.data.data.map((each: any) => each?.isbn))
+      setIsbn([...res.data.data.map((each: any) => each?.isbn),""])
     })
   }, [])
 
   const handleBookissue = () => {
-
+    axios({
+      method: 'post',
+      url: "http://localhost:3500/issues",
+      data: issuedetail,
+    }).then((res) => {
+      setIssuedetail(null)
+      toast.success("Book Issued")
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
 
@@ -76,14 +83,14 @@ export default function Issuebook() {
               </Backdrop>
             </>
             }
-            <Input label="Student ID" options={studentid} />
-            <Input label="ISBN Number" options={isbn} />
+            <Input label="Student ID" value={issuedetail?.studentId} onChange={(e: any, value: any) => setIssuedetail({ ...issuedetail, studentId: value })} options={studentid} />
+            <Input label="ISBN Number" value={issuedetail?.bookId} onChange={(e: any, value: any) => setIssuedetail({ ...issuedetail, bookId: value })} options={isbn} />
 
           </div>
           <div className={styles.buttoncontainer}>
-            <a href="/Books" >
-              <button onClick={handleBookissue} className={styles.button}>Issue Book</button>
-            </a>
+
+            <Button variant='outlined' onClick={handleBookissue} className={styles.button}>Issue Book</Button>
+
           </div>
         </div>
       </div>

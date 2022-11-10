@@ -1,7 +1,6 @@
 import Card from "../../mini-component/Dashboardcard";
 
 import Issuebook from "../../mini-component/Issuebook/Issuebook";
-import Addstudents from "../../mini-component/Expire/Addstudent";
 import styles from "./Dashboard.module.css";
 import { Title } from "../../../common/title/Title";
 
@@ -34,7 +33,6 @@ export default function Dashboard() {
       </div>
       <div className={styles.middlecontainer}>
         <Issuebook />
-        <Addstudents />
       </div>
     </>
   );

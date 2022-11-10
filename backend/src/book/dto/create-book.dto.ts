@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISBN, IsString, IsOptional, IsArray } from 'class-validator';
+import { IsISBN, IsString, IsOptional } from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({ example: '12313123', type: 'isbn' })
@@ -19,4 +19,8 @@ export class CreateBookDto {
   @ApiProperty({ example: 'author 1, author b, author z' })
   @IsString()
   authors: string;
+
+  @ApiProperty({ example: 'https:google.com' })
+  @IsString()
+  image: string;
 }

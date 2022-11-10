@@ -27,16 +27,19 @@ export class StudentController {
     name: 'limit',
     example: 20,
     type: Number,
+    required: false,
   })
   @ApiQuery({
     name: 'skip',
     example: 5,
     type: Number,
+    required: false,
   })
   @ApiQuery({
     name: 'search',
     example: 'np05',
     type: String,
+    required: false,
   })
   @Get()
   findAll(

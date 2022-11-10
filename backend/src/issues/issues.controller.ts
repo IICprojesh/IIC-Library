@@ -10,7 +10,7 @@ import {
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('issues')
 @Controller('issues')
@@ -22,6 +22,18 @@ export class IssuesController {
     return this.issuesService.create(createIssueDto);
   }
 
+  @ApiQuery({
+    name: 'limit',
+    example: 5,
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'skip',
+    example: 5,
+    type: Number,
+    required: false,
+  })
   @Get()
   findAll(
     @Query('studentId') studentId: string,

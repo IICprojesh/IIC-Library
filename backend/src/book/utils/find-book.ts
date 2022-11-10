@@ -33,10 +33,7 @@ export async function findBookFromInternet(isbn: string, axios: AxiosInstance) {
   const $ = load(data.data);
   const title = $('#describe-isbn-title').text().trim();
   const summary = $('#bookSummary').text().trim();
-  const authors = $('span[itemprop=author]')
-    .text()
-    .split(',')
-    .map((each) => each.toLowerCase().trim());
+  const authors = $('span[itemprop=author]').text();
   const image = $('img[id=coverImage]').attr('src');
   return {
     isbn,

@@ -22,5 +22,6 @@ export class CreateBookDto {
 
   @ApiProperty({ example: 'https:google.com' })
   @IsString()
+  @IsOptional()
   image: string;
 }

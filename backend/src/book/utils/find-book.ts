@@ -39,6 +39,7 @@ export async function findBookFromInternet(isbn: string, axios: AxiosInstance) {
     .map((each) => each.toLowerCase().trim());
   const image = $('img[id=coverImage]').attr('src');
   return {
+    isbn,
     title,
     image,
     summary,

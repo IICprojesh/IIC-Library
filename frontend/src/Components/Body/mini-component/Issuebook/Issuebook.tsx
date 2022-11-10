@@ -11,7 +11,7 @@ function Input(props: any) {
 
       <Autocomplete
         disablePortal
-        sx={{ width: 650, marginBottom: "25px", marginTop: "12px" }}
+        sx={{ width: 780, marginBottom: "25px", marginTop: "12px" }}
         renderInput={(params) => <TextField {...params} label={label} />} options={options} />
 
     </>
@@ -51,7 +51,7 @@ export default function Issuebook() {
             </>
             }
             <Input label="Student ID" options={Students} />
-            <Input label="Student ID" options={Students} />
+            <Input label="ISBN Number" options={Students} />
 
           </div>
 

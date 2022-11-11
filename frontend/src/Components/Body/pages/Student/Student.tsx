@@ -142,12 +142,11 @@ export default function Books() {
           <TextField
             spellCheck
             id="outlined-basic"
-            sx={{ width: 500}}
+            sx={{ width: 500 }}
             label="Search by Student ID or Student Name"
             variant="outlined"
           />
-         
-        </div>
+        </div>  
       </div>
       <TableContainer
         style={{}}

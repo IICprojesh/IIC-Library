@@ -6,22 +6,25 @@ import {
   AiOutlineUser,
 } from "react-icons/ai";
 import { HiOutlineUsers } from "react-icons/hi";
-import { RiDashboardLine } from "react-icons/ri";
-import { TbBooks } from "react-icons/tb";
+import { TfiDashboard } from "react-icons/tfi";
+
+import { GiBookshelf } from "react-icons/gi";
+import { TbBooks, TbBookUpload, TbBookOff } from "react-icons/tb";
 import { FiBookOpen } from "react-icons/fi";
-import styles from "./Icon.module.css"
-
-
+import styles from "./Icon.module.css";
+import { BsJournalBookmark } from "react-icons/bs";
 export const icons = {
-  dashboard: RiDashboardLine,
-  books: TbBooks,
+  dashboard: TfiDashboard,
+  bookupload: TbBookUpload,
+  books: BsJournalBookmark,
+  Books: GiBookshelf,
+  booksexpire: TbBookOff,
   student: AiOutlineUser,
   setting: AiOutlineSetting,
   add: AiOutlineFileAdd,
   students: HiOutlineUsers,
   bookOpen: FiBookOpen,
 };
-
 
 export type CustomIconType = keyof typeof icons;
 

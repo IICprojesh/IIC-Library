@@ -8,40 +8,16 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
 import env from "react-dotenv";
-
-const queryClient = new QueryClient()
-
-function Input(props: any) {
-  const { title, names, placeholder, type, isDisabled } = props;
-
-  return (
-    <div className={styles.input}>
-      <p className={styles.inputtitle}>{title}</p>
-      <input
-        type={type}
-        name={names}
-        defaultValue={placeholder}
-        className={`${styles.inputfield} ${!isDisabled && styles.active}`}
-        disabled={isDisabled}
-      />
-    </div>
-  );
-}
+import { TextField } from "@material-ui/core";
+import { border } from "@mui/system";
 
 function Boxtitle(props: any) {
-  const { title, hr } = props;
+  const { title } = props;
   return (
     <>
       <h3 className={styles.boxtitle}>{title}</h3>
-      {!hr && <div className={styles.hr}></div>}
+      <div className={styles.hr}></div>
     </>
   );
 }
@@ -59,21 +35,17 @@ function Profiledata(props: any) {
 }
 
 export default function Settings() {
-  const [input, setInput] = useState([])
-  const [edit, setEdit] = useState(false);
+  const [input, setInput] = useState([]);
+  const [settings, setSettings] = useState<any>(null);
+  console.log(settings);
+  const [buttonState, setButtonState] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{
     avatar: string;
     firstName: string;
     lastName: string;
-    emailSuffix: string;
-    maxRenew: number;
-    renewDay: number;
   }>({
     avatar: "",
-    emailSuffix: "",
-    maxRenew: 0,
-    renewDay: 0,
     firstName: "",
     lastName: "",
   });
@@ -89,28 +61,42 @@ export default function Settings() {
     if (settings) {
       const parsed = JSON.parse(settings);
       return fetched(parsed);
-    }       
-    console.log(`${env.url}/settings`)
+    }
     axios({ method: "get", url: "https://localhost:3500/settings" })
       .then((res) => {
-        localStorage.setItem("settings", JSON.stringify(res.data));
         toast.success("Information fetch Completed", { autoClose: 2000 });
+        localStorage.setItem("settings", JSON.stringify(res.data));
         fetched(res.data);
       })
       .catch((err) => {
-        console.log("here is error")
+        console.log("here is error");
         if (err.code === CODE_NETWORK_ERROR) {
           return notifyNetworkError();
         } else {
           toast.error(
-            "Something Unexpected happened! Contact to the maintainer @ 9804385646", { autoClose: 10000 }
+            "Something Unexpected happened! Contact to the maintainer @ 9804385646",
+            { autoClose: 10000 }
           );
         }
       });
   }, []);
 
   const handleSetting = () => {
-    setEdit((current) => !current);
+    setButtonState((current) => !current);
+
+    if (buttonState) {
+      axios({
+        method: "patch",
+        url: "http://localhost:3500/settings/1",
+        data: {...settings, maxRenew: +settings.maxRenew, renewBefore:+settings.renewBefore, fineAmount: +settings.fineAmount},
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   const handleProfileSubmit = async (datas: any) => {
     const formData = new FormData();
@@ -139,7 +125,7 @@ export default function Settings() {
         title="Settings"
         leading={
           <button className={styles.button} onClick={handleSetting}>
-            {edit ? "Save" : "Edit"}
+            {buttonState ? "Save" : "Edit"}
           </button>
         }
       />
@@ -164,43 +150,90 @@ export default function Settings() {
           <Profiledata
             name={`${data.firstName} ${data.lastName}`}
             email="Nepal ko email"
-            phone='99999999'
+            phone="99999999"
           />
         </div>
         <div className={styles.setting}>
           <div>
             <Boxtitle title="Profile Setting" />
             <div className={styles.usersetting}>
-              <Input
-                type="text"
-
-                name="firstname"
-                placeholder="Librarian"
-                title="First Name"
-                isDisabled={!edit}
+              <TextField
+                variant="outlined"
+                focused={buttonState}
+                value={settings?.firstName}
+                onChange={(e) =>
+                  setSettings({ ...settings, firstName: e.target.value })
+                }
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "12px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                label="First Name"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
-                val={data.lastName}
-                type="text"
-                name="lastname"
-                placeholder="Mam"
-                title="Last Name"
-                isDisabled={!edit}
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "12px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.lastname}
+                onChange={(e) =>
+                  setSettings({ ...settings, lastName: e.target.value })
+                }
+                variant="outlined"
+                label="Last Name"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
-                type="number"
-                name='phone'
-                placeholder="+977 9800000000"
-                title="Phone"
-                isDisabled={!edit}
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.phone}
+                onChange={(e) =>
+                  setSettings({ ...settings, phone: e.target.value })
+                }
+                variant="outlined"
+                label="Phone Number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.email}
+                onChange={(e) =>
+                  setSettings({ ...settings, email: e.target.value })
+                }
+                variant="outlined"
                 type="email"
-                name='email'
-
-                placeholder="Library@iic.edu.np"
-                title="Email"
-                isDisabled={!edit}
+                label="Email Address"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
             </div>
           </div>
@@ -208,39 +241,105 @@ export default function Settings() {
           <div>
             <Boxtitle title="Library Setting" />
             <div className={styles.usersetting}>
-              <Input
-                type="email"
-                name="emailSufix"
-                placeholder={data.emailSuffix}
-                title="Email Suffix"
-                isDisabled={!edit}
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.emailSuffix}
+                onChange={(e) =>
+                  setSettings({ ...settings, emailSuffix: e.target.value })
+                }
+                variant="outlined"
+                type="Email"
+                label="Email Suffix"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.maxRenew}
+                onChange={(e) =>
+                  setSettings({ ...settings, maxRenew: e.target.value })
+                }
+                variant="outlined"
                 type="number"
-                name="maxRenew"
-                placeholder="2"
-                title=" Maximun Times Book Renew"
-                isDisabled={!edit}
+                label="Books Renew (/times)"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.renewBefore}
+                onChange={(e) =>
+                  setSettings({ ...settings, renewBefore: e.target.value })
+                }
+                variant="outlined"
                 type="number"
-                placeholder="7"
-                title="Maximum Book Renew Day "
-                isDisabled={!edit}
+                label="Borrow Days"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
-                type="number"
-                placeholder="3"
-                name="borrow"
-                title="Maximum Book Borrow"
-                isDisabled={!edit}
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.maxIssue}
+                onChange={(e) =>
+                  setSettings({ ...settings, maxIssue: e.target.value })
+                }
+                variant="outlined"
+                type="text"
+                label="Total Borrow (/student)"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
-              <Input
-                type="number"
-                name="fineAmount"
-                placeholder="5"
-                title="Fine On Delay (RS./day)"
-                isDisabled={!edit}
+              <TextField
+                style={{
+                  width: "430px",
+                  marginRight: "120px",
+                  marginTop: "20px",
+                  fontWeight: 300,
+                  translate: "border 200ms",
+                }}
+                value={settings?.fineAmount}
+                onChange={(e) =>
+                  setSettings({ ...settings, fineAmount: e.target.value })
+                }
+                variant="outlined"
+                type="text"
+                label="Fine (/day)"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled={!buttonState}
               />
             </div>
           </div>

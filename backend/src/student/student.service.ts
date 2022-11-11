@@ -72,6 +72,6 @@ export class StudentService {
   }
 
   remove(id: string) {
-    return this.studentRepository.delete({ id });
+    return this.studentRepository.delete(id);
   }
 }

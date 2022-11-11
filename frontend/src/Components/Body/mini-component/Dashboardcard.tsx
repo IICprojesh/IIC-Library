@@ -1,18 +1,16 @@
 import { CustomIconType, Icon } from "../../common/icons/Icon";
 import styles from "./Dashboardcard.module.css";
 
-export default function Card(props: {
-  title: string;
-  subtitle: string;
-  icon: CustomIconType;
-}) {
+export default function Card(props: any) {
   return (
-    <div className={styles.Container}>
-      <div className={styles.carditems}>
-        <p className={styles.title}>{props.title}</p>
+    <div className={styles.Container} style={props.style}>
+      <div className={styles.iconContainer}>
         <Icon icon={props.icon} className={styles.icon} />
       </div>
-      <p className={styles.subtitle}>{props.subtitle}</p>
+      <div className={styles.carditems}>
+        <p className={styles.subtitle}>{props.subtitle}</p>
+        <p className={styles.title}>{props.title}</p>
+      </div>
     </div>
   );
 }

@@ -9,24 +9,24 @@ export default function Dashboard() {
     <>
       <Title title="Dashboard" />
       <div className={styles.cards}>
-        <Card
-          title="Add New Book"
-          subtitle="200 New Books Added In Library"
-          icon="add"
+        <Card 
+          title="200"
+          subtitle="Total Books"
+          icon="Books"
         />
         <Card
-          title="Total Borrowed"
-          subtitle="80 Books were Borrowed"
-          icon="bookOpen"
+          title="80"
+          subtitle="Books Borrowed"
+          icon="bookupload"
         />
         <Card
-          title="Expired Borrow"
-          subtitle="20 Expire Return/Renew Book"
-          icon="students"
+          title="20"
+          subtitle="Expired Books"
+          icon="booksexpire"
         />
         <Card
-          title="Total Students"
-          subtitle="300 Students Registered in Library"
+          title="300"
+          subtitle="Total Students"
           icon="students"
         />
         

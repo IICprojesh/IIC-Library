@@ -8,6 +8,12 @@ export class SettingEntity {
   @Column({ default: 'iic.edu.np' })
   emailSuffix: string;
 
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
   @Column({ default: 2 })
   maxRenew: number;
 

@@ -66,11 +66,17 @@ export class BookService {
     });
   }
 
-  update(isbn: string, updateBookDto: UpdateBookDto) {
-    return this.bookRepo.update({ isbn }, updateBookDto);
+  async update(isbn: string, updateBookDto: UpdateBookDto) {
+    const updated = await this.bookRepo.update({ isbn }, updateBookDto);
+    if (updated.affected)
+      return { message: 'book updated successfully.', success: true };
+    else return { message: 'book update failed', success: false };
   }
 
-  remove(isbn: string) {
-    return this.bookRepo.delete(isbn);
+  async remove(isbn: string) {
+    const deleted = await this.bookRepo.delete(isbn);
+    if (deleted.affected)
+      return { message: 'book deleted successfully', success: true };
+    else return { message: 'book delete failed.', success: false };
   }
 }

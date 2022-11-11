@@ -17,6 +17,8 @@ export class Book {
   @Column({ nullable: true })
   image: string;
 
-  @OneToMany(() => Issue, (issue) => issue.book)
+  @OneToMany(() => Issue, (issue) => issue.book, {
+    onDelete: 'CASCADE',
+  })
   issue: Issue[];
 }

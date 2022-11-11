@@ -71,8 +71,6 @@ export class BookService {
   }
 
   remove(isbn: string) {
-    return this.bookRepo.delete({
-      isbn,
-    });
+    return this.bookRepo.delete(isbn);
   }
 }

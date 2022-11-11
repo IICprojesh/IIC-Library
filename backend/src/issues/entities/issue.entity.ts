@@ -23,7 +23,9 @@ export class Issue {
   @Column()
   bookId: string;
 
-  @ManyToOne(() => Book, (book) => book.issue)
+  @ManyToOne(() => Book, (book) => book.issue, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'bookId' })
   book: Book;
 

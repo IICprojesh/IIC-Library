@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Issue } from 'src/issues/entities/issue.entity';
 import { Repository, FindOneOptions, FindOptionsWhere, Like } from 'typeorm';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -13,6 +14,7 @@ export class BookService {
   constructor(
     private readonly httpService: HttpService,
     @InjectRepository(Book) private readonly bookRepo: Repository<Book>,
+    @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
   ) {}
 
   async create(createBookDto: CreateBookDto) {
@@ -74,6 +76,18 @@ export class BookService {
   }
 
   async remove(isbn: string) {
+    const issue = await this.issueRepo.findOne({
+      where: {
+        bookId: isbn,
+        returned: false,
+      },
+    });
+    if (issue) {
+      throw new BadRequestException(
+        'The book cannot be deleted. This book is issued currently',
+      );
+    }
+
     const deleted = await this.bookRepo.delete(isbn);
     if (deleted.affected)
       return { message: 'book deleted successfully', success: true };

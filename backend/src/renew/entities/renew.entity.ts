@@ -19,7 +19,9 @@ export class Renew {
   @Column()
   issueId: number;
 
-  @ManyToOne(() => Issue, (issue) => issue.renew)
+  @ManyToOne(() => Issue, (issue) => issue.renew, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'issueId' })
   issue: Issue;
 

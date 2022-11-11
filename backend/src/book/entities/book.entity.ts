@@ -18,7 +18,7 @@ export class Book {
   image: string;
 
   @OneToMany(() => Issue, (issue) => issue.book, {
-    onDelete: 'SET NULL',
+    onDelete: 'RESTRICT',
   })
   issue: Issue[];
 }

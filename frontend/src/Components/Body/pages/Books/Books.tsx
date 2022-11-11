@@ -25,7 +25,7 @@ import { fetchData } from "../../../../utils/fetch";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
-    maxHeight: 900,
+    maxHeight: 610,
   },
 
   tableHeaderCells: {
@@ -94,7 +94,15 @@ export default function Books() {
   const [dialog, setDialog] = React.useState(false);
 
   return (
-    <Paper style={{ width: "100%", maxHeight: 700, marginTop: 20 }}>
+    <Paper
+      style={{
+        width: "100%",
+        overflow: "hidden",
+        boxShadow: "none",
+        maxHeight: 700,
+        marginTop: 20,
+      }}
+    >
       <FormDialog
         isOpen={dialog}
         onClose={() => setDialog(false)}
@@ -107,6 +115,7 @@ export default function Books() {
         style={{
           display: "flex",
           marginBottom: 15,
+          marginTop: 5,
           justifyContent: "space-between",
         }}
       >
@@ -125,22 +134,14 @@ export default function Books() {
           <TextField
             spellCheck
             id="outlined-basic"
-            sx={{ width: 500, marginRight: 2 }}
+            sx={{ width: 500}}
             label="Search Book By ISBN Or Name"
             variant="outlined"
           />
-          <Button
-            variant="contained"
-            sx={{ padding: 2 }}
-            className={classes.button}
-            startIcon={<SearchOutlinedIcon />}
-          >
-            Search Book
-          </Button>
         </div>
       </div>
       <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table stickyHeader aria-label="simple table">
+        <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               <TableCell

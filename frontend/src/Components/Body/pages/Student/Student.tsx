@@ -24,6 +24,16 @@ import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
     maxHeight: 610,
+    "&::-webkit-scrollbar": {
+      width: 10,
+    },
+    "&::-webkit-scrollbar-track": {
+      backgroundColor: theme.palette.primary.light,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: theme.palette.primary.dark,
+      borderRadius: 2,
+    },
   },
 
   tableHeaderCells: {
@@ -132,21 +142,18 @@ export default function Books() {
           <TextField
             spellCheck
             id="outlined-basic"
-            sx={{ width: 500, marginRight: 2 }}
+            sx={{ width: 500}}
             label="Search by Student ID or Student Name"
             variant="outlined"
           />
-          <Button
-            variant="contained"
-            sx={{ padding: 2 }}
-            className={classes.button}
-            startIcon={<SearchOutlinedIcon />}
-          >
-            Search Student
-          </Button>
+         
         </div>
       </div>
-      <TableContainer component={Paper} className={classes.tableContainer}>
+      <TableContainer
+        style={{}}
+        component={Paper}
+        className={classes.tableContainer}
+      >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

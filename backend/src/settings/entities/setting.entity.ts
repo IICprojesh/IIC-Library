@@ -5,7 +5,7 @@ export class SettingEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: 'iic.edu.np' })
+  @Column({ default: '@iic.edu.np' })
   emailSuffix: string;
 
   @Column({ nullable: true })

@@ -28,7 +28,7 @@ export class CreateSettingDto {
   lastName?: string;
 
   @ApiProperty({ example: 5 })
-  @IsString()
+  @IsNumber()
   @IsOptional()
   fineAmount?: number;
 }

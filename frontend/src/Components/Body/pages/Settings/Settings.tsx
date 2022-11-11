@@ -65,7 +65,6 @@ export default function Settings() {
     axios({ method: "get", url: "https://localhost:3500/settings" })
       .then((res) => {
         toast.success("Information fetch Completed", { autoClose: 2000 });
-        localStorage.setItem("settings", JSON.stringify(res.data));
         fetched(res.data);
       })
       .catch((err) => {
@@ -88,7 +87,12 @@ export default function Settings() {
       axios({
         method: "patch",
         url: "http://localhost:3500/settings/1",
-        data: {...settings, maxRenew: +settings.maxRenew, renewBefore:+settings.renewBefore, fineAmount: +settings.fineAmount},
+        data: {
+          ...settings,
+          maxRenew: +settings.maxRenew,
+          renewBefore: +settings.renewBefore,
+          fineAmount: +settings.fineAmount,
+        },
       })
         .then((res) => {
           console.log(res);

@@ -20,6 +20,8 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import FormDialog from "./Dialoguestudent";
 import axios from "axios";
+import { useFetch } from "../../../../hooks/useFetch";
+import { fetchData } from "../../../../utils/fetch";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -85,13 +87,35 @@ export default function Books() {
       });
   }, []);
 
-  const classes = useStyles();
+  const [totalBooks, setTotalBooks]= React.useState(0)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const { data, loading, error } = useFetch("students");
+
+  React.useEffect(() => {
+    setRows((prev) => {
+      if (Array.isArray(prev) && prev.length === 0 && data?.data) {
+        return data?.data;
+      }
+      return prev;
+    });
+    setTotalBooks(data?.total ?? 0);
+  }, [data]);
+
+  const classes = useStyles({
+    tableContainer: {
+      height: "100px",
+    },
+  });
+
   const handleChangePage = (event: unknown, newPage: number) => {
-    console.log(newPage);
-    setPage(newPage);
+    fetchData(
+      `students?limit=${rowsPerPage}&skip=${newPage * rowsPerPage}`
+    ).then((data: any) => {
+      setRows(data.data);
+      setPage(newPage);
+    });
   };
 
   const handleChangeRowsPerPage = (
@@ -238,7 +262,7 @@ export default function Books() {
       <TablePagination
         rowsPerPageOptions={[5, 10]}
         component="div"
-        count={rows.length}
+        count={totalBooks}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

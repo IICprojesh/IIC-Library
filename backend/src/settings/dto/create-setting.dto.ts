@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateSettingDto {
   @ApiProperty({ example: 'iic.edu.np' })
@@ -31,4 +31,12 @@ export class CreateSettingDto {
   @IsNumber()
   @IsOptional()
   fineAmount?: number;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
 }

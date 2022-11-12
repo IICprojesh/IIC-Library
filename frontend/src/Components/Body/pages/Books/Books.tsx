@@ -106,17 +106,18 @@ export default function Books() {
       })
         .then((res) => {
           setDeleteState(false);
-          console.log(res.data.message)
+          console.log(res.data.message);
           toast.success(res.data.message);
         })
         .catch((err) => {
           setDeleteState(false);
-          toast.error("This Book Cannot be delete, Some Student Borrowed this book")
+          toast.error(
+            "This Book Cannot be delete, Some Student Borrowed this book"
+          );
           console.log(err);
         });
     } else {
       setDeleteState(false);
-      toast.warning("User Denied to delete Book");
     }
   };
 

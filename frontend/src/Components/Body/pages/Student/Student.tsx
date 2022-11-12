@@ -1,5 +1,4 @@
 import * as React from "react";
-import styles from "./Books.module.css";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
@@ -12,7 +11,6 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import TablePagination from "@mui/material/TablePagination";
 import { Button, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
@@ -22,6 +20,7 @@ import FormDialog from "./Dialoguestudent";
 import axios from "axios";
 import { useFetch } from "../../../../hooks/useFetch";
 import { fetchData } from "../../../../utils/fetch";
+import DataTable from "../../../common/data-table/DataTable";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -65,64 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function paginate(rows: any[], start: number, limit: number) {
-  const data = rows.slice(start, limit);
-  console.log(data);
-  return data;
-}
-
-export default function Books() {
-  const [rows, setRows] = React.useState<any[]>([]);
-  React.useEffect(() => {
-    axios({
-      method: "get",
-      url: "http://localhost:3500/students",
-    })
-      .then((res) => {
-        console.log(res);
-        setRows(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const [totalBooks, setTotalBooks]= React.useState(0)
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const { data, loading, error } = useFetch("students");
-
-  React.useEffect(() => {
-    setRows((prev) => {
-      if (Array.isArray(prev) && prev.length === 0 && data?.data) {
-        return data?.data;
-      }
-      return prev;
-    });
-    setTotalBooks(data?.total ?? 0);
-  }, [data]);
-
-  const classes = useStyles({
-    tableContainer: {
-      height: "100px",
-    },
-  });
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    fetchData(
-      `students?limit=${rowsPerPage}&skip=${newPage * rowsPerPage}`
-    ).then((data: any) => {
-      setRows(data.data);
-      setPage(newPage);
-    });
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-  };
+export default function Student() {
   const [dialog, setDialog] = React.useState(false);
 
   return (
@@ -130,19 +72,10 @@ export default function Books() {
       style={{
         width: "100%",
         boxShadow: "none",
-        overflow: "hidden",
-        minHeight: 700,
         marginTop: 20,
       }}
     >
-      <FormDialog
-        isOpen={dialog}
-        onClose={() => setDialog(false)}
-        onSuccess={(data: any) => {
-          setRows([...rows, data]);
-          setDialog(false);
-        }}
-      />
+      <FormDialog isOpen={dialog} onClose={() => setDialog(false)} />
       <div
         style={{
           display: "flex",
@@ -156,7 +89,6 @@ export default function Books() {
             setDialog(true);
           }}
           variant="outlined"
-          className={classes.button}
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >
           {" "}
@@ -170,104 +102,24 @@ export default function Books() {
             label="Search by Student ID or Student Name"
             variant="outlined"
           />
-        </div>  
+        </div>
       </div>
-      <TableContainer
-        style={{}}
-        component={Paper}
-        className={classes.tableContainer}
+      <DataTable
+        resource="students"
+        headers={["Student Id", "Student Name", "contact Number", "email"]}
+        actionId="id"
       >
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ width: "60px" }}
-                className={classes.tableHeaderCells}
-              >
-                {" "}
-                Avatar
-              </TableCell>
-              <TableCell className={classes.tableHeaderCells}>
-                {" "}
-                Student ID
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Student Name
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                College Email
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Contact Number
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginate(
-              rows,
-              page * rowsPerPage,
-              page * rowsPerPage + rowsPerPage
-            ).map((row) => (
-              <TableRow key={row.name}>
-                <TableCell
-                  style={{ width: "60px" }}
-                  className={classes.tableCell}
-                >
-                  <Avatar src="." alt={row.name} className={classes.avatar} />
-                </TableCell>
-                <TableCell className={classes.tableCell}>{row.id}</TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.name}
-                </TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.email}
-                </TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.contactNumber}
-                </TableCell>
-                <TableCell
-                  style={{
-                    paddingBottom: 40,
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                  className={classes.tableCell}
-                >
-                  <Button
-                    variant="contained"
-                    sx={{ marginRight: 3 }}
-                    startIcon={<CreateIcon />}
-                    className={classes.status}
-                    style={{ backgroundColor: "#adc7fb", color: "#083fad" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    startIcon={<DeleteIcon />}
-                    className={classes.status}
-                    style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10]}
-        component="div"
-        count={totalBooks}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+        {(row: any) => {
+          return (
+            <>
+              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.contactNumber}</TableCell>
+              <TableCell>{row.email}</TableCell>
+            </>
+          );
+        }}
+      </DataTable>
     </Paper>
   );
 }

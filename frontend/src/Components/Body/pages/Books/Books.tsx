@@ -25,6 +25,7 @@ import { fetchData } from "../../../../utils/fetch";
 import axios from "axios";
 import DeleteAlert from "../../mini-component/DeleteAlert";
 import { toast } from "react-toastify";
+import DataTable from "../../../common/data-table/DataTable";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -170,102 +171,31 @@ export default function Books() {
           />
         </div>
       </div>
-      <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell
-                className={classes.tableHeaderCells}
-                style={{ width: "60px" }}
-              >
-                {" "}
-                Image
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                ISBN Number
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Book Name
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Author Name
-              </TableCell>
-              <TableCell align="center" className={classes.tableHeaderCells}>
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell
-                  className={classes.tableCell}
-                  style={{ width: "60px" }}
-                >
-                  <img
-                    src={row.image}
-                    alt={row.author}
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      objectFit: "cover",
-                      borderRadius: 5,
-                    }}
-                  />
-                </TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.isbn}
-                </TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.title}
-                </TableCell>
-                <TableCell align="center" className={classes.tableCell}>
-                  {row.authors}
-                </TableCell>
-                <TableCell
+      <DataTable
+        resource="books"
+        headers={["image", "isbn number", "book name", "Authors"]}
+				actionId="isbn"
+      >
+        {(row: any) => {
+          return (
+            <>
+              <TableCell>
+                <img
+                  src={row.image}
                   style={{
-                    paddingBottom: 40,
-                    display: "flex",
-                    justifyContent: "center",
+                    width: 40,
+                    height: 40,
                   }}
-                  className={classes.tableCell}
-                >
-                  <Button
-                    variant="contained"
-                    sx={{ marginRight: 3 }}
-                    startIcon={<CreateIcon />}
-                    className={classes.status}
-                    style={{ backgroundColor: "#adc7fb", color: "#083fad" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setDeleteState(true);
-                      setDeleteIsbn(row.isbn);
-                    }}
-                    startIcon={<DeleteIcon />}
-                    className={classes.status}
-                    style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10]}
-        component="div"
-        count={totalBooks}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+                  alt={row.title}
+                />
+              </TableCell>
+              <TableCell>{row.isbn}</TableCell>
+              <TableCell>{row.title.substr(0, 60) + "..."}</TableCell>
+              <TableCell>{row.authors}</TableCell>
+            </>
+          );
+        }}
+      </DataTable>
     </Paper>
   );
 }

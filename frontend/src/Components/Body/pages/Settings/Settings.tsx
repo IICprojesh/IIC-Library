@@ -37,21 +37,29 @@ function Profiledata(props: any) {
 export default function Settings() {
   const [input, setInput] = useState([]);
   const [settings, setSettings] = useState<any>(null);
-  console.log(settings);
+  const [adminInfo, setAdminInfo] = useState<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  }>({
+    firstName: "John",
+    lastName: "Doe",
+    email: "contact@iic.edu.np",
+    phone: "0000000000",
+  });
   const [buttonState, setButtonState] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{
     avatar: string;
-    firstName: string;
-    lastName: string;
   }>({
     avatar: "",
-    firstName: "",
-    lastName: "",
   });
   const { register, handleSubmit } = useForm();
 
   function fetched(data: any) {
+    setSettings(data)
+    setAdminInfo(data);
     setData(data);
     setLoading(true);
   }
@@ -64,6 +72,7 @@ export default function Settings() {
     }
     axios({ method: "get", url: "https://localhost:3500/settings" })
       .then((res) => {
+        console.log("i will set admin info");
         toast.success("Information fetch Completed", { autoClose: 2000 });
         fetched(res.data);
       })
@@ -95,7 +104,9 @@ export default function Settings() {
         },
       })
         .then((res) => {
-          console.log(res);
+          toast.success("Admin and Library Setting Changed.");
+          console.log(res.data.data);
+          setAdminInfo(res.data.data);
         })
         .catch((err) => {
           console.log(err);
@@ -152,9 +163,9 @@ export default function Settings() {
             </label>
           </form>
           <Profiledata
-            name={`${data.firstName} ${data.lastName}`}
-            email="Nepal ko email"
-            phone="99999999"
+            name={`${adminInfo.firstName} ${adminInfo.lastName}`}
+            email={adminInfo.email}
+            phone={adminInfo.phone}
           />
         </div>
         <div className={styles.setting}>
@@ -189,7 +200,7 @@ export default function Settings() {
                   fontWeight: 300,
                   translate: "border 200ms",
                 }}
-                value={settings?.lastname}
+                value={settings?.lastName}
                 onChange={(e) =>
                   setSettings({ ...settings, lastName: e.target.value })
                 }

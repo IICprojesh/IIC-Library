@@ -29,6 +29,12 @@ export class IssuesController {
     required: false,
   })
   @ApiQuery({
+    name: 'studentId',
+    example: 5,
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
     name: 'skip',
     example: 5,
     type: Number,

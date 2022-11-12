@@ -8,7 +8,7 @@ export class Book {
   @Column()
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   summary?: string;
 
   @Column()
@@ -18,7 +18,7 @@ export class Book {
   image: string;
 
   @OneToMany(() => Issue, (issue) => issue.book, {
-    onDelete: 'SET NULL',
+    onDelete: 'RESTRICT',
   })
   issue: Issue[];
 }

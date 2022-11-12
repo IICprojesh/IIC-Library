@@ -7,22 +7,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 export default function DeleteAlert(props: any) {
-  const [open, setOpen] = React.useState(true);
-
-  const handleAgree = () => {
-    props.onPremission(true)
-    setOpen(false);
-  };
-
-  const handleDisAgree = () => {
-    props.onPremission(false)
-    setOpen(false);
-  };
-  console.log("i got hit here");
   return (
     <div>
       <Dialog
-        open={open}
+        onClose={props.onClose}
+        open={props.open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -36,8 +25,11 @@ export default function DeleteAlert(props: any) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDisAgree}>Disagree</Button>
-          <Button onClick={handleAgree} autoFocus> Agree  </Button>
+          <Button onClick={props.onClose}>Disagree</Button>
+          <Button onClick={props.onAccept} autoFocus>
+            {" "}
+            Agree{" "}
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -8,7 +8,7 @@ export class Book {
   @Column()
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   summary?: string;
 
   @Column()

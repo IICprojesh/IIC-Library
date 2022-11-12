@@ -67,7 +67,7 @@ export class BookController {
     return this.bookService.update(isbn, updateBookDto);
   }
 
-  @Delete(':id')
+  @Delete(':isbn')
   remove(@Param('isbn') isbn: string) {
     return this.bookService.remove(isbn);
   }

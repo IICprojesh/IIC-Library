@@ -21,8 +21,11 @@ export class StudentService {
       throw new BadRequestException('initial setting must be created!!');
     }
     try {
-      const email = `${createStudentDto.id}@${setting.emailSuffix}`;
-      return await this.studentRepository.save({ ...createStudentDto, email });
+      const email = `${createStudentDto.id}${setting.emailSuffix}`;
+      const student = await this.studentRepository.save({
+        ...createStudentDto,
+      });
+      return { ...student, email };
     } catch (err) {
       const ERR_ALREADY_EXIST = 19;
       if (err.errno === ERR_ALREADY_EXIST) {
@@ -49,12 +52,19 @@ export class StudentService {
       skip,
       take: limit,
     });
+    const settings = await this.settingService.findOne();
     const total = await this.studentRepository.count();
-    return { total, data: students };
+    const data = students.map((each) => ({
+      ...each,
+      email: `${each.id}${settings.emailSuffix}`,
+    }));
+    return { total, data };
   }
 
-  findOne(id: string) {
-    return this.studentRepository.findOne({ where: { id } });
+  async findOne(id: string) {
+    const settings = await this.settingService.findOne();
+    const student = await this.studentRepository.findOne({ where: { id } });
+    return { ...student, email: `${student.id}${settings.emailSuffix}` };
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {
@@ -62,6 +72,6 @@ export class StudentService {
   }
 
   remove(id: string) {
-    return this.studentRepository.delete({ id });
+    return this.studentRepository.delete(id);
   }
 }

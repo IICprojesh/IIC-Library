@@ -11,9 +11,8 @@ export class Student {
   @Column({ unique: true })
   contactNumber: string;
 
-  @Column({ nullable: true })
-  email?: string;
-
-  @OneToMany(() => Issue, (issue) => issue.student)
+  @OneToMany(() => Issue, (issue) => issue.student, {
+    onDelete: 'CASCADE',
+  })
   issue: Issue[];
 }

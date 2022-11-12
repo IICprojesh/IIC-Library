@@ -22,6 +22,9 @@ import FormDialog from "./Dialogue";
 import { useFetch } from "../../../../hooks/useFetch";
 import { useEffect } from "react";
 import { fetchData } from "../../../../utils/fetch";
+import axios from "axios";
+import DeleteAlert from "../../mini-component/DeleteAlert";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -92,6 +95,30 @@ export default function Books() {
     setRowsPerPage(+event.target.value);
   };
   const [dialog, setDialog] = React.useState(false);
+  const [deleteState, setDeleteState] = React.useState(false);
+  const [deleteisbn, setDeleteIsbn] = React.useState("");
+
+  const deleteBook = (state: boolean) => {
+    if (state) {
+      axios({
+        method: "delete",
+        url: `http://localhost:3500/books/${deleteisbn}`,
+      })
+        .then((res) => {
+          setDeleteState(false);
+          console.log(res.data.message)
+          toast.success(res.data.message);
+        })
+        .catch((err) => {
+          setDeleteState(false);
+          toast.error("This Book Cannot be delete, Some Student Borrowed this book")
+          console.log(err);
+        });
+    } else {
+      setDeleteState(false);
+      toast.warning("User Denied to delete Book");
+    }
+  };
 
   return (
     <Paper
@@ -103,6 +130,8 @@ export default function Books() {
         marginTop: 20,
       }}
     >
+      {deleteState && <DeleteAlert onPremission={deleteBook} />}
+
       <FormDialog
         isOpen={dialog}
         onClose={() => setDialog(false)}
@@ -134,7 +163,7 @@ export default function Books() {
           <TextField
             spellCheck
             id="outlined-basic"
-            sx={{ width: 500}}
+            sx={{ width: 500 }}
             label="Search Book By ISBN Or Name"
             variant="outlined"
           />
@@ -211,6 +240,10 @@ export default function Books() {
                   </Button>
                   <Button
                     variant="contained"
+                    onClick={() => {
+                      setDeleteState(true);
+                      setDeleteIsbn(row.isbn);
+                    }}
                     startIcon={<DeleteIcon />}
                     className={classes.status}
                     style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}

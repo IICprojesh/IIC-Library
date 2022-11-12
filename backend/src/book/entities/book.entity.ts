@@ -8,15 +8,20 @@ export class Book {
   @Column()
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   summary?: string;
 
   @Column()
   authors: string;
 
-  @Column({ nullable: true })
+  @Column({
+    default:
+      'https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png',
+  })
   image: string;
 
-  @OneToMany(() => Issue, (issue) => issue.book)
+  @OneToMany(() => Issue, (issue) => issue.book, {
+    onDelete: 'RESTRICT',
+  })
   issue: Issue[];
 }

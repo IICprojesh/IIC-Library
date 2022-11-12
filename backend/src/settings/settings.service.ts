@@ -37,12 +37,23 @@ export class SettingsService {
   }
 
   async update(id: number, updateSettingDto: UpdateSettingDto) {
-    return await this.settingRepository.update(
+    const updated = await this.settingRepository.update(
       {
         id,
       },
       updateSettingDto,
     );
+    if (updated.affected) {
+      return {
+        updated: true,
+        data: updateSettingDto,
+      };
+    } else {
+      return {
+        updated: false,
+        data: null,
+      };
+    }
   }
 
   async uploadProfile(profile: Express.Multer.File) {

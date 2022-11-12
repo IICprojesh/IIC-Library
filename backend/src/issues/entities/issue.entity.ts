@@ -23,15 +23,21 @@ export class Issue {
   @Column()
   bookId: string;
 
-  @ManyToOne(() => Book, (book) => book.issue)
+  @ManyToOne(() => Book, (book) => book.issue, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'bookId' })
   book: Book;
 
-  @ManyToOne(() => Student, (student) => student.issue)
+  @ManyToOne(() => Student, (student) => student.issue, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'studentId' })
   student: Student;
 
-  @OneToMany(() => Renew, (renew) => renew.issue)
+  @OneToMany(() => Renew, (renew) => renew.issue, {
+    onDelete: 'CASCADE',
+  })
   renew: Renew[];
 
   @Column({ default: false })

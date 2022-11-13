@@ -56,7 +56,6 @@ export default function DataTable(props: DataTableInterface) {
   }, [props.searchText, props.resource]);
 
   useEffect(() => {
-    console.log(props?.onAdd);
     setRows((prev) => {
       if (!Object.keys(props?.onAdd).length) return prev;
       return [...prev, props.onAdd];

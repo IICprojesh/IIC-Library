@@ -4,6 +4,7 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialogue";
+import { toast } from "react-toastify";
 
 export default function Books() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -70,6 +71,15 @@ export default function Books() {
         headers={["image", "isbn number", "book name", "Authors"]}
         actionId="isbn"
         onAdd={{ ...newBook }}
+        onAction={(action: "edit" | "delete", status: boolean, data: any) => {
+          if (action === "delete") {
+            if (status) {
+              toast.success("Book deleted successfully");
+            } else {
+              toast.error(data.response.data.message);
+            }
+          }
+        }}
       >
         {(row: any) => {
           return (

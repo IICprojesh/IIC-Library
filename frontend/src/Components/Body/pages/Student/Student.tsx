@@ -4,6 +4,7 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialoguestudent";
+import { toast } from "react-toastify";
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -68,6 +69,15 @@ export default function Student() {
         resource="students"
         headers={["Student Id", "Student Name", "contact Number", "email"]}
         actionId="id"
+        onAction={(action: "edit" | "delete", status: boolean, data: any) => {
+          if (action === "delete") {
+            if (status) {
+              toast.success("Student deleted");
+            } else {
+              toast.error(data.response.data.message);
+            }
+          }
+        }}
       >
         {(row: any) => {
           return (

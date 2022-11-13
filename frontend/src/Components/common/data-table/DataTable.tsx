@@ -14,44 +14,77 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import { useFetch } from "../../../hooks/useFetch";
 import { fetchData } from "../../../utils/fetch";
-import DeleteAlert from "../../Body/mini-component/DeleteAlert";
+import UserConsentModal from "../dialog/ConsentModal";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_ERROR } from "../../../constants/constants";
 
 interface DataTableInterface {
   resource: string;
   page?: number;
   dataPerPage?: number;
-  onAction?: (
-    action: "edit" | "delete" | "add",
-    status: boolean,
-    data: any
-  ) => void;
+  onAction?: (action: "edit" | "delete", status: boolean, data: any) => void;
   children: (row: any) => React.ReactNode;
   actionId: string;
   headers: string[];
+  onAdd?: any;
+  searchText?: string;
 }
+
 export default function DataTable(props: DataTableInterface) {
   const [rows, setRows] = useState<any[]>([]);
   const [page, setPage] = useState(props?.page ?? 0);
   const [rowsPerPage, setRowsPerPage] = useState(props?.dataPerPage ?? 10);
   const [total, setTotal] = useState<number>(0);
+  const [fetch, setFetch] = useState<boolean>(true);
+  const [filter, setFilter] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (props?.searchText?.length === 0) {
+      setFilter([]);
+    }
+    if (props?.searchText && props.searchText.length) {
+      fetchData(props.resource + `?search=${props.searchText}`).then(
+        (data) => {
+          console.log(data);
+          setFilter((prev: any[]) => [...data.data]);
+        },
+        (err: any) => {
+          console.error(err);
+        }
+      );
+    }
+  }, [props.searchText, props.resource]);
+
+  useEffect(() => {
+    setRows((prev) => {
+      if (!Object.keys(props?.onAdd).length) return prev;
+      return [...prev, props.onAdd];
+    });
+    setTotal((prev) => {
+      if (!Object.keys(props?.onAdd).length) return prev;
+      return prev + 1;
+    });
+  }, [props.onAdd]);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
   const [deleteData, setDeleteData] = useState<any>(null);
 
-  const { data } = useFetch(
-    `${props.resource}?limit=${rowsPerPage}&skip=${page}`
+  const { data, error } = useFetch(
+    `${props.resource}?limit=${rowsPerPage}&skip=${page}`,
+    { fetch }
   );
-
+  const navigate = useNavigate();
   useEffect(() => {
-    setRows((prev) => {
-      if (Array.isArray(prev) && prev.length === 0 && data?.data) {
-        return data?.data;
-      }
-      return prev;
-    });
-    setTotal(data?.total ?? 0);
-  }, [data]);
+    if (!!error) {
+      navigate(ROUTE_ERROR);
+    }
+    if (fetch && data) {
+      setFetch(false);
+      setRows([...data?.data]);
+      setTotal(data?.total ?? 0);
+    }
+  }, [data, fetch, error, navigate]);
 
   function handleAction(action: "edit" | "delete", data: any) {
     if (action === "delete") {
@@ -62,8 +95,6 @@ export default function DataTable(props: DataTableInterface) {
 
   function handleActionRequest(action: "edit" | "delete") {
     if (action === "delete") {
-      setOpenDeleteDialog(false);
-      console.log(deleteData);
       fetchData(`${props.resource}/${deleteData[props.actionId]}`, {
         method: "delete",
       })
@@ -73,6 +104,8 @@ export default function DataTable(props: DataTableInterface) {
               (each: any) => each[props.actionId] !== deleteData[props.actionId]
             )
           );
+          setTotal((prev: number) => prev++);
+          setOpenDeleteDialog(false);
           props?.onAction?.("delete", true, data);
         })
         .catch((err: any) => {
@@ -85,7 +118,7 @@ export default function DataTable(props: DataTableInterface) {
     fetchData(
       `${props.resource}?limit=${rowsPerPage}&skip=${newPage * rowsPerPage}`
     ).then((data) => {
-      setRows(data.data);
+      setRows(data?.data);
       setPage(newPage);
     });
   };
@@ -97,16 +130,22 @@ export default function DataTable(props: DataTableInterface) {
   return (
     <>
       {openDeleteDialog && (
-        <DeleteAlert
+        <UserConsentModal
+          title="Delete"
+          content="Do you really want to delete?"
           open={openDeleteDialog}
           onClose={() => setOpenDeleteDialog(false)}
           onAccept={() => handleActionRequest("delete")}
         />
       )}
-      <TableContainer component={Paper}>
-        <Table stickyHeader>
+      <TableContainer style={{ height: 400 }}>
+        <Table stickyHeader style={{ height: 400 }}>
           <TableHead>
-            <TableRow>
+            <TableRow
+              style={{
+                height: 30,
+              }}
+            >
               {props.headers.map((each: string) => {
                 return <TableCell align="left">{each}</TableCell>;
               })}
@@ -114,16 +153,16 @@ export default function DataTable(props: DataTableInterface) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
+            {(() => {
+              if (filter.length) return filter;
+              return rows;
+            })().map((row) => (
+              <TableRow
+                key={row.id}
+                style={{ maxHeight: 100, minHeight: 50, height: 50 }}
+              >
                 {props.children(row)}
-                <TableCell
-                  style={{
-                    paddingBottom: 40,
-                    display: "flex",
-                    justifyContent: "left",
-                  }}
-                >
+                <TableCell>
                   <Button
                     variant="contained"
                     startIcon={<CreateIcon />}

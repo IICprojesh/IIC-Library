@@ -10,9 +10,15 @@ import SaveIcon from "@mui/icons-material/Save";
 import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { fetchData } from "../../../../utils/fetch";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-export default function FormDialog(props: any) {
+export interface FormDialogInterface {
+  onSuccess: (data: any) => void;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function FormDialog(props: FormDialogInterface) {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
 
@@ -22,19 +28,16 @@ export default function FormDialog(props: any) {
     fetchData(`books?network=${data.isbn}`)
       .then((data) => {
         if (!data.title) {
-          toast.error("ISBN Cannot found Online",{autoClose:5000})
-          toast.info("Enter Book Data manually",{autoClose:5000})
-        }else{
+          toast.error("ISBN Cannot found Online", { autoClose: 5000 });
+          toast.info("Enter Book Data manually", { autoClose: 5000 });
+        } else {
           setData(data);
-          toast.success("Data fetched from Online")
+          toast.success("Data fetched from Online");
         }
       })
       .catch((err) => {
-        console.log(err);
-        toast.error("ISBN Cannot found Online")
-        toast.info("Enter Book Data manually")
-
-
+        toast.error("ISBN Cannot found Online");
+        toast.info("Enter Book Data manually");
       })
       .finally(() => {
         setLoading(false);
@@ -46,14 +49,15 @@ export default function FormDialog(props: any) {
       method: "post",
       url: "http://localhost:3500/books",
       data,
-    }).then((res) => {
-      props.onSuccess(res.data);
-      toast.success("Book Added")
-      setData(null);
-      console.log(res.data);
-    }).catch((err)=>{
-      toast.error(err.response.data.message[0])
-    });
+    })
+      .then((res) => {
+        props.onSuccess({ ...res.data });
+        toast.success("Book Added");
+        setData(null);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message[0]);
+      });
   };
   return (
     <>

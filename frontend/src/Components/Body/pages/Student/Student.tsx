@@ -8,6 +8,7 @@ import FormDialog from "./Dialoguestudent";
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [search, setSearch] = React.useState<string>("");
+  const [newStudent, setNewStudent] = React.useState<any>(null);
   return (
     <Paper
       style={{
@@ -18,7 +19,8 @@ export default function Student() {
     >
       <FormDialog
         isOpen={showModal}
-        onSuccess={() => {
+        onSuccess={(data: any) => {
+          setNewStudent(data);
           setShowModal(false);
         }}
         onClose={() => {
@@ -57,6 +59,7 @@ export default function Student() {
       </div>
       <DataTable
         searchText={search}
+        onAdd={{ ...newStudent }}
         resource="students"
         headers={["Student Id", "Student Name", "contact Number", "email"]}
         actionId="id"

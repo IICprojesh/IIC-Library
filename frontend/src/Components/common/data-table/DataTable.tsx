@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -140,13 +139,9 @@ export default function DataTable(props: DataTableInterface) {
         />
       )}
       <TableContainer style={{ height: 400 }}>
-        <Table stickyHeader style={{ height: 400 }}>
+        <Table stickyHeader style={{ height: 50 }}>
           <TableHead>
-            <TableRow
-              style={{
-                height: 30,
-              }}
-            >
+            <TableRow>
               {props.headers.map((each: string) => {
                 return <TableCell align="left">{each}</TableCell>;
               })}
@@ -158,10 +153,7 @@ export default function DataTable(props: DataTableInterface) {
               if (filter.length) return filter;
               return rows;
             })().map((row) => (
-              <TableRow
-                key={row.id}
-                style={{ maxHeight: 100, minHeight: 50, height: 50 }}
-              >
+              <TableRow key={row.id} style={{ height: 20 }}>
                 {props.children(row)}
                 <TableCell>
                   <Button

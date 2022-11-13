@@ -9,27 +9,25 @@ export default function Dashboard() {
     <>
       <Title title="Dashboard" />
       <div className={styles.cards}>
-        <Card 
-          title="200"
-          subtitle="Total Books"
-          icon="Books"
-        />
+        <Card title="200" color="green" subtitle="Total Books" icon="Books" />
         <Card
+          color="blue"
           title="80"
           subtitle="Books Borrowed"
           icon="bookupload"
         />
         <Card
           title="20"
+          color="red"
           subtitle="Expired Books"
           icon="booksexpire"
         />
         <Card
           title="300"
+          color="orange"
           subtitle="Total Students"
           icon="students"
         />
-        
       </div>
       <div className={styles.middlecontainer}>
         <Issuebook />

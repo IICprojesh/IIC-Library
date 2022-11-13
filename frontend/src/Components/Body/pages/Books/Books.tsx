@@ -3,9 +3,11 @@ import { Paper, TableCell } from "@material-ui/core";
 import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
+import FormDialog from "./Dialogue";
 
 export default function Books() {
   const [newAddition, setNewAddition] = useState<any>(null);
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
   return (
     <Paper
@@ -17,6 +19,15 @@ export default function Books() {
         marginTop: 20,
       }}
     >
+      {showAddModal && (
+        <FormDialog
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSuccess={(data: any) => {
+            setShowAddModal(false);
+          }}
+        />
+      )}
       <div
         style={{
           display: "flex",
@@ -26,7 +37,9 @@ export default function Books() {
         }}
       >
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            setShowAddModal(true);
+          }}
           variant="outlined"
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >

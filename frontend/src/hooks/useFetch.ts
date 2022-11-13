@@ -35,6 +35,6 @@ export function useFetch(
     }
 
     return () => source.cancel();
-  }, [resourceUri, options]);
+  }, [resourceUri]);
   return { data, loading, error };
 }

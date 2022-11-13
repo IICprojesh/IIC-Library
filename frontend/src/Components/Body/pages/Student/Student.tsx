@@ -3,8 +3,10 @@ import { Paper, TableCell } from "@material-ui/core";
 import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
+import FormDialog from "./Dialoguestudent";
 
 export default function Student() {
+  const [showModal, setShowModal] = React.useState<boolean>(false);
   return (
     <Paper
       style={{
@@ -13,6 +15,15 @@ export default function Student() {
         marginTop: 20,
       }}
     >
+      <FormDialog
+        isOpen={showModal}
+        onSuccess={() => {
+          setShowModal(false);
+        }}
+        onClose={() => {
+          setShowModal(false);
+        }}
+      />
       <div
         style={{
           display: "flex",
@@ -22,7 +33,9 @@ export default function Student() {
         }}
       >
         <Button
-          onClick={() => {}}
+          onClick={() => {
+						setShowModal(true);
+						}}
           variant="outlined"
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >

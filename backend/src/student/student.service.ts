@@ -46,7 +46,11 @@ export class StudentService {
   }) {
     let where: FindOptionsWhere<Student>[] = null;
     if (search) {
-      where = [{ name: Like(`%${search}%`) }, { id: Like(`%${search}%`) }];
+      where = [
+        { name: Like(`%${search}%`) },
+        { id: Like(`%${search}%`) },
+        { contactNumber: Like(`%${search}%`) },
+      ];
     }
     const students = await this.studentRepository.find({
       where,

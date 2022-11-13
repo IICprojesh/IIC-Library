@@ -6,12 +6,13 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { SettingsService } from 'src/settings/settings.service';
+import { Issue } from 'src/issues/entities/issue.entity';
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
-
+    @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
     private readonly settingService: SettingsService,
   ) {}
 
@@ -45,7 +46,11 @@ export class StudentService {
   }) {
     let where: FindOptionsWhere<Student>[] = null;
     if (search) {
-      where = [{ name: Like(`%${search}%`) }, { id: Like(`%${search}%`) }];
+      where = [
+        { name: Like(`%${search}%`) },
+        { id: Like(`%${search}%`) },
+        { contactNumber: Like(`%${search}%`) },
+      ];
     }
     const students = await this.studentRepository.find({
       where,
@@ -71,7 +76,18 @@ export class StudentService {
     return this.studentRepository.update({ id }, updateStudentDto);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const issue = await this.issueRepo.findOne({
+      where: {
+        studentId: id,
+        returned: false,
+      },
+    });
+    if (issue) {
+      throw new BadRequestException(
+        'This student has issued book. This student cannot be deleted',
+      );
+    }
     return this.studentRepository.delete(id);
   }
 }

@@ -58,11 +58,11 @@ export default function DataTable(props: DataTableInterface) {
   useEffect(() => {
     console.log(props?.onAdd);
     setRows((prev) => {
-      if (!props?.onAdd?.isbn) return prev;
+      if (!Object.keys(props?.onAdd).length) return prev;
       return [...prev, props.onAdd];
     });
     setTotal((prev) => {
-      if (!props?.onAdd?.isbn) return prev;
+      if (!Object.keys(props?.onAdd).length) return prev;
       return prev + 1;
     });
   }, [props.onAdd]);

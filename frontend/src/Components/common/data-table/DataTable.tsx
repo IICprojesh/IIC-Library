@@ -14,7 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import { useFetch } from "../../../hooks/useFetch";
 import { fetchData } from "../../../utils/fetch";
-import UserConsentModal from "../dialog/Modal";
+import UserConsentModal from "../dialog/ConsentModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ERROR } from "../../../constants/constants";
 
@@ -63,7 +63,6 @@ export default function DataTable(props: DataTableInterface) {
 
   function handleActionRequest(action: "edit" | "delete") {
     if (action === "delete") {
-      setOpenDeleteDialog(false);
       fetchData(`${props.resource}/${deleteData[props.actionId]}`, {
         method: "delete",
       })
@@ -74,6 +73,7 @@ export default function DataTable(props: DataTableInterface) {
             )
           );
           setTotal((prev: number) => prev++);
+          setOpenDeleteDialog(false);
           props?.onAction?.("delete", true, data);
         })
         .catch((err: any) => {

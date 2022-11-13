@@ -51,10 +51,9 @@ export default function FormDialog(props: FormDialogInterface) {
       data,
     })
       .then((res) => {
-        props.onSuccess(res.data);
+        props.onSuccess({ ...res.data });
         toast.success("Book Added");
         setData(null);
-        console.log(res.data);
       })
       .catch((err) => {
         toast.error(err.response.data.message[0]);

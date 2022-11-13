@@ -10,6 +10,10 @@ export default function Books() {
   const [search, setSearch] = useState<string>("");
   const [newBook, setNewBook] = useState<any>(null);
 
+  React.useEffect(() => {
+    setNewBook(null);
+  }, []);
+
   return (
     <Paper
       style={{

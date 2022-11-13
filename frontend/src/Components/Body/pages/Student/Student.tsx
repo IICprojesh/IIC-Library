@@ -9,6 +9,11 @@ export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [search, setSearch] = React.useState<string>("");
   const [newStudent, setNewStudent] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    setNewStudent(null);
+  }, []);
+
   return (
     <Paper
       style={{

@@ -7,6 +7,7 @@ import FormDialog from "./Dialoguestudent";
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [search, setSearch] = React.useState<string>("");
   return (
     <Paper
       style={{
@@ -34,8 +35,8 @@ export default function Student() {
       >
         <Button
           onClick={() => {
-						setShowModal(true);
-						}}
+            setShowModal(true);
+          }}
           variant="outlined"
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >
@@ -49,10 +50,13 @@ export default function Student() {
             sx={{ width: 500 }}
             label="Search by Student ID or Student Name"
             variant="outlined"
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
         </div>
       </div>
       <DataTable
+        searchText={search}
         resource="students"
         headers={["Student Id", "Student Name", "contact Number", "email"]}
         actionId="id"

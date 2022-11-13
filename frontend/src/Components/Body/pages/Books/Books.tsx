@@ -6,8 +6,9 @@ import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialogue";
 
 export default function Books() {
-  const [newAddition, setNewAddition] = useState<any>(null);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [newBook, setNewBook] = useState<any>(null);
 
   return (
     <Paper
@@ -24,6 +25,7 @@ export default function Books() {
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
           onSuccess={(data: any) => {
+            setNewBook({ ...data });
             setShowAddModal(false);
           }}
         />
@@ -53,17 +55,17 @@ export default function Books() {
             sx={{ width: 500 }}
             label="Search Book By ISBN Or Name"
             variant="outlined"
+            value={search}
+            onChange={(e) => setSearch(e.target.value.trimStart())}
           />
         </div>
       </div>
       <DataTable
+        searchText={search}
         resource="books"
         headers={["image", "isbn number", "book name", "Authors"]}
         actionId="isbn"
-        addNew={{
-          isbn: "abcd",
-          title: "hi",
-        }}
+        onAdd={{ ...newBook }}
       >
         {(row: any) => {
           return (
@@ -79,7 +81,7 @@ export default function Books() {
                 />
               </TableCell>
               <TableCell>{row.isbn}</TableCell>
-              <TableCell>{row.title.substr(0, 60) + "..."}</TableCell>
+              <TableCell>{row.title.substr(0, 100) + "..."}</TableCell>
               <TableCell>{row.authors}</TableCell>
             </>
           );

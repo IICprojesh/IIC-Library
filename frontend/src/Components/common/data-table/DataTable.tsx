@@ -23,36 +23,69 @@ interface DataTableInterface {
   page?: number;
   dataPerPage?: number;
   onAction?: (action: "edit" | "delete", status: boolean, data: any) => void;
-  addNew?: any | null | undefined;
   children: (row: any) => React.ReactNode;
   actionId: string;
   headers: string[];
+  onAdd?: any;
+  searchText?: string;
 }
+
 export default function DataTable(props: DataTableInterface) {
   const [rows, setRows] = useState<any[]>([]);
   const [page, setPage] = useState(props?.page ?? 0);
   const [rowsPerPage, setRowsPerPage] = useState(props?.dataPerPage ?? 10);
   const [total, setTotal] = useState<number>(0);
   const [fetch, setFetch] = useState<boolean>(true);
+  const [filter, setFilter] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (props?.searchText?.length === 0) {
+      setFilter([]);
+    }
+    if (props?.searchText && props.searchText.length) {
+      fetchData(props.resource + `?search=${props.searchText}`).then(
+        (data) => {
+          console.log(data);
+          setFilter((prev: any[]) => [...data.data]);
+        },
+        (err: any) => {
+          console.error(err);
+        }
+      );
+    }
+  }, [props.searchText, props.resource]);
+
+  useEffect(() => {
+    console.log(props?.onAdd);
+    setRows((prev) => {
+      if (!props?.onAdd?.isbn) return prev;
+      return [...prev, props.onAdd];
+    });
+    setTotal((prev) => {
+      if (!props?.onAdd?.isbn) return prev;
+      return prev + 1;
+    });
+  }, [props.onAdd]);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
   const [deleteData, setDeleteData] = useState<any>(null);
 
-  const { data, error, loading } = useFetch(
+  const { data, error } = useFetch(
     `${props.resource}?limit=${rowsPerPage}&skip=${page}`,
-    { fetch: true }
+    { fetch }
   );
   const navigate = useNavigate();
   useEffect(() => {
     if (!!error) {
       navigate(ROUTE_ERROR);
     }
-    if (fetch && !loading && data) {
-      setRows(data?.data);
+    if (fetch && data) {
+      setFetch(false);
+      setRows([...data?.data]);
       setTotal(data?.total ?? 0);
     }
-  }, [data, loading, fetch, error, navigate]);
+  }, [data, fetch, error, navigate]);
 
   function handleAction(action: "edit" | "delete", data: any) {
     if (action === "delete") {
@@ -106,10 +139,14 @@ export default function DataTable(props: DataTableInterface) {
           onAccept={() => handleActionRequest("delete")}
         />
       )}
-      <TableContainer component={Paper}>
-        <Table stickyHeader>
+      <TableContainer style={{ height: 400 }}>
+        <Table stickyHeader style={{ height: 400 }}>
           <TableHead>
-            <TableRow>
+            <TableRow
+              style={{
+                height: 30,
+              }}
+            >
               {props.headers.map((each: string) => {
                 return <TableCell align="left">{each}</TableCell>;
               })}
@@ -117,16 +154,16 @@ export default function DataTable(props: DataTableInterface) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
+            {(() => {
+              if (filter.length) return filter;
+              return rows;
+            })().map((row) => (
+              <TableRow
+                key={row.id}
+                style={{ maxHeight: 100, minHeight: 50, height: 50 }}
+              >
                 {props.children(row)}
-                <TableCell
-                  style={{
-                    paddingBottom: 40,
-                    display: "flex",
-                    justifyContent: "left",
-                  }}
-                >
+                <TableCell>
                   <Button
                     variant="contained"
                     startIcon={<CreateIcon />}

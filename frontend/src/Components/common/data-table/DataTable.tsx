@@ -15,16 +15,17 @@ import CreateIcon from "@mui/icons-material/Create";
 import { useFetch } from "../../../hooks/useFetch";
 import { fetchData } from "../../../utils/fetch";
 import DeleteAlert from "../../Body/mini-component/DeleteAlert";
+import Modal from "../dialog/Modal";
+import { setPriority } from "os";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_ERROR } from "../../../constants/constants";
 
 interface DataTableInterface {
   resource: string;
   page?: number;
   dataPerPage?: number;
-  onAction?: (
-    action: "edit" | "delete" | "add",
-    status: boolean,
-    data: any
-  ) => void;
+  onAction?: (action: "edit" | "delete", status: boolean, data: any) => void;
+  addNew?: any | null | undefined;
   children: (row: any) => React.ReactNode;
   actionId: string;
   headers: string[];
@@ -34,24 +35,26 @@ export default function DataTable(props: DataTableInterface) {
   const [page, setPage] = useState(props?.page ?? 0);
   const [rowsPerPage, setRowsPerPage] = useState(props?.dataPerPage ?? 10);
   const [total, setTotal] = useState<number>(0);
+  const [fetch, setFetch] = useState<boolean>(true);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
   const [deleteData, setDeleteData] = useState<any>(null);
 
-  const { data } = useFetch(
-    `${props.resource}?limit=${rowsPerPage}&skip=${page}`
+  const { data, error, loading } = useFetch(
+    `${props.resource}?limit=${rowsPerPage}&skip=${page}`,
+    { fetch: true }
   );
-
+  const navigate = useNavigate();
   useEffect(() => {
-    setRows((prev) => {
-      if (Array.isArray(prev) && prev.length === 0 && data?.data) {
-        return data?.data;
-      }
-      return prev;
-    });
-    setTotal(data?.total ?? 0);
-  }, [data]);
+    if (!!error) {
+      navigate(ROUTE_ERROR);
+    }
+    if (fetch && !loading) {
+      setRows(data?.data);
+      setTotal(data?.total ?? 0);
+    }
+  }, [data, loading, fetch, error, navigate]);
 
   function handleAction(action: "edit" | "delete", data: any) {
     if (action === "delete") {
@@ -63,7 +66,6 @@ export default function DataTable(props: DataTableInterface) {
   function handleActionRequest(action: "edit" | "delete") {
     if (action === "delete") {
       setOpenDeleteDialog(false);
-      console.log(deleteData);
       fetchData(`${props.resource}/${deleteData[props.actionId]}`, {
         method: "delete",
       })
@@ -73,6 +75,7 @@ export default function DataTable(props: DataTableInterface) {
               (each: any) => each[props.actionId] !== deleteData[props.actionId]
             )
           );
+          setTotal((prev: number) => prev++);
           props?.onAction?.("delete", true, data);
         })
         .catch((err: any) => {
@@ -85,7 +88,7 @@ export default function DataTable(props: DataTableInterface) {
     fetchData(
       `${props.resource}?limit=${rowsPerPage}&skip=${newPage * rowsPerPage}`
     ).then((data) => {
-      setRows(data.data);
+      setRows(data?.data);
       setPage(newPage);
     });
   };
@@ -94,69 +97,76 @@ export default function DataTable(props: DataTableInterface) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => setRowsPerPage(+event.target.value);
 
-  return (
-    <>
-      {openDeleteDialog && (
-        <DeleteAlert
-          open={openDeleteDialog}
-          onClose={() => setOpenDeleteDialog(false)}
-          onAccept={() => handleActionRequest("delete")}
-        />
-      )}
-      <TableContainer component={Paper}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {props.headers.map((each: string) => {
-                return <TableCell align="left">{each}</TableCell>;
-              })}
-              <TableCell align="left">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
-                {props.children(row)}
-                <TableCell
-                  style={{
-                    paddingBottom: 40,
-                    display: "flex",
-                    justifyContent: "left",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    startIcon={<CreateIcon />}
-                    style={{ backgroundColor: "#adc7fb", color: "#083fad" }}
-                    onClick={(e: any) => handleAction("edit", row)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={(e) => {
-                      handleAction("delete", row);
-                    }}
-                    startIcon={<DeleteIcon />}
-                    style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+  if (data === null) {
+    return <div>Something is not right!</div>;
+  }
+  if (loading)
+    return (
+      <>
+        {openDeleteDialog && (
+          <Modal
+            title="Delete"
+            content="Do you really want to delete?"
+            open={openDeleteDialog}
+            onClose={() => setOpenDeleteDialog(false)}
+            onAccept={() => handleActionRequest("delete")}
+          />
+        )}
+        <TableContainer component={Paper}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {props.headers.map((each: string) => {
+                  return <TableCell align="left">{each}</TableCell>;
+                })}
+                <TableCell align="left">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10]}
-        component="div"
-        count={total}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </>
-  );
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.id}>
+                  {props.children(row)}
+                  <TableCell
+                    style={{
+                      paddingBottom: 40,
+                      display: "flex",
+                      justifyContent: "left",
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      startIcon={<CreateIcon />}
+                      style={{ backgroundColor: "#adc7fb", color: "#083fad" }}
+                      onClick={(e: any) => handleAction("edit", row)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={(e) => {
+                        handleAction("delete", row);
+                      }}
+                      startIcon={<DeleteIcon />}
+                      style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10]}
+          component="div"
+          count={total}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </>
+    );
+  else return <h1>Loading...</h1>;
 }

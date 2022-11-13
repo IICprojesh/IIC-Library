@@ -10,9 +10,9 @@ export default function Sidebar() {
       <div>
         <div>
           
-        {/* <img src={logo} className={styles.logo} alt="logo" /> */}
+        <img src={logo} className={styles.logo} alt="logo" />
         {/* change to above code during production */}
-          <img src='https://nepal.gov.np/splash/nepal-govt.png' className={styles.logo} alt="logo" />
+          {/* <img src='https://nepal.gov.np/splash/nepal-govt.png' className={styles.logo} alt="logo" /> */}
         </div>
         <ul className={styles.navitems}>
           <Navitems link="/" icon="dashboard" text="Dashboard" />

@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useFetch } from "../../../hooks/useFetch";
 import { fetchData } from "../../../utils/fetch";
 import UserConsentModal from "../dialog/ConsentModal";
@@ -180,6 +181,14 @@ export default function DataTable(props: DataTableInterface) {
                     style={{ backgroundColor: "#fcb4b9", color: "#e60818" }}
                   >
                     Delete
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<VisibilityIcon />}
+                    style={{ backgroundColor: "#b0dec3", color: "#3d9161" }}
+                    onClick={(e: any) => handleAction("edit", row)}
+                  >
+                    view
                   </Button>
                 </TableCell>
               </TableRow>

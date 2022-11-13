@@ -14,9 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import { useFetch } from "../../../hooks/useFetch";
 import { fetchData } from "../../../utils/fetch";
-import DeleteAlert from "../../Body/mini-component/DeleteAlert";
-import Modal from "../dialog/Modal";
-import { setPriority } from "os";
+import UserConsentModal from "../dialog/Modal";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ERROR } from "../../../constants/constants";
 
@@ -100,7 +98,7 @@ export default function DataTable(props: DataTableInterface) {
   return (
     <>
       {openDeleteDialog && (
-        <Modal
+        <UserConsentModal
           title="Delete"
           content="Do you really want to delete?"
           open={openDeleteDialog}

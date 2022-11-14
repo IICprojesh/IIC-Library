@@ -4,6 +4,7 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialoguestudent";
+import BooksTable from '../Books/BooksTable';
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -62,24 +63,8 @@ export default function Student() {
           />
         </div>
       </div>
-      <DataTable
-        searchText={search}
-        onAdd={{ ...newStudent }}
-        resource="students"
-        headers={["Student Id", "Student Name", "contact Number", "email"]}
-        actionId="id"
-      >
-        {(row: any) => {
-          return (
-            <>
-              <TableCell>{row.id}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.contactNumber}</TableCell>
-              <TableCell>{row.email}</TableCell>
-            </>
-          );
-        }}
-      </DataTable>
+      <BooksTable/>
     </Paper>
   );
 }
+  

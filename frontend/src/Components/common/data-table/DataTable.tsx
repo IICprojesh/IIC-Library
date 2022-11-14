@@ -105,11 +105,13 @@ export default function DataTable(props: DataTableInterface) {
             )
           );
           setTotal((prev: number) => prev++);
-          setOpenDeleteDialog(false);
           props?.onAction?.("delete", true, data);
         })
         .catch((err: any) => {
           props?.onAction?.("delete", false, err);
+        })
+        .finally(() => {
+          setOpenDeleteDialog(false);
         });
     }
   }

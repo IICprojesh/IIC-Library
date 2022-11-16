@@ -5,15 +5,13 @@ import { SettingsService } from 'src/settings/settings.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { Issue } from './entities/issue.entity';
-import { Renew } from 'src/renew/entities/renew.entity';
-import { getDateAfter } from 'src/utils/date-difference';
+import { getDateAfter, getDateDifference } from 'src/utils/date-difference';
 
 @Injectable()
 export class IssuesService {
   constructor(
     private readonly settingsService: SettingsService,
     @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
-    @InjectRepository(Renew) private readonly renewRepo: Repository<Renew>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -28,30 +26,10 @@ export class IssuesService {
     if (found) {
       throw new BadRequestException('User has already borrowed this book');
     }
-    const setting = await this.settingsService.findOne();
     const issue = this.issueRepo.create({
       ...createIssueDto,
-      maxIssue: setting.maxIssue,
     });
-
-    try {
-      return await this.dataSource.manager.transaction(
-        async (tranasactionalEntityManager) => {
-          const _issue = await tranasactionalEntityManager.save(issue);
-          const renew = this.renewRepo.create({
-            issueId: _issue.id,
-            returnDate: getDateAfter(setting.renewBefore),
-            fineAmount: setting.fineAmount,
-          });
-          await tranasactionalEntityManager.save(renew);
-          return _issue;
-        },
-      );
-    } catch (err) {
-      throw new BadRequestException(
-        'Something went wrong while creating issue.',
-      );
-    }
+    return this.issueRepo.save(issue);
   }
 
   async findAll({
@@ -70,22 +48,36 @@ export class IssuesService {
       },
       skip,
       take: limit,
-      relations: {
-        student: true,
-        book: true,
-      },
-      select: {
-        student: {
-          id: true,
-          name: true,
-        },
-        book: {
-          isbn: true,
-          title: true,
+      order: {
+        returned: {
+          direction: 'desc',
         },
       },
     });
-    return { total, data };
+    const settings = await this.settingsService.findOne();
+    const extendedData: (Issue & { canRenew: boolean; expireDate: Date })[] =
+      data.map((issue: Issue) => {
+        let diff = 0;
+        let expireDate: Date = null;
+        if (!issue.latestRenewDate) {
+          diff = getDateDifference(issue.issueDate, new Date());
+          expireDate = getDateAfter(
+            diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
+          );
+        } else {
+          diff = getDateDifference(issue.latestRenewDate, new Date());
+          expireDate = getDateAfter(
+            diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
+          );
+        }
+        if (diff > settings.renewBefore) {
+          issue.fine += (diff - settings.renewBefore) * settings.fineAmount;
+        }
+        if (issue.totalRenew >= settings.maxRenew)
+          return { ...issue, canRenew: false, expireDate };
+        else return { ...issue, canRenew: true, expireDate };
+      });
+    return { total, extendedData };
   }
 
   findOne(id: number, option?: FindOneOptions<Issue>) {
@@ -100,6 +92,20 @@ export class IssuesService {
   }
 
   async update(id: number, updateIssueDto: UpdateIssueDto) {
+    if (updateIssueDto.renew) {
+      delete updateIssueDto.renew;
+      const issue = await this.issueRepo.findOne({
+        where: { id },
+        select: {
+          totalRenew: true,
+        },
+      });
+      const settings = await this.settingsService.findOne();
+      if (issue && issue.totalRenew >= settings.maxRenew)
+        throw new BadRequestException('You cannot renew this book');
+      if (issue) (updateIssueDto as Issue).totalRenew = issue.totalRenew + 1;
+      (updateIssueDto as Issue).latestRenewDate = new Date();
+    }
     return this.issueRepo.update({ id }, updateIssueDto);
   }
 }

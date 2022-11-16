@@ -6,6 +6,7 @@ import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { Issue } from './entities/issue.entity';
 import { getDateAfter, getDateDifference } from 'src/utils/date-difference';
+import { SettingEntity } from 'src/settings/entities/setting.entity';
 
 @Injectable()
 export class IssuesService {
@@ -30,6 +31,20 @@ export class IssuesService {
       ...createIssueDto,
     });
     return this.issueRepo.save(issue);
+  }
+
+  private fineCalculator(issue: Issue, settings: SettingEntity) {
+    let diff = 0;
+    let fine = 0;
+    if (!issue.latestRenewDate) {
+      diff = getDateDifference(issue.issueDate, new Date());
+    } else {
+      diff = getDateDifference(issue.latestRenewDate, new Date());
+    }
+    if (diff > settings.renewBefore) {
+      fine = issue.fine + (diff - settings.renewBefore) * settings.fineAmount;
+    }
+    return fine;
   }
 
   async findAll({
@@ -70,9 +85,7 @@ export class IssuesService {
             diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
           );
         }
-        if (diff > settings.renewBefore) {
-          issue.fine += (diff - settings.renewBefore) * settings.fineAmount;
-        }
+        if (!issue.returned) issue.fine = this.fineCalculator(issue, settings);
         if (issue.totalRenew >= settings.maxRenew)
           return { ...issue, canRenew: false, expireDate };
         else return { ...issue, canRenew: true, expireDate };
@@ -95,14 +108,22 @@ export class IssuesService {
     if (updateIssueDto.renew) {
       delete updateIssueDto.renew;
       const issue = await this.issueRepo.findOne({
-        where: { id },
+        where: { id, returned: false },
         select: {
           totalRenew: true,
         },
       });
+      if (!issue)
+        throw new BadRequestException(`Book with id ${id} does not exist`);
+
       const settings = await this.settingsService.findOne();
-      if (issue && issue.totalRenew >= settings.maxRenew)
-        throw new BadRequestException('You cannot renew this book');
+
+      if (issue.totalRenew >= settings.maxRenew)
+        throw new BadRequestException('This book cannot be renewed.');
+
+      const fine = this.fineCalculator(issue, settings);
+
+      if (fine) (updateIssueDto as Issue).fine = fine;
       if (issue) (updateIssueDto as Issue).totalRenew = issue.totalRenew + 1;
       (updateIssueDto as Issue).latestRenewDate = new Date();
     }

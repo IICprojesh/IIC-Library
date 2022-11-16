@@ -50,7 +50,7 @@ export class IssuesService {
       take: limit,
       order: {
         returned: {
-          direction: 'desc',
+          direction: 'ASC',
         },
       },
     });

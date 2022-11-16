@@ -1,6 +1,5 @@
 import { Book } from 'src/book/entities/book.entity';
 import { Student } from 'src/student/entities/student.entity';
-import { Renew } from 'src/renew/entities/renew.entity';
 
 import {
   Entity,
@@ -9,7 +8,6 @@ import {
   CreateDateColumn,
   JoinColumn,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -35,16 +33,17 @@ export class Issue {
   @JoinColumn({ name: 'studentId' })
   student: Student;
 
-  @OneToMany(() => Renew, (renew) => renew.issue, {
-    onDelete: 'CASCADE',
-  })
-  renew: Renew[];
-
   @Column({ default: false })
   returned: boolean;
 
-  @Column()
-  maxIssue: number;
+  @Column({ default: 0 })
+  fine: number;
+
+  @Column({ default: 0 })
+  totalRenew: number;
+
+  @Column({ nullable: true, type: 'datetime' })
+  latestRenewDate: Date;
 
   @CreateDateColumn()
   issueDate: Date;

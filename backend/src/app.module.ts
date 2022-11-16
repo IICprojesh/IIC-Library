@@ -6,7 +6,6 @@ import { SettingsModule } from './settings/settings.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IssuesModule } from './issues/issues.module';
 import { BookModule } from './book/book.module';
-import { RenewModule } from './renew/renew.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
@@ -21,7 +20,6 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     IssuesModule,
     BookModule,
-    RenewModule,
   ],
   controllers: [AppController],
   providers: [

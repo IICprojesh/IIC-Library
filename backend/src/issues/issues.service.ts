@@ -77,7 +77,7 @@ export class IssuesService {
           return { ...issue, canRenew: false, expireDate };
         else return { ...issue, canRenew: true, expireDate };
       });
-    return { total, extendedData };
+    return { total, data: extendedData };
   }
 
   findOne(id: number, option?: FindOneOptions<Issue>) {

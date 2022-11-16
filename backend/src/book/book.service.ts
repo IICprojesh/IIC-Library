@@ -38,9 +38,9 @@ export class BookService {
     skip,
     search,
   }: {
-    limit: number;
-    skip: number;
-    search: string;
+    limit?: number;
+    skip?: number;
+    search?: string;
   }) {
     let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
     if (search) {

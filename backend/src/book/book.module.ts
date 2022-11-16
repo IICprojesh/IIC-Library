@@ -10,5 +10,6 @@ import { Issue } from 'src/issues/entities/issue.entity';
   imports: [HttpModule, TypeOrmModule.forFeature([Book, Issue])],
   controllers: [BookController],
   providers: [BookService],
+  exports: [BookService],
 })
 export class BookModule {}

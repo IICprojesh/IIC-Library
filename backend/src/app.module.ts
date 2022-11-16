@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { IssuesModule } from './issues/issues.module';
 import { BookModule } from './book/book.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     IssuesModule,
     BookModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

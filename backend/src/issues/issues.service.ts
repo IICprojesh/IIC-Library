@@ -61,13 +61,21 @@ export class IssuesService {
     return fine;
   }
 
+  findBorrowedBooks() {
+    return this.issueRepo.find({
+      where: {
+        returned: false,
+      },
+    });
+  }
+
   async findAll({
     limit,
     skip,
     studentId,
   }: {
-    limit: number;
-    skip: number;
+    limit?: number;
+    skip?: number;
     studentId?: string;
   }) {
     const total = await this.issueRepo.count();
@@ -84,26 +92,40 @@ export class IssuesService {
       },
     });
     const settings = await this.settingsService.findOne();
-    const extendedData: (Issue & { canRenew: boolean; expireDate: Date })[] =
-      data.map((issue: Issue) => {
-        let diff = 0;
-        let expireDate: Date = null;
-        if (!issue.latestRenewDate) {
-          diff = getDateDifference(issue.issueDate, new Date());
-          expireDate = getDateAfter(
-            diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
-          );
-        } else {
-          diff = getDateDifference(issue.latestRenewDate, new Date());
-          expireDate = getDateAfter(
-            diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
-          );
-        }
-        if (!issue.returned) issue.fine = this.fineCalculator(issue, settings);
-        if (issue.totalRenew >= settings.maxRenew)
-          return { ...issue, canRenew: false, expireDate };
-        else return { ...issue, canRenew: true, expireDate };
-      });
+    const extendedData: (Issue & {
+      canRenew: boolean;
+      expireDate: Date;
+      isExpired: boolean;
+    })[] = data.map((issue: Issue) => {
+      let diff = 0;
+      let expireDate: Date = null;
+      if (!issue.latestRenewDate) {
+        diff = getDateDifference(issue.issueDate, new Date());
+        expireDate = getDateAfter(
+          diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
+        );
+      } else {
+        diff = getDateDifference(issue.latestRenewDate, new Date());
+        expireDate = getDateAfter(
+          diff >= 0 ? settings.renewBefore - diff : settings.renewBefore,
+        );
+      }
+      if (!issue.returned) issue.fine = this.fineCalculator(issue, settings);
+      if (issue.totalRenew >= settings.maxRenew)
+        return {
+          ...issue,
+          canRenew: false,
+          expireDate,
+          isExpired: diff > settings.renewBefore,
+        };
+      else
+        return {
+          ...issue,
+          canRenew: true,
+          expireDate,
+          isExpired: diff > settings.renewBefore,
+        };
+    });
     return { total, data: extendedData };
   }
 

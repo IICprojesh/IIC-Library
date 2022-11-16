@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-const URI: string = process.env.REACT_APP_BACKEND_API!;
+export const URI: string = process.env.REACT_APP_BACKEND_API!;
 
 export function fetchData(
   uri: string,

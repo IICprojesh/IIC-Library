@@ -3,9 +3,6 @@ import Card from "../../mini-component/Dashboardcard";
 import Issuebook from "../../mini-component/Issuebook/Issuebook";
 import styles from "./Dashboard.module.css";
 import { Title } from "../../../common/title/Title";
-import Chart from "chart.js/auto";
-import { Pie } from "react-chartjs-2";
-
 export default function Dashboard() {
   const data = {
     labels: ["Go", "Python", "Kotlin", "JavaScript", "R", "Swift"],

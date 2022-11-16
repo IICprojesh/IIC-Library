@@ -4,8 +4,7 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialogue";
-import Table from "react-bootstrap/Table";
-import axios from "axios";
+
 import BooksTable from "./BooksTable";
 
 export default function Books() {
@@ -22,6 +21,9 @@ export default function Books() {
         marginTop: 20,
       }}
     >
+      {showAddModal && (
+        <FormDialog isOpen={showAddModal} onClose={()=>setShowAddModal(false)} />
+      )}
       <div
         style={{
           display: "flex",
@@ -37,7 +39,6 @@ export default function Books() {
           variant="outlined"
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >
-          {" "}
           ADD Book
         </Button>
         <div>

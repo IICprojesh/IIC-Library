@@ -4,7 +4,7 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialoguestudent";
-import BooksTable from '../Books/BooksTable';
+import StudentTable from './StudentTable';
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -63,7 +63,7 @@ export default function Student() {
           />
         </div>
       </div>
-      <BooksTable/>
+      <StudentTable />
     </Paper>
   );
 }

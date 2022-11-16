@@ -1,24 +1,24 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-import styles from "./BooksTable.module.css";
+import styles from "./StudentTable.module.css";
 import { Button, TextField } from "@mui/material";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
 
-export default function BooksTable() {
+export default function StudentTable() {
   const navigate = useNavigate();
-
-  const [books, setBooks] = useState<any>(null);
+  const [students, setStudent] = useState<any>(null);
 
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3500/books",
+      url: "http://localhost:3500/students",
     })
       .then((res) => {
-        setBooks(res.data?.data);
+        setStudent(res.data?.data);
       })
       .catch((err) => {
         console.log(err);
@@ -26,11 +26,14 @@ export default function BooksTable() {
   }, []);
   console.log();
 
-  const handleEdit = (each: any) => {
-    navigate(`/Student/${each.isbn}`);
+  const handleView = (each: any) => {
+    navigate(`/Student/${each.id}`);
   };
   const handleDelete = () => {
     console.log("hello everyone");
+  };
+  const handleEdit = () => {
+    console.log("hello i can edit now");
   };
 
   return (
@@ -38,26 +41,29 @@ export default function BooksTable() {
       <table className={styles.container}>
         <thead>
           <tr>
-            <th className={styles.tableheading}>Image</th>
-            <th className={styles.tableheading}>ISBN</th>
-            <th className={styles.tableheading}>Book Name</th>
-            <th className={styles.tableheading}>Author</th>
+            <th className={styles.tableheading}>Student ID</th>
+            <th className={styles.tableheading}>Student Name</th>
+            <th className={styles.tableheading}>Contact Number</th>
+            <th className={styles.tableheading}>Email Address</th>
             <th className={styles.tableheading}>Action</th>
           </tr>
         </thead>
         <tbody>
-          {books?.map((each: any) => {
+          {students?.map((each: any) => {
             return (
               <>
                 <tr key={each.id} className={styles.tablerow}>
                   <td key={each.id} className={styles.tabledata}>
-                    <img height="50px" src={each.image} />
+                    {each.id}
                   </td>
-                  <td className={styles.tabledata}>{each.isbn}</td>
-                  <td className={styles.tabledata}>{each.title}</td>
-                  <td className={styles.tabledata}>{each.authors}</td>
+                  <td className={styles.tabledata}>{each.name}</td>
+                  <td className={styles.tabledata}>{each.contactNumber}</td>
+                  <td className={styles.tabledata}>{each.email}</td>
                   <td className={styles.tabledata}>
-                    <Button variant="text" onClick={() => handleEdit(each)}>
+                    <Button variant="text" onClick={() => handleView(each)}>
+                      <RemoveRedEyeIcon color="success" />
+                    </Button>
+                    <Button variant="text" onClick={handleEdit}>
                       <DriveFileRenameOutlineIcon color="primary" />
                     </Button>
                     <Button variant="text" onClick={handleDelete}>

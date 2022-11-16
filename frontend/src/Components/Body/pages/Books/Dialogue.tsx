@@ -12,15 +12,10 @@ import axios from "axios";
 import { fetchData } from "../../../../utils/fetch";
 import { toast } from "react-toastify";
 
-export interface FormDialogInterface {
-  onSuccess: (data: any) => void;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function FormDialog(props: FormDialogInterface) {
+export default function FormDialog(props: any) {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
+  const [close ,setClose ] = React.useState(false);
 
   const handleOnline = () => {
     setLoading(true);
@@ -51,8 +46,8 @@ export default function FormDialog(props: FormDialogInterface) {
       data,
     })
       .then((res) => {
-        props.onSuccess({ ...res.data });
         toast.success("Book Added");
+        props.onClose()
         setData(null);
       })
       .catch((err) => {

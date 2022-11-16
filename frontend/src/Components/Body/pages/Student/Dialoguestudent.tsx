@@ -11,9 +11,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FormDialogInterface } from "../Books/Dialogue";
 
-export default function FormDialog(props: FormDialogInterface) {
+export default function FormDialog(props:any) {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
   const addStudent = () => {

@@ -7,7 +7,7 @@ import { fetchData } from "../../../../utils/fetch";
 import React from "react";
 
 interface DashboardDataType {
-  expiredBorrowed: number;
+  totalExpired: number;
   totalStudents: number;
   totalBooks: number;
   totalBorrowed: number;
@@ -39,7 +39,7 @@ export default function Dashboard() {
           icon="bookupload"
         />
         <Card
-          title={data?.expiredBorrowed ?? 0}
+          title={data?.totalExpired ?? 0}
           color="red"
           subtitle="Expired Books"
           icon="booksexpire"

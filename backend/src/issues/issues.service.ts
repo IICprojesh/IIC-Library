@@ -141,28 +141,28 @@ export class IssuesService {
   }
 
   async update(id: number, updateIssueDto: UpdateIssueDto) {
-    if (updateIssueDto.renew) {
-      delete updateIssueDto.renew;
-      const issue = await this.issueRepo.findOne({
-        where: { id, returned: false },
-        select: {
-          totalRenew: true,
-        },
-      });
-      if (!issue)
-        throw new BadRequestException(`Book with id ${id} does not exist`);
+    const issue = await this.issueRepo.findOne({
+      where: { id, returned: false },
+    });
+    if (!issue)
+      throw new BadRequestException(`Book with id ${id} does not exist`);
 
-      const settings = await this.settingsService.findOne();
+    const settings = await this.settingsService.findOne();
+
+    const fine = this.fineCalculator(issue, settings);
+
+    if (fine !== 0) (updateIssueDto as Issue).fine = fine;
+
+    if (updateIssueDto.renew) {
+      delete updateIssueDto.renew; // delete this property as this in to required
 
       if (issue.totalRenew >= settings.maxRenew)
         throw new BadRequestException('This book cannot be renewed.');
 
-      const fine = this.fineCalculator(issue, settings);
-
-      if (fine) (updateIssueDto as Issue).fine = fine;
-      if (issue) (updateIssueDto as Issue).totalRenew = issue.totalRenew + 1;
+      (updateIssueDto as Issue).totalRenew = issue.totalRenew + 1;
       (updateIssueDto as Issue).latestRenewDate = new Date();
     }
+
     return this.issueRepo.update({ id }, updateIssueDto);
   }
 }

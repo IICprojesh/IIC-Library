@@ -65,12 +65,7 @@ export default function Settings() {
   }
 
   useEffect(() => {
-    const settings = localStorage.getItem("settings");
-    if (settings) {
-      const parsed = JSON.parse(settings);
-      return fetched(parsed);
-    }
-    axios({ method: "get", url: "https://localhost:3500/settings" })
+    axios({ method: "get", url: "http://localhost:3500/settings" })
       .then((res) => {
         console.log("i will set admin info");
         toast.success("Information fetch Completed", { autoClose: 2000 });
@@ -79,6 +74,7 @@ export default function Settings() {
       .catch((err) => {
         console.log("here is error");
         if (err.code === CODE_NETWORK_ERROR) {
+          console.log(err)
           return notifyNetworkError();
         } else {
           toast.error(
@@ -123,7 +119,6 @@ export default function Settings() {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        localStorage.setItem("settings", JSON.stringify(res.data));
         setData(res.data);
         toast.success("Profile Avatar changed!");
       })

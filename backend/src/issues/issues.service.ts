@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, FindOneOptions } from 'typeorm';
 import { SettingsService } from 'src/settings/settings.service';
@@ -27,6 +31,16 @@ export class IssuesService {
     if (found) {
       throw new BadRequestException('User has already borrowed this book');
     }
+    const settings = await this.settingsService.findOne();
+
+    const totalIssues = await this.issueRepo.find({
+      where: { returned: false, studentId: createIssueDto.studentId },
+    });
+
+    if (totalIssues.length >= settings.maxIssue)
+      throw new BadGatewayException(
+        'User cannot borrow more than ' + settings.maxIssue + ' books.',
+      );
     const issue = this.issueRepo.create({
       ...createIssueDto,
     });

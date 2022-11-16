@@ -40,9 +40,9 @@ export class StudentService {
     limit,
     search,
   }: {
-    skip: number;
-    limit: number;
-    search: string;
+    skip?: number;
+    limit?: number;
+    search?: string;
   }) {
     let where: FindOptionsWhere<Student>[] = null;
     if (search) {

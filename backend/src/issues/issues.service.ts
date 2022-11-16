@@ -145,9 +145,6 @@ export class IssuesService {
       delete updateIssueDto.renew;
       const issue = await this.issueRepo.findOne({
         where: { id, returned: false },
-        select: {
-          totalRenew: true,
-        },
       });
       if (!issue)
         throw new BadRequestException(`Book with id ${id} does not exist`);

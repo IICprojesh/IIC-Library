@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsISBN, IsString, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateBookDto {
   @ApiProperty({ example: '12313123', type: 'isbn' })
   @IsString()
   @IsISBN()
+  @Transform(({ value }) => {
+    return value.replace(/[\s-]/g, '');
+  })
   isbn: string;
 
   @ApiProperty({ example: 'book title' })

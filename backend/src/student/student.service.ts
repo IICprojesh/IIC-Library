@@ -80,10 +80,9 @@ export class StudentService {
     const issue = await this.issueRepo.findOne({
       where: {
         studentId: id,
-        returned: false,
       },
     });
-    if (issue) {
+    if (!issue.returned) {
       throw new BadRequestException(
         'This student has issued book. This student cannot be deleted',
       );

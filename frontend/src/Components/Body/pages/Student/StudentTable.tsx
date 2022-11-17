@@ -7,6 +7,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function StudentTable() {
   const navigate = useNavigate();
@@ -29,8 +30,17 @@ export default function StudentTable() {
   const handleView = (each: any) => {
     navigate(`/Student/${each.id}`);
   };
-  const handleDelete = () => {
-    console.log("hello everyone");
+  const handleDelete = (id: string) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:3500/students/${id}`,
+    })
+      .then((res) => {
+        toast.success("Student Deleted ");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   };
   const handleEdit = () => {
     console.log("hello i can edit now");
@@ -66,7 +76,10 @@ export default function StudentTable() {
                     <Button variant="text" onClick={handleEdit}>
                       <DriveFileRenameOutlineIcon color="primary" />
                     </Button>
-                    <Button variant="text" onClick={handleDelete}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleDelete(each.id)}
+                    >
                       <DeleteOutlineIcon color="error" />
                     </Button>
                   </td>

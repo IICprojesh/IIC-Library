@@ -22,13 +22,13 @@ export class Issue {
   bookId: string;
 
   @ManyToOne(() => Book, (book) => book.issue, {
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'bookId' })
   book: Book;
 
   @ManyToOne(() => Student, (student) => student.issue, {
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'studentId' })
   student: Student;

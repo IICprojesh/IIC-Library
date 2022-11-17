@@ -43,7 +43,6 @@ export default function BooksTable() {
         console.log(err);
       });
   }, []);
-  console.log();
 
   const handleEdit = (each: any) => {};
 
@@ -57,15 +56,16 @@ export default function BooksTable() {
       url: `http://localhost:3500/books/${canDeleteIsbn}`,
     })
       .then((res) => {
+        setBooks((prev: any) => {
+          return prev.filter((each: any) => each.isbn !== canDeleteIsbn);
+        });
         toast.success("Book deleted successfully");
-        setCanDeleteIsbn("")
-        setDeleteDialogue(false)
+        setCanDeleteIsbn("");
+        setDeleteDialogue(false);
       })
       .catch((err) => {
-        console.log(err)
         toast.error(err.response.data.message);
-        setDeleteDialogue(false)
-
+        setDeleteDialogue(false);
       });
   };
   const handleDeleteNo = () => {

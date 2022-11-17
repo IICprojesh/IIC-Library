@@ -82,7 +82,7 @@ export class StudentService {
         studentId: id,
       },
     });
-    if (!issue.returned) {
+    if (issue && !issue.returned) {
       throw new BadRequestException(
         'This student has issued book. This student cannot be deleted',
       );

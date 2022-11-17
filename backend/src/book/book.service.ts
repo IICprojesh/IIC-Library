@@ -81,7 +81,8 @@ export class BookService {
         bookId: isbn,
       },
     });
-    if (!issue.returned) {
+
+    if (issue && !issue.returned) {
       throw new BadRequestException(
         'The book cannot be deleted. This book is issued currently',
       );

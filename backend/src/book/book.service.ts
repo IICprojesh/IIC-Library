@@ -79,10 +79,9 @@ export class BookService {
     const issue = await this.issueRepo.findOne({
       where: {
         bookId: isbn,
-        returned: false,
       },
     });
-    if (issue) {
+    if (!issue.returned) {
       throw new BadRequestException(
         'The book cannot be deleted. This book is issued currently',
       );

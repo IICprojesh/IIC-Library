@@ -11,6 +11,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { fetchData } from "../../../../utils/fetch";
 import { toast } from "react-toastify";
+import { BACKEND_ENDPOINT } from '../../../../constants/constants';
 
 export default function FormDialog(props: any) {
   const [loading, setLoading] = React.useState(false);
@@ -42,7 +43,7 @@ export default function FormDialog(props: any) {
   const addBook = () => {
     axios({
       method: "post",
-      url: "http://localhost:3500/books",
+      url: `${BACKEND_ENDPOINT}/books`,
       data,
     })
       .then((res) => {

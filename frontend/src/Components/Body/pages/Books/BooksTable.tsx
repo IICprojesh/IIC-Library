@@ -14,6 +14,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { Tooltip } from "@material-ui/core";
+import { BACKEND_ENDPOINT } from '../../../../constants/constants';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -25,8 +27,6 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function BooksTable() {
-  const navigate = useNavigate();
-
   const [books, setBooks] = useState<any>(null);
   const [canDeleteIsbn, setCanDeleteIsbn] = useState("");
   const [deleteDialogue, setDeleteDialogue] = useState<any>(false);
@@ -34,7 +34,7 @@ export default function BooksTable() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3500/books",
+      url: `${BACKEND_ENDPOINT}/books`
     })
       .then((res) => {
         setBooks(res.data?.data);
@@ -53,7 +53,7 @@ export default function BooksTable() {
   const handleDeleteYes = () => {
     axios({
       method: "delete",
-      url: `http://localhost:3500/books/${canDeleteIsbn}`,
+      url: `${BACKEND_ENDPOINT}/books/${canDeleteIsbn}`,
     })
       .then((res) => {
         setBooks((prev: any) => {
@@ -114,12 +114,17 @@ export default function BooksTable() {
                   <td className={styles.tabledata}>{each.title}</td>
                   <td className={styles.tabledata}>{each.authors}</td>
                   <td className={styles.tabledata}>
+                  <Tooltip title="Edit">
+
                     <Button variant="text" onClick={() => handleEdit(each)}>
                       <DriveFileRenameOutlineIcon color="primary" />
                     </Button>
-                    <Button variant="text" onClick={() => handleDelete(each)}>
-                      <DeleteOutlineIcon color="error" />
-                    </Button>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <Button variant="text" onClick={() => handleDelete(each)}>
+                        <DeleteOutlineIcon color="error" />
+                      </Button>
+                    </Tooltip>
                   </td>
                 </tr>
               </>

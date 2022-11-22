@@ -5,7 +5,7 @@ import FormData from "form-data";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { AiOutlineEdit } from "react-icons/ai";
-import { CODE_NETWORK_ERROR } from "../../../../constants/constants";
+import { CODE_NETWORK_ERROR,BACKEND_ENDPOINT } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
 import env from "react-dotenv";
@@ -58,23 +58,25 @@ export default function Settings() {
   const { register, handleSubmit } = useForm();
 
   function fetched(data: any) {
-    setSettings(data)
+    setSettings(data);
     setAdminInfo(data);
     setData(data);
     setLoading(true);
   }
 
   useEffect(() => {
-    axios({ method: "get", url: "http://localhost:3500/settings" })
+    axios({
+      method: "get",
+      url: `${BACKEND_ENDPOINT}/settings`,
+    })
       .then((res) => {
-        console.log("i will set admin info");
         toast.success("Information fetch Completed", { autoClose: 2000 });
         fetched(res.data);
       })
       .catch((err) => {
         console.log("here is error");
         if (err.code === CODE_NETWORK_ERROR) {
-          console.log(err)
+          console.log(err);
           return notifyNetworkError();
         } else {
           toast.error(
@@ -89,9 +91,10 @@ export default function Settings() {
     setButtonState((current) => !current);
 
     if (buttonState) {
+      delete settings?.avatar;
       axios({
         method: "patch",
-        url: "http://localhost:3500/settings/1",
+        url: `${BACKEND_ENDPOINT}/settings/1`,
         data: {
           ...settings,
           maxRenew: +settings.maxRenew,
@@ -114,7 +117,7 @@ export default function Settings() {
     formData.append("file", datas.file[0]);
     axios({
       method: "patch",
-      url: "http://localhost:3500/settings/profile",
+      url: `${BACKEND_ENDPOINT}/settings/profile`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
@@ -306,6 +309,9 @@ export default function Settings() {
                 variant="outlined"
                 type="number"
                 label="Borrow Days"
+                inputProps={{
+                  pattern: "[0-9]*",
+                }}
                 InputLabelProps={{
                   shrink: true,
                 }}

@@ -11,6 +11,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_ENDPOINT } from '../../../../constants/constants';
 
 export default function FormDialog(props:any) {
   const [loading, setLoading] = React.useState(false);
@@ -18,7 +19,7 @@ export default function FormDialog(props:any) {
   const addStudent = () => {
     axios({
       method: "post",
-      url: "http://localhost:3500/students",
+      url: `${BACKEND_ENDPOINT}/students`,
       data,
     })
       .then((res) => {
@@ -90,7 +91,7 @@ export default function FormDialog(props:any) {
             variant="contained"
           >
             Add Student
-          </LoadingButton>{" "}
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>

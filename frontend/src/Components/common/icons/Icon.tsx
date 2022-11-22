@@ -12,12 +12,13 @@ import { GiBookshelf } from "react-icons/gi";
 import { TbBooks, TbBookUpload, TbBookOff } from "react-icons/tb";
 import { FiBookOpen } from "react-icons/fi";
 import styles from "./Icon.module.css";
-import { BsJournalBookmark } from "react-icons/bs";
+import { BsJournalBookmark, BsBookmarkCheck } from "react-icons/bs";
 export const icons = {
   dashboard: TfiDashboard,
   bookupload: TbBookUpload,
   books: BsJournalBookmark,
   Books: GiBookshelf,
+  IssueBook: BsBookmarkCheck,
   booksexpire: TbBookOff,
   student: AiOutlineUser,
   setting: AiOutlineSetting,

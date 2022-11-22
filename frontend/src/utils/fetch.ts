@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { BACKEND_ENDPOINT } from '../constants/constants';
 
-export const URI: string = process.env.REACT_APP_BACKEND_API!;
+export const URI: string = BACKEND_ENDPOINT!;
 
 export function fetchData(
   uri: string,

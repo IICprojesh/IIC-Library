@@ -6,9 +6,10 @@ import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
-import moment from "moment";
-import DoneIcon from '@mui/icons-material/Done';
+import moment, { deprecationHandler } from "moment";
+import DoneIcon from "@mui/icons-material/Done";
 import { toast } from "react-toastify";
+import { BACKEND_ENDPOINT } from '../../../../../constants/constants';
 
 export default function StudentDetails() {
   const [Student, setStudent] = useState<any>(null);
@@ -19,7 +20,7 @@ export default function StudentDetails() {
   useEffect(() => {
     axios({
       method: "get",
-      url: `http://localhost:3500/students/${id}`,
+      url: `${BACKEND_ENDPOINT}/students/${id}`,
     })
       .then((res) => {
         setStudent(res.data);
@@ -31,7 +32,7 @@ export default function StudentDetails() {
 
     axios({
       method: "get",
-      url: `http://localhost:3500/issues?studentId=${id}`,
+      url: `${BACKEND_ENDPOINT}/issues?studentId=${id}`,
     })
       .then((res) => {
         setIssue(res.data.data);
@@ -46,10 +47,19 @@ export default function StudentDetails() {
     console.log("i got it");
     axios({
       method: "patch",
-      url: `http://localhost:3500/issues/${id}`,
+      url: `${BACKEND_ENDPOINT}/issues/${id}`,
       data: { renew: true },
     })
       .then((res) => {
+        setIssue((prev: any) => {
+          const state = [...prev];
+          const issue = state.find((each) => {
+            return (each.id = id);
+          });
+          issue.renew = true;
+          return state;
+        });
+        
         console.log(res.data);
         toast.success("Book Renewed sucessfully");
       })
@@ -62,17 +72,27 @@ export default function StudentDetails() {
     console.log("return hit");
     axios({
       method: "patch",
-      url: `http://localhost:3500/issues/${id}`,
+      url: `${BACKEND_ENDPOINT}/issues/${id}`,
       data: { returned: true },
     })
       .then((res) => {
         console.log(res.data);
-        toast.success("Book Retuned Successfully !!!!")
+
+        setIssue((prev: any) => {
+          const state = [...prev];
+          const issue = state.find((each) => {
+            return (each.id = id);
+          });
+          console.log(issue);
+          issue.returned = true;
+          return state;
+        });
+
+        toast.success("Book Retuned Successfully !!!!");
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Something Wrong. Contact to maintainer")
-
+        toast.error("Something Wrong. Contact to maintainer");
       });
   };
 
@@ -84,7 +104,7 @@ export default function StudentDetails() {
             <div className={styles.imagesection}>
               <img
                 height="150px"
-                src="https://cdn3d.iconscout.com/3d/premium/thumb/graduate-student-6368706-5250853.png"
+                src="https://cdn3d.iconscout.com/3d/premium/thumb/graduate-student-6368706-5250853.png" alt="Student Avatar"
               />
             </div>
             <div className={styles.details}>
@@ -152,13 +172,11 @@ export default function StudentDetails() {
                                   style={{
                                     marginRight: "12px",
                                     borderRadius: "50px",
-                                    color:'green',
+                                    color: "green",
                                     padding: "5px 15px",
                                   }}
                                 >
-                                  <DoneIcon
-                                    style={{ marginRight: "5px" }}
-                                  />
+                                  <DoneIcon style={{ marginRight: "5px" }} />
                                   Returned
                                 </Button>
                               </div>

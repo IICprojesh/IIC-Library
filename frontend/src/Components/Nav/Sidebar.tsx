@@ -1,6 +1,6 @@
 import Navitems from "./mini-component/Navitems";
 import styles from "./Sidebar.module.css";
-import logo from "./iiconly.png";
+// import logo from "./iiconly.png";
 import { Link } from "react-router-dom";
 import { Icon } from "../common/icons/Icon";
 
@@ -9,14 +9,18 @@ export default function Sidebar() {
     <div className={styles.container}>
       <div>
         <div>
-          
-        {/* <img src={logo} className={styles.logo} alt="logo" /> */}
-        {/* change to above code during production */}
-          <img src='https://nepal.gov.np/splash/nepal-govt.png' className={styles.logo} alt="logo" />
+          {/* <img src={logo} className={styles.logo} alt="logo" /> */}
+          {/* change to above code during production */}
+          <img
+            src="https://nepal.gov.np/splash/nepal-govt.png"
+            className={styles.logo}
+            alt="logo"
+          />
         </div>
         <ul className={styles.navitems}>
           <Navitems link="/" icon="dashboard" text="Dashboard" />
           <Navitems link="/Books" icon="books" text="Books" />
+          <Navitems link="/Issue" icon="IssueBook" text="Issues" />
           <Navitems link="/Students" icon="student" text="Student" />
         </ul>
       </div>
@@ -43,7 +47,9 @@ export default function Sidebar() {
         </div>
 
         <hr style={{ width: "100%" }} />
-        <p className={styles.version}>Development Version 1.1.0</p>
+        <p className={styles.version}>
+          Development Version {process.env.REACT_APP_VERSION}
+        </p>
       </div>
     </div>
   );

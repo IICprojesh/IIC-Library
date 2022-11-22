@@ -8,6 +8,8 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Tooltip } from '@material-ui/core';
+import { BACKEND_ENDPOINT } from '../../../../constants/constants';
 
 export default function StudentTable() {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ export default function StudentTable() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3500/students",
+      url: `${BACKEND_ENDPOINT}/students`,
     })
       .then((res) => {
         setStudent(res.data?.data);
@@ -33,9 +35,12 @@ export default function StudentTable() {
   const handleDelete = (id: string) => {
     axios({
       method: "delete",
-      url: `http://localhost:3500/students/${id}`,
+      url: `${BACKEND_ENDPOINT}/students/${id}`,
     })
       .then((res) => {
+        setStudent((prev: any) => {
+          return prev.filter((each: any) => each.id !== id);
+        });
         toast.success("Student Deleted ");
       })
       .catch((err) => {
@@ -70,18 +75,27 @@ export default function StudentTable() {
                   <td className={styles.tabledata}>{each.contactNumber}</td>
                   <td className={styles.tabledata}>{each.email}</td>
                   <td className={styles.tabledata}>
+                  <Tooltip title="View">
+
                     <Button variant="text" onClick={() => handleView(each)}>
                       <RemoveRedEyeIcon color="success" />
                     </Button>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+
                     <Button variant="text" onClick={handleEdit}>
                       <DriveFileRenameOutlineIcon color="primary" />
                     </Button>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+
                     <Button
                       variant="text"
                       onClick={() => handleDelete(each.id)}
                     >
                       <DeleteOutlineIcon color="error" />
                     </Button>
+                    </Tooltip>
                   </td>
                 </tr>
               </>

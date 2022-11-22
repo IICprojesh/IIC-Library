@@ -5,6 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_ENDPOINT } from '../../../../constants/constants';
 
 function Input(props: any) {
   const { label, options } = props;
@@ -42,13 +43,13 @@ export default function Issuebook() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3500/students",
+      url: `${BACKEND_ENDPOINT}/students`,
     }).then((res) => {
       setStudentid([...res.data.data.map((each: any) => each?.id), ""]);
     });
     axios({
       method: "get",
-      url: "http://localhost:3500/books",
+      url: `${BACKEND_ENDPOINT}/books`,
     }).then((res) => {
       setIsbn([...res.data.data.map((each: any) => each?.isbn), ""]);
     });
@@ -57,7 +58,7 @@ export default function Issuebook() {
   const handleBookissue = () => {
     axios({
       method: "post",
-      url: "http://localhost:3500/issues",
+      url: `${BACKEND_ENDPOINT}/issues`,
       data: issuedetail,
     })
       .then((res) => {
@@ -66,7 +67,7 @@ export default function Issuebook() {
       })
       .catch((err) => {
         toast.error(err.response.data.message);
-        console.log(err)
+        console.log(err);
       });
   };
 

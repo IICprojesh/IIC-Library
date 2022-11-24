@@ -11,12 +11,29 @@ import { toast } from "react-toastify";
 import { Tooltip } from "@material-ui/core";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import FormDialog from "./Dialoguestudent";
+import { useDebounce } from "usehooks-ts";
+import { fetchData } from "../../../../utils/fetch";
 
-export default function StudentTable() {
+export default function StudentTable(props: any) {
   const navigate = useNavigate();
   const [students, setStudent] = useState<any>(null);
   const [editId, setEditid] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [search, setSearch] = useState<string>("");
+  const [searchedData, setSearchedData] = useState<any>([]);
+  const debouncedSearch = useDebounce<string>(search, 500);
+
+  useEffect(() => {
+    setSearch(props?.searchKey ?? "");
+  }, [props.searchKey]);
+
+  useEffect(() => {
+    if (debouncedSearch.trim()) {
+      fetchData(`students?search=${debouncedSearch}`).then((data: any) => {
+        setSearchedData(data.data);
+      });
+    }
+  }, [debouncedSearch]);
 
   useEffect(() => {
     axios({
@@ -74,40 +91,45 @@ export default function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {students?.map((each: any, index: number) => {
-            return (
-              <>
-                <tr key={each.id} className={styles.tablerow}>
-                  <td key={each.id} className={styles.tabledata}>
-                    {each.collegeId}
-                  </td>
-                  <td className={styles.tabledata}>{each.name}</td>
-                  <td className={styles.tabledata}>{each.contactNumber}</td>
-                  <td className={styles.tabledata}>{each.email}</td>
-                  <td className={styles.tabledata}>
-                    <Tooltip title="View">
-                      <Button variant="text" onClick={() => handleView(each)}>
-                        <RemoveRedEyeIcon color="success" />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                      <Button variant="text" onClick={() => handleEdit(index)}>
-                        <DriveFileRenameOutlineIcon color="primary" />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <Button
-                        variant="text"
-                        onClick={() => handleDelete(each.id)}
-                      >
-                        <DeleteOutlineIcon color="error" />
-                      </Button>
-                    </Tooltip>
-                  </td>
-                </tr>
-              </>
-            );
-          })}
+          {(debouncedSearch.trim() ? searchedData : students)?.map(
+            (each: any, index: number) => {
+              return (
+                <>
+                  <tr key={each.id} className={styles.tablerow}>
+                    <td key={each.id} className={styles.tabledata}>
+                      {each.collegeId}
+                    </td>
+                    <td className={styles.tabledata}>{each.name}</td>
+                    <td className={styles.tabledata}>{each.contactNumber}</td>
+                    <td className={styles.tabledata}>{each.email}</td>
+                    <td className={styles.tabledata}>
+                      <Tooltip title="View">
+                        <Button variant="text" onClick={() => handleView(each)}>
+                          <RemoveRedEyeIcon color="success" />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip title="Edit">
+                        <Button
+                          variant="text"
+                          onClick={() => handleEdit(index)}
+                        >
+                          <DriveFileRenameOutlineIcon color="primary" />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <Button
+                          variant="text"
+                          onClick={() => handleDelete(each.id)}
+                        >
+                          <DeleteOutlineIcon color="error" />
+                        </Button>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                </>
+              );
+            }
+          )}
         </tbody>
       </table>
       <div className={styles.pagination}>

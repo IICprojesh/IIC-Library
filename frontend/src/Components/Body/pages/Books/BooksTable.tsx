@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState, forwardRef } from "react";
 
 import styles from "./BooksTable.module.css";
-import { Button, TextField } from "@mui/material";
+import { Button, Pagination, TextField } from "@mui/material";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -93,7 +93,7 @@ export default function BooksTable(props: BookTableInterface) {
         setDeleteDialogue(false);
       });
   };
-  
+
   const handleDeleteNo = () => {
     setDeleteDialogue(false);
   };
@@ -178,30 +178,12 @@ export default function BooksTable(props: BookTableInterface) {
         </tbody>
       </table>
       <div className={styles.pagination}>
-        <a className={styles.a} href="#">
-          &laquo;
-        </a>
-        <a className={styles.a} href="#">
-          1
-        </a>
-        <a className={styles.a} href="#">
-          2
-        </a>
-        <a className={styles.a} href="#">
-          3
-        </a>
-        <a className={styles.a} href="#">
-          4
-        </a>
-        <a className={styles.a} href="#">
-          5
-        </a>
-        <a className={styles.a} href="#">
-          6
-        </a>
-        <a className={styles.a} href="#">
-          &raquo;
-        </a>
+        <Pagination
+          sx={{ marginTop: 3 }}
+          count={100}
+          color="primary"
+          shape="rounded"
+        />
       </div>
     </motion.div>
   );

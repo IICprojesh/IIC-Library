@@ -3,10 +3,6 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class CreateStudentDto {
-  @ApiProperty({ example: 'np05cp4s210025' })
-  @IsUUID()
-  id: string;
-
   @IsString()
   @IsOptional()
   collegeId?: string;

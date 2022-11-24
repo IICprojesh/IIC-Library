@@ -73,7 +73,12 @@ export class StudentService {
   async findOne(id: string) {
     const settings = await this.settingService.findOne();
     const student = await this.studentRepository.findOne({ where: { id } });
-    return { ...student, email: `${student.id}${settings.emailSuffix}` };
+    return {
+      ...student,
+      email: student?.collegeId
+        ? `${student.collegeId}${settings.emailSuffix}`
+        : null,
+    };
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {

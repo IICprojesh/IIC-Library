@@ -1,8 +1,9 @@
 import { Button } from "@material-ui/core";
 import axios from "axios";
+import moment from 'moment';
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { BACKEND_ENDPOINT } from '../../../../constants/constants';
+import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import styles from "./Issued.module.css";
 export default function IssueBook() {
   const [issued, setIssued] = useState<any>(null);
@@ -22,14 +23,13 @@ export default function IssueBook() {
       });
   }, []);
 
-  
-
   return (
     <>
       <table className={styles.container}>
         <thead>
           <tr>
             <th className={styles.tableheading}>Student ID</th>
+            <th className={styles.tableheading}>Student Name</th>
             <th className={styles.tableheading}>Book ISBN</th>
             <th className={styles.tableheading}>Issue Date</th>
             <th className={styles.tableheading}>Expire Date</th>
@@ -44,15 +44,23 @@ export default function IssueBook() {
                 {!each.returned ? (
                   <tr key={each.id} className={styles.tablerow}>
                     <td key={each.id} className={styles.tabledata}>
-                      {each.studentId}
+                      {each.student.collegeId}
                     </td>
+                    <td className={styles.tabledata}>{each.student.name}</td>
                     <td className={styles.tabledata}>{each.bookId}</td>
-                    <td className={styles.tabledata}>{each.issueDate}</td>
-                    <td className={styles.tabledata}>{each.expireDate}</td>
+                    <td className={styles.tabledata}>
+                      {moment(each?.issueDate).format("YYYY-MM-DD   hh:mm a")}
+                    </td>
+                    <td className={styles.tabledata}>
+                      {" "}
+                      {moment(each?.expireDate).format("YYYY-MM-DD   hh:mm a")}
+                    </td>
                     <td className={styles.tabledata}>Rs. {each.fine}</td>
-                    <td className={styles.tabledata}>{each.totalRenew}  </td>
+                    <td className={styles.tabledata}>{each.totalRenew} </td>
                   </tr>
-                ) : ""}
+                ) : (
+                  ""
+                )}
               </>
             );
           })}

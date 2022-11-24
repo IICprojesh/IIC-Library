@@ -93,6 +93,7 @@ export default function BooksTable(props: BookTableInterface) {
         setDeleteDialogue(false);
       });
   };
+  
   const handleDeleteNo = () => {
     setDeleteDialogue(false);
   };

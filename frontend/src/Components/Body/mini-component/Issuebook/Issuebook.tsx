@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BACKEND_ENDPOINT } from '../../../../constants/constants';
+import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 
 function Input(props: any) {
   const { label, options } = props;
@@ -34,9 +34,11 @@ function Boxtitle(props: any) {
   );
 }
 
-export default function Issuebook() {
+export default function Issuebook(props: any) {
   const [isbn, setIsbn] = useState<any[]>([]);
   const [studentid, setStudentid] = useState<any[]>([]);
+  const [studentUUID, setStudentUUID] = useState<any>();
+  const [students, setStudents] = useState<any>();
   const [issuedetail, setIssuedetail] = useState<any>(null);
   const [loading, setloading] = useState(false);
 
@@ -45,8 +47,13 @@ export default function Issuebook() {
       method: "get",
       url: `${BACKEND_ENDPOINT}/students`,
     }).then((res) => {
-      setStudentid([...res.data.data.map((each: any) => each?.id), ""]);
+      setStudentid([
+        ...res.data.data.map((each: any) => each?.[props.medium]),
+        "",
+      ]);
+      setStudents(res.data.data);
     });
+
     axios({
       method: "get",
       url: `${BACKEND_ENDPOINT}/books`,
@@ -56,10 +63,17 @@ export default function Issuebook() {
   }, []);
 
   const handleBookissue = () => {
+    console.log(issuedetail);
+    const student = students.find((each: any) => {
+      return (
+        each?.collegeId === issuedetail?.studentId ||
+        each.name === issuedetail?.studentId
+      );
+    });
     axios({
       method: "post",
       url: `${BACKEND_ENDPOINT}/issues`,
-      data: issuedetail,
+      data: { bookId: issuedetail.bookId, studentId: student.id },
     })
       .then((res) => {
         setIssuedetail(null);
@@ -75,7 +89,7 @@ export default function Issuebook() {
     <>
       <div className={styles.container}>
         <div className={styles.issue}>
-          <Boxtitle title="Issue Book" hr="true" />
+          <Boxtitle title={`Issue Book by ${props.medium}`} hr="true" />
           <div className={styles.issuedetail}>
             {loading && (
               <>
@@ -93,9 +107,10 @@ export default function Issuebook() {
             <Input
               label="Student ID"
               value={issuedetail?.studentId}
-              onChange={(e: any, value: any) =>
-                setIssuedetail({ ...issuedetail, studentId: value })
-              }
+              onChange={(e: any, value: any) => {
+                setIssuedetail({ ...issuedetail, studentId: value });
+                setStudentUUID(value);
+              }}
               options={studentid}
             />
             <Input
@@ -108,11 +123,7 @@ export default function Issuebook() {
             />
           </div>
           <div className={styles.buttoncontainer}>
-            <Button
-              variant="outlined"
-              onClick={handleBookissue}
-              className={styles.button}
-            >
+            <Button variant="outlined" onClick={handleBookissue}>
               Issue Book
             </Button>
           </div>

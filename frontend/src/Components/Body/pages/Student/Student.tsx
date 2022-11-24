@@ -4,10 +4,11 @@ import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialoguestudent";
-import StudentTable from './StudentTable';
+import StudentTable from "./StudentTable";
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [success, setSuccess] = React.useState(false);
   const [search, setSearch] = React.useState<string>("");
   const [newStudent, setNewStudent] = React.useState<any>(null);
 
@@ -29,6 +30,7 @@ export default function Student() {
           setNewStudent(data);
           setShowModal(false);
         }}
+        success={success}
         onClose={() => {
           setShowModal(false);
         }}
@@ -48,7 +50,6 @@ export default function Student() {
           variant="outlined"
           startIcon={<AddCircleOutlineOutlinedIcon />}
         >
-          {" "}
           ADD Student
         </Button>
         <div>
@@ -67,4 +68,3 @@ export default function Student() {
     </Paper>
   );
 }
-  

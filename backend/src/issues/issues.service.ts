@@ -83,11 +83,20 @@ export class IssuesService {
       where: {
         studentId,
       },
+      relations: {
+        student: true,
+      },
       skip,
       take: limit,
       order: {
         returned: {
           direction: 'ASC',
+        },
+      },
+      select: {
+        student: {
+          collegeId: true,
+          name: true,
         },
       },
     });

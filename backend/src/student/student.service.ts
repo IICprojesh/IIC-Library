@@ -22,7 +22,9 @@ export class StudentService {
       throw new BadRequestException('initial setting must be created!!');
     }
     try {
-      const email = `${createStudentDto.id}${setting.emailSuffix}`;
+      const email = createStudentDto?.collegeId
+        ? `${createStudentDto.collegeId}${setting.emailSuffix}`
+        : null;
       const student = await this.studentRepository.save({
         ...createStudentDto,
       });
@@ -61,7 +63,9 @@ export class StudentService {
     const total = await this.studentRepository.count();
     const data = students.map((each) => ({
       ...each,
-      email: `${each.id}${settings.emailSuffix}`,
+      email: each?.collegeId
+        ? `${each.collegeId}${settings.emailSuffix}`
+        : null,
     }));
     return { total, data };
   }
@@ -69,7 +73,12 @@ export class StudentService {
   async findOne(id: string) {
     const settings = await this.settingService.findOne();
     const student = await this.studentRepository.findOne({ where: { id } });
-    return { ...student, email: `${student.id}${settings.emailSuffix}` };
+    return {
+      ...student,
+      email: student?.collegeId
+        ? `${student.collegeId}${settings.emailSuffix}`
+        : null,
+    };
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {

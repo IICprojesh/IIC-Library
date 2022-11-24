@@ -24,7 +24,6 @@ export default function Books() {
       <Paper
         style={{
           width: "100%",
-          overflow: "hidden",
           boxShadow: "none",
           maxHeight: 700,
           marginTop: 20,

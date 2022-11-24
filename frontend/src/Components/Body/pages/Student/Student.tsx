@@ -15,7 +15,7 @@ export default function Student() {
   React.useEffect(() => {
     setNewStudent(null);
   }, []);
-
+  
   return (
     <Paper
       style={{

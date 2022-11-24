@@ -133,7 +133,7 @@ export default function StudentTable(props: any) {
         </tbody>
       </table>
       <div className={styles.pagination}>
-        <Pagination sx={{marginTop:3}} count={10} color="primary" shape="rounded" />
+        <Pagination sx={{marginTop:3}} count={100} color="primary" shape="rounded" />
       </div>
     </>
   );

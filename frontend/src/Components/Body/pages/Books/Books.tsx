@@ -6,54 +6,64 @@ import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialogue";
 
 import BooksTable from "./BooksTable";
+import { motion } from "framer-motion";
 
 export default function Books() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
   return (
-    <Paper
-      style={{
-        width: "100%",
-        overflow: "hidden",
-        boxShadow: "none",
-        maxHeight: 700,
-        marginTop: 20,
-      }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1} }}
+      exit={{ opacity: 0 }}
     >
-      {showAddModal && (
-        <FormDialog isOpen={showAddModal} onClose={()=>setShowAddModal(false)} />
-      )}
-      <div
+      <Paper
         style={{
-          display: "flex",
-          marginBottom: 15,
-          marginTop: 5,
-          justifyContent: "space-between",
+          width: "100%",
+          overflow: "hidden",
+          boxShadow: "none",
+          maxHeight: 700,
+          marginTop: 20,
         }}
       >
-        <Button
-          onClick={() => {
-            setShowAddModal(true);
-          }}
-          variant="outlined"
-          startIcon={<AddCircleOutlineOutlinedIcon />}
-        >
-          ADD Book
-        </Button>
-        <div>
-          <TextField
-            spellCheck
-            id="outlined-basic"
-            sx={{ width: 500 }}
-            label="Search Book By ISBN Or Name"
-            variant="outlined"
-            value={search}
-            onChange={(e) => setSearch(e.target.value.trimStart())}
+        {showAddModal && (
+          <FormDialog
+            isOpen={showAddModal}
+            onClose={() => setShowAddModal(false)}
           />
+        )}
+        <div
+          style={{
+            display: "flex",
+            marginBottom: 15,
+            marginTop: 5,
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            onClick={() => {
+              setShowAddModal(true);
+            }}
+            variant="outlined"
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+          >
+            ADD Book
+          </Button>
+          <div>
+            <TextField
+              spellCheck
+              id="outlined-basic"
+              sx={{ width: 500 }}
+              label="Search Book By ISBN Or Name"
+              variant="outlined"
+              value={search}
+              onChange={(e) => setSearch(e.target.value.trimStart())}
+            />
+          </div>
         </div>
-      </div>
-      <BooksTable />
-    </Paper>
+        <BooksTable />
+      </Paper>
+    </motion.div>
   );
 }

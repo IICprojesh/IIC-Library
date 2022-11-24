@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 import styles from "./StudentTable.module.css";
-import { Button, TextField } from "@mui/material";
+import { Button, Pagination, TextField } from "@mui/material";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -10,7 +10,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Tooltip } from "@material-ui/core";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
-import FormDialog from './Dialoguestudent';
+import FormDialog from "./Dialoguestudent";
 
 export default function StudentTable() {
   const navigate = useNavigate();
@@ -111,30 +111,7 @@ export default function StudentTable() {
         </tbody>
       </table>
       <div className={styles.pagination}>
-        <a className={styles.a} href="#">
-          &laquo;
-        </a>
-        <a className={styles.a} href="#">
-          1
-        </a>
-        <a className={styles.a} href="#">
-          2
-        </a>
-        <a className={styles.a} href="#">
-          3
-        </a>
-        <a className={styles.a} href="#">
-          4
-        </a>
-        <a className={styles.a} href="#">
-          5
-        </a>
-        <a className={styles.a} href="#">
-          6
-        </a>
-        <a className={styles.a} href="#">
-          &raquo;
-        </a>
+        <Pagination sx={{marginTop:3}} count={10} color="primary" shape="rounded" />
       </div>
     </>
   );

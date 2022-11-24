@@ -5,7 +5,7 @@ export class Student {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   collegeId: string;
 
   @Column()

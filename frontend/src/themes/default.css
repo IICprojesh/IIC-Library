@@ -4,6 +4,22 @@
   margin: 0;
   padding: 0;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #383C7A;
+}
+
+::-webkit-scrollbar-track {
+  background: #959ae15c;
+  border-radius:3px;
+}
+
 body {
   background-color: #fff;
   font-family: var(--font-primary);

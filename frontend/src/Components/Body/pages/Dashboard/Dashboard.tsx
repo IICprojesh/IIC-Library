@@ -4,7 +4,6 @@ import Issuebook from "../../mini-component/Issuebook/Issuebook";
 import styles from "./Dashboard.module.css";
 import { Title } from "../../../common/title/Title";
 import { fetchData } from "../../../../utils/fetch";
-
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -26,12 +25,17 @@ export default function Dashboard() {
 
   return (
     <motion.div
-      initial={{ x: 0 }}
-      animate={{ x: 1 }}
-      exit={{ x: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.5 } }}
+      exit={{ opacity: 0 }}
     >
       <Title title="Dashboard" />
-      <div className={styles.cards}>
+      <motion.div
+        className={styles.cards}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.5 } }}
+        exit={{ opacity: 0 }}
+      >
         <Card
           title={data?.totalBooks ?? 0}
           color="green"
@@ -56,11 +60,16 @@ export default function Dashboard() {
           subtitle="Total Students"
           icon="students"
         />
-      </div>
-      <div className={styles.middlecontainer}>
-        <Issuebook />
-        <div className={styles.ChartContainer}></div>
-      </div>
+      </motion.div>
+      <motion.div
+        className={styles.middlecontainer}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.5 } }}
+        exit={{ opacity: 0 }}
+      >
+        <Issuebook medium="collegeId" />
+        <Issuebook medium="name" />
+      </motion.div>
     </motion.div>
   );
 }

@@ -4,7 +4,9 @@ import Issuebook from "../../mini-component/Issuebook/Issuebook";
 import styles from "./Dashboard.module.css";
 import { Title } from "../../../common/title/Title";
 import { fetchData } from "../../../../utils/fetch";
+
 import React from "react";
+import { motion } from "framer-motion";
 
 interface DashboardDataType {
   totalExpired: number;
@@ -23,7 +25,11 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <>
+    <motion.div
+      initial={{ x: 0 }}
+      animate={{ x: 1 }}
+      exit={{ x: 0 }}
+    >
       <Title title="Dashboard" />
       <div className={styles.cards}>
         <Card
@@ -55,6 +61,6 @@ export default function Dashboard() {
         <Issuebook />
         <div className={styles.ChartContainer}></div>
       </div>
-    </>
+    </motion.div>
   );
 }

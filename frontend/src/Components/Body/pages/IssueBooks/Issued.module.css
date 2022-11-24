@@ -6,8 +6,10 @@
   width: 100%;
   position: relative;
   border-collapse: collapse;
-  overflow: scroll;
+  overflow-y: scroll;
 }
+
+
 
 .tabledata,
 .tableheading {

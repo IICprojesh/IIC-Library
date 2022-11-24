@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
-import { Repository, FindOptionsWhere, Like } from 'typeorm';
+import { Repository, FindOptionsWhere, Like, ILike } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { SettingsService } from 'src/settings/settings.service';
 import { Issue } from 'src/issues/entities/issue.entity';
@@ -49,8 +49,8 @@ export class StudentService {
     let where: FindOptionsWhere<Student>[] = null;
     if (search) {
       where = [
-        { name: Like(`%${search}%`) },
-        { id: Like(`%${search}%`) },
+        { name: ILike(`%${search}%`) },
+        { id: ILike(`%${search}%`) },
         { contactNumber: Like(`%${search}%`) },
       ];
     }

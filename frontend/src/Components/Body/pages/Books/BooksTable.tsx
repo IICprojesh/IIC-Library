@@ -15,7 +15,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { Tooltip } from "@material-ui/core";
-import { BACKEND_ENDPOINT } from '../../../../constants/constants';
+import { BACKEND_ENDPOINT } from "../../../../constants/constants";
+import FormDialog from "./Dialogue";
+import { motion, MotionConfig } from "framer-motion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -27,14 +29,17 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function BooksTable() {
+  const [editId, setEditid] = useState("");
+  const [success, setSuccess] = useState(false);
   const [books, setBooks] = useState<any>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [canDeleteIsbn, setCanDeleteIsbn] = useState("");
   const [deleteDialogue, setDeleteDialogue] = useState<any>(false);
 
   useEffect(() => {
     axios({
       method: "get",
-      url: `${BACKEND_ENDPOINT}/books`
+      url: `${BACKEND_ENDPOINT}/books`,
     })
       .then((res) => {
         setBooks(res.data?.data);
@@ -44,7 +49,10 @@ export default function BooksTable() {
       });
   }, []);
 
-  const handleEdit = (each: any) => {};
+  const handleEdit = (id: any) => {
+    setEditid(id);
+    setShowAddModal(true);
+  };
 
   const handleDelete = (each: any) => {
     setCanDeleteIsbn(each.isbn);
@@ -73,7 +81,19 @@ export default function BooksTable() {
   };
 
   return (
-    <>
+    <motion.div
+      initial={{ width: 0 }}
+      animate={{ width: '100%', transition: { duration: 0.2 } }}
+      exit={{ opacity: 0 }}
+    >
+      {showAddModal && (
+        <FormDialog
+          datas={books[editId]}
+          isOpen={showAddModal}
+          success={success}
+          onClose={() => setShowAddModal(false)}
+        />
+      )}
       <Dialog
         open={deleteDialogue}
         TransitionComponent={Transition}
@@ -97,7 +117,7 @@ export default function BooksTable() {
           </tr>
         </thead>
         <tbody>
-          {books?.map((each: any) => {
+          {books?.map((each: any, index: number) => {
             return (
               <>
                 <tr key={each.id} className={styles.tablerow}>
@@ -114,11 +134,10 @@ export default function BooksTable() {
                   <td className={styles.tabledata}>{each.title}</td>
                   <td className={styles.tabledata}>{each.authors}</td>
                   <td className={styles.tabledata}>
-                  <Tooltip title="Edit">
-
-                    <Button variant="text" onClick={() => handleEdit(each)}>
-                      <DriveFileRenameOutlineIcon color="primary" />
-                    </Button>
+                    <Tooltip title="Edit">
+                      <Button variant="text" onClick={() => handleEdit(index)}>
+                        <DriveFileRenameOutlineIcon color="primary" />
+                      </Button>
                     </Tooltip>
                     <Tooltip title="Delete">
                       <Button variant="text" onClick={() => handleDelete(each)}>
@@ -158,6 +177,6 @@ export default function BooksTable() {
           &raquo;
         </a>
       </div>
-    </>
+    </motion.div>
   );
 }

@@ -63,7 +63,9 @@ export class StudentService {
     const total = await this.studentRepository.count();
     const data = students.map((each) => ({
       ...each,
-      email: `${each.id}${settings.emailSuffix}`,
+      email: each?.collegeId
+        ? `${each.collegeId}${settings.emailSuffix}`
+        : null,
     }));
     return { total, data };
   }

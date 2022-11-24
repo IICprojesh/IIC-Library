@@ -64,7 +64,7 @@ export default function Student() {
           />
         </div>
       </div>
-      <StudentTable />
+      <StudentTable searchKey={search} />
     </Paper>
   );
 }

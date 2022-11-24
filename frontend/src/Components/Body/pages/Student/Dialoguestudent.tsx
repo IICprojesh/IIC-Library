@@ -11,11 +11,23 @@ import SaveIcon from "@mui/icons-material/Save";
 import LanguageIcon from "@mui/icons-material/Language";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BACKEND_ENDPOINT } from '../../../../constants/constants';
+import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 
-export default function FormDialog(props:any) {
+export default function FormDialog(props: any) {
+  const [isEdit, setIsEdit] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    setData((prev: any) => {
+      if (props.datas) {
+        setIsEdit(true);
+        return props.datas;
+      }
+      return prev;
+    });
+  }, [props.datas]);
+
   const addStudent = () => {
     axios({
       method: "post",
@@ -31,69 +43,155 @@ export default function FormDialog(props:any) {
         toast.error(err.response.data.message);
       });
   };
+
+  const editStudent = () => {
+    const {email,...s} = data;
+    axios({
+      method: "patch",
+      url: `${BACKEND_ENDPOINT}/students/${data.id}`,
+      data:{...s}
+    })
+      .then((res) => {
+        toast.success(res.data.message);
+        props.onClose();
+        setData(null);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("something went wrong check console");
+      });
+  };
   return (
     <>
-      <Dialog open={props.isOpen} onClose={props.onClose}>
-        <DialogTitle>Add Student</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{/* some hind or title text */}</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e) => {
-              setData({ ...data, id: e.target.value });
-            }}
-            value={data?.id}
-            label="Student ID"
-            required
-            type="text"
-            variant="filled"
-          />
-          <TextField
-            required
-            margin="dense"
-            value={data?.name}
-            sx={{ marginLeft: 2 }}
-            label="Student Name"
-            type="text"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="filled"
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-          />
-          <TextField
-            required
-            margin="dense"
-            value={data?.contactNumber}
-            sx={{ marginRight: 2 }}
-            label="Contact Number"
-            onChange={(e) =>
-              setData({ ...data, contactNumber: e.target.value })
-            }
-            type="text"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="filled"
-          />
-        </DialogContent>
-        <DialogActions>
-          <LoadingButton
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-            onClick={addStudent}
-            disabled={loading}
-            variant="contained"
-          >
-            Add Student
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
+      {!isEdit ? (
+        <Dialog open={props.isOpen} onClose={props.onClose}>
+          <DialogTitle>Add Student</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {/* some hind or title text */}
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => {
+                setData({ ...data, collegeId: e.target.value });
+              }}
+              value={data?.id}
+              label="Student ID"
+              required
+              type="text"
+              variant="filled"
+            />
+            <TextField
+              required
+              margin="dense"
+              value={data?.name}
+              sx={{ marginLeft: 2 }}
+              label="Student Name"
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+            />
+            <TextField
+              required
+              margin="dense"
+              value={data?.contactNumber}
+              sx={{ marginRight: 2 }}
+              label="Contact Number"
+              onChange={(e) =>
+                setData({ ...data, contactNumber: e.target.value })
+              }
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+            />
+          </DialogContent>
+          <DialogActions>
+            <LoadingButton
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              onClick={addStudent}
+              disabled={loading}
+              variant="contained"
+            >
+              Add Student
+            </LoadingButton>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        <Dialog open={props.isOpen} onClose={props.onClose}>
+          <DialogTitle>Edit Student</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {/* some hind or title text */}
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => {
+                setData({ ...data, collegeId: e.target.value });
+              }}
+              value={data?.collegeId}
+              label="Student ID"
+              required
+              type="text"
+              variant="filled"
+            />
+            <TextField
+              required
+              margin="dense"
+              value={data?.name}
+              sx={{ marginLeft: 2 }}
+              label="Student Name"
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+            />
+            <TextField
+              required
+              margin="dense"
+              value={data?.contactNumber}
+              sx={{ marginRight: 2 }}
+              label="Contact Number"
+              onChange={(e) =>
+                setData({ ...data, contactNumber: e.target.value })
+              }
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="filled"
+            />
+          </DialogContent>
+          <DialogActions>
+            <LoadingButton
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              onClick={editStudent}
+              disabled={loading}
+              variant="contained"
+            >
+              Save Student
+            </LoadingButton>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 }

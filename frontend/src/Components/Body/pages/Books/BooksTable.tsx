@@ -76,6 +76,7 @@ export default function BooksTable() {
         setDeleteDialogue(false);
       });
   };
+  
   const handleDeleteNo = () => {
     setDeleteDialogue(false);
   };

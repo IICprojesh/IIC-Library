@@ -8,12 +8,15 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Tooltip } from '@material-ui/core';
-import { BACKEND_ENDPOINT } from '../../../../constants/constants';
+import { Tooltip } from "@material-ui/core";
+import { BACKEND_ENDPOINT } from "../../../../constants/constants";
+import FormDialog from './Dialoguestudent';
 
 export default function StudentTable() {
   const navigate = useNavigate();
   const [students, setStudent] = useState<any>(null);
+  const [editId, setEditid] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     axios({
@@ -27,7 +30,6 @@ export default function StudentTable() {
         console.log(err);
       });
   }, []);
-  console.log();
 
   const handleView = (each: any) => {
     navigate(`/Student/${each.id}`);
@@ -47,12 +49,20 @@ export default function StudentTable() {
         toast.error(err.response.data.message);
       });
   };
-  const handleEdit = () => {
-    console.log("hello i can edit now");
+  const handleEdit = (id: any) => {
+    setEditid(id);
+    console.log("i got hit", id);
+    setShowAddModal(true);
   };
-
   return (
     <>
+      {showAddModal && (
+        <FormDialog
+          datas={students[editId]}
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+        />
+      )}
       <table className={styles.container}>
         <thead>
           <tr>
@@ -64,37 +74,34 @@ export default function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {students?.map((each: any) => {
+          {students?.map((each: any, index: number) => {
             return (
               <>
                 <tr key={each.id} className={styles.tablerow}>
                   <td key={each.id} className={styles.tabledata}>
-                    {each.id}
+                    {each.collegeId}
                   </td>
                   <td className={styles.tabledata}>{each.name}</td>
                   <td className={styles.tabledata}>{each.contactNumber}</td>
                   <td className={styles.tabledata}>{each.email}</td>
                   <td className={styles.tabledata}>
-                  <Tooltip title="View">
-
-                    <Button variant="text" onClick={() => handleView(each)}>
-                      <RemoveRedEyeIcon color="success" />
-                    </Button>
+                    <Tooltip title="View">
+                      <Button variant="text" onClick={() => handleView(each)}>
+                        <RemoveRedEyeIcon color="success" />
+                      </Button>
                     </Tooltip>
                     <Tooltip title="Edit">
-
-                    <Button variant="text" onClick={handleEdit}>
-                      <DriveFileRenameOutlineIcon color="primary" />
-                    </Button>
+                      <Button variant="text" onClick={() => handleEdit(index)}>
+                        <DriveFileRenameOutlineIcon color="primary" />
+                      </Button>
                     </Tooltip>
                     <Tooltip title="Delete">
-
-                    <Button
-                      variant="text"
-                      onClick={() => handleDelete(each.id)}
-                    >
-                      <DeleteOutlineIcon color="error" />
-                    </Button>
+                      <Button
+                        variant="text"
+                        onClick={() => handleDelete(each.id)}
+                      >
+                        <DeleteOutlineIcon color="error" />
+                      </Button>
                     </Tooltip>
                   </td>
                 </tr>

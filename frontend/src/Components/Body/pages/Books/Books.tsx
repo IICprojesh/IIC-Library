@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Paper, TableCell } from "@material-ui/core";
 import { Button, TextField } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialogue";
 
 import BooksTable from "./BooksTable";
 import { motion } from "framer-motion";
+import { useDebounce } from "usehooks-ts";
+import { fetchData } from "../../../../utils/fetch";
+import { BookType } from "./book.type";
 
 export default function Books() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce<string>(search, 500);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 1} }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
       exit={{ opacity: 0 }}
     >
       <Paper
@@ -62,7 +65,7 @@ export default function Books() {
             />
           </div>
         </div>
-        <BooksTable />
+        <BooksTable searchKey={debouncedSearch} />
       </Paper>
     </motion.div>
   );

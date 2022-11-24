@@ -17,7 +17,9 @@ import { TransitionProps } from "@mui/material/transitions";
 import { Tooltip } from "@material-ui/core";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import FormDialog from "./Dialogue";
-import { motion, MotionConfig } from "framer-motion";
+import { motion } from "framer-motion";
+import { BookType } from "./book.type";
+import { fetchData } from "../../../../utils/fetch";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -28,13 +30,28 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function BooksTable() {
-  const [editId, setEditid] = useState("");
+interface BookTableInterface {
+  searchKey?: string;
+}
+
+export default function BooksTable(props: BookTableInterface) {
+  const [editId, setEditid] = useState<number>(0);
   const [success, setSuccess] = useState(false);
-  const [books, setBooks] = useState<any>(null);
+  const [books, setBooks] = useState<BookType[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [canDeleteIsbn, setCanDeleteIsbn] = useState("");
   const [deleteDialogue, setDeleteDialogue] = useState<any>(false);
+  const [searchedBook, setSearchedBook] = useState<BookType[]>([]);
+
+  useEffect(() => {
+    if (props?.searchKey?.trim?.()) {
+      fetchData(`books?search=${props.searchKey}`).then(
+        (data: { total: number; data: BookType[] }) => {
+          setSearchedBook(data.data);
+        }
+      );
+    }
+  }, [props?.searchKey]);
 
   useEffect(() => {
     axios({
@@ -83,7 +100,7 @@ export default function BooksTable() {
   return (
     <motion.div
       initial={{ width: 0 }}
-      animate={{ width: '100%', transition: { duration: 0.2 } }}
+      animate={{ width: "100%", transition: { duration: 0.2 } }}
       exit={{ opacity: 0 }}
     >
       {showAddModal && (
@@ -117,38 +134,46 @@ export default function BooksTable() {
           </tr>
         </thead>
         <tbody>
-          {books?.map((each: any, index: number) => {
-            return (
-              <>
-                <tr key={each.id} className={styles.tablerow}>
-                  <td key={each.id} className={styles.tabledata}>
-                    <img
-                      height="50px"
-                      width="50px"
-                      style={{ objectFit: "cover" }}
-                      src={each.image}
-                      alt={each.title}
-                    />
-                  </td>
-                  <td className={styles.tabledata}>{each.isbn}</td>
-                  <td className={styles.tabledata}>{each.title}</td>
-                  <td className={styles.tabledata}>{each.authors}</td>
-                  <td className={styles.tabledata}>
-                    <Tooltip title="Edit">
-                      <Button variant="text" onClick={() => handleEdit(index)}>
-                        <DriveFileRenameOutlineIcon color="primary" />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <Button variant="text" onClick={() => handleDelete(each)}>
-                        <DeleteOutlineIcon color="error" />
-                      </Button>
-                    </Tooltip>
-                  </td>
-                </tr>
-              </>
-            );
-          })}
+          {(props?.searchKey?.trim?.() ? searchedBook : books)?.map(
+            (each: any, index: number) => {
+              return (
+                <>
+                  <tr key={each.id} className={styles.tablerow}>
+                    <td key={each.id} className={styles.tabledata}>
+                      <img
+                        height="50px"
+                        width="50px"
+                        style={{ objectFit: "cover" }}
+                        src={each.image}
+                        alt={each.title}
+                      />
+                    </td>
+                    <td className={styles.tabledata}>{each.isbn}</td>
+                    <td className={styles.tabledata}>{each.title}</td>
+                    <td className={styles.tabledata}>{each.authors}</td>
+                    <td className={styles.tabledata}>
+                      <Tooltip title="Edit">
+                        <Button
+                          variant="text"
+                          onClick={() => handleEdit(index)}
+                        >
+                          <DriveFileRenameOutlineIcon color="primary" />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <Button
+                          variant="text"
+                          onClick={() => handleDelete(each)}
+                        >
+                          <DeleteOutlineIcon color="error" />
+                        </Button>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                </>
+              );
+            }
+          )}
         </tbody>
       </table>
       <div className={styles.pagination}>

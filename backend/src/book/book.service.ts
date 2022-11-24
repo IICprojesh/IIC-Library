@@ -2,7 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Issue } from 'src/issues/entities/issue.entity';
-import { Repository, FindOneOptions, FindOptionsWhere, Like } from 'typeorm';
+import {
+  Repository,
+  FindOneOptions,
+  FindOptionsWhere,
+  Like,
+  ILike,
+} from 'typeorm';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './entities/book.entity';
@@ -45,8 +51,8 @@ export class BookService {
     let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
     if (search) {
       where = [
-        { title: Like(`%${search}%`) },
-        { summary: Like(`%${search}%`) },
+        { title: ILike(`%${search}%`) },
+        { summary: ILike(`%${search}%`) },
         { isbn: Like(`%${search}%`) },
       ];
     }

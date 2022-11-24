@@ -42,6 +42,9 @@ export default function BooksTable(props: BookTableInterface) {
   const [canDeleteIsbn, setCanDeleteIsbn] = useState("");
   const [deleteDialogue, setDeleteDialogue] = useState<any>(false);
   const [searchedBook, setSearchedBook] = useState<BookType[]>([]);
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [dataPerPage, setDataPerPage] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     if (props?.searchKey?.trim?.()) {
@@ -56,15 +59,18 @@ export default function BooksTable(props: BookTableInterface) {
   useEffect(() => {
     axios({
       method: "get",
-      url: `${BACKEND_ENDPOINT}/books`,
+      url: `${BACKEND_ENDPOINT}/books?limit=${dataPerPage}&skip=${
+        (currentPage - 1) * dataPerPage
+      }`,
     })
       .then((res) => {
+        setTotalPage(Math.ceil(res.data.total / dataPerPage));
         setBooks(res.data?.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [currentPage, dataPerPage]);
 
   const handleEdit = (id: any) => {
     setEditid(id);
@@ -93,6 +99,10 @@ export default function BooksTable(props: BookTableInterface) {
         setDeleteDialogue(false);
       });
   };
+
+  function handleChange(_: any, value: number) {
+    setCurrentPage(value);
+  }
 
   const handleDeleteNo = () => {
     setDeleteDialogue(false);
@@ -180,9 +190,10 @@ export default function BooksTable(props: BookTableInterface) {
       <div className={styles.pagination}>
         <Pagination
           sx={{ marginTop: 3 }}
-          count={100}
+          count={totalPage}
           color="primary"
           shape="rounded"
+          onChange={handleChange}
         />
       </div>
     </motion.div>

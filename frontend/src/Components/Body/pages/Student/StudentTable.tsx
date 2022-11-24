@@ -22,6 +22,10 @@ export default function StudentTable(props: any) {
   const [search, setSearch] = useState<string>("");
   const [searchedData, setSearchedData] = useState<any>([]);
   const debouncedSearch = useDebounce<string>(search, 500);
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [dataPerPage, setDataPerPage] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
 
   useEffect(() => {
     setSearch(props?.searchKey ?? "");
@@ -33,20 +37,27 @@ export default function StudentTable(props: any) {
         setSearchedData(data.data);
       });
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, dataPerPage]);
 
   useEffect(() => {
     axios({
       method: "get",
-      url: `${BACKEND_ENDPOINT}/students`,
+      url: `${BACKEND_ENDPOINT}/students?limit=${dataPerPage}&skip=${
+        (currentPage - 1) * dataPerPage
+      }`,
     })
       .then((res) => {
+        setTotalPage(Math.ceil(res.data.total / dataPerPage));
         setStudent(res.data?.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dataPerPage, currentPage]);
+
+  function handlePagination(event: React.ChangeEvent<unknown>, value: number) {
+    setCurrentPage(value);
+  }
 
   const handleView = (each: any) => {
     navigate(`/Student/${each.id}`);
@@ -135,9 +146,10 @@ export default function StudentTable(props: any) {
       <div className={styles.pagination}>
         <Pagination
           sx={{ marginTop: 3 }}
-          count={10}
+          count={totalPage}
           color="primary"
           shape="rounded"
+          onChange={handlePagination}
         />
       </div>
     </>

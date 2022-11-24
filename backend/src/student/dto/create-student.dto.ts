@@ -1,14 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString, Length } from 'class-validator';
+import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class CreateStudentDto {
   @ApiProperty({ example: 'np05cp4s210025' })
-  @IsString()
+  @IsUUID()
   id: string;
 
   @IsString()
-  @ApiProperty({ example: 'np05cp4s210025' })
+  @IsOptional()
+  collegeId?: string;
+
+  @IsString()
+  @ApiProperty({ example: 'sujan parajuli' })
   @Transform((options) => {
     return (options.value as string).toLowerCase();
   })

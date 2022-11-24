@@ -1,6 +1,7 @@
 import { Button } from "@material-ui/core";
+import { Pagination } from '@mui/material';
 import axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
@@ -67,30 +68,12 @@ export default function IssueBook() {
         </tbody>
       </table>
       <div className={styles.pagination}>
-        <a className={styles.a} href="#">
-          &laquo;
-        </a>
-        <a className={styles.a} href="#">
-          1
-        </a>
-        <a className={styles.a} href="#">
-          2
-        </a>
-        <a className={styles.a} href="#">
-          3
-        </a>
-        <a className={styles.a} href="#">
-          4
-        </a>
-        <a className={styles.a} href="#">
-          5
-        </a>
-        <a className={styles.a} href="#">
-          6
-        </a>
-        <a className={styles.a} href="#">
-          &raquo;
-        </a>
+        <Pagination
+          sx={{ marginTop: 3 }}
+          count={100}
+          color="primary"
+          shape="rounded"
+        />
       </div>
     </>
   );

@@ -22,7 +22,9 @@ export class StudentService {
       throw new BadRequestException('initial setting must be created!!');
     }
     try {
-      const email = `${createStudentDto.id}${setting.emailSuffix}`;
+      const email = createStudentDto?.collegeId
+        ? `${createStudentDto.collegeId}${setting.emailSuffix}`
+        : null;
       const student = await this.studentRepository.save({
         ...createStudentDto,
       });

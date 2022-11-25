@@ -78,8 +78,7 @@ export class IssuesService {
     skip?: number;
     studentId?: string;
   }) {
-    const total = await this.issueRepo.count();
-    const data = await this.issueRepo.find({
+    const [data, total] = await this.issueRepo.findAndCount({
       where: {
         studentId,
       },

@@ -172,6 +172,11 @@ export class IssuesService {
       (updateIssueDto as Issue).latestRenewDate = new Date();
     }
 
-    return this.issueRepo.update({ id }, updateIssueDto);
+    const updated = await this.issueRepo.update({ id }, updateIssueDto);
+    if (updated.affected) {
+      return { update: true, data: { issue, ...updateIssueDto } };
+    } else {
+      return { update: false, data: null };
+    }
   }
 }

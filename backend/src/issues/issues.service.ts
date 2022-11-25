@@ -154,7 +154,7 @@ export class IssuesService {
       where: { id, returned: false },
     });
     if (!issue)
-      throw new BadRequestException(`Book with id ${id} does not exist`);
+      throw new BadRequestException(`Issue with id ${id} is not active issue.`);
 
     const settings = await this.settingsService.findOne();
 
@@ -174,7 +174,14 @@ export class IssuesService {
 
     const updated = await this.issueRepo.update({ id }, updateIssueDto);
     if (updated.affected) {
-      return { update: true, data: { issue, ...updateIssueDto } };
+      return {
+        update: true,
+        data: {
+          issue,
+          canRenew: issue.totalRenew < settings.maxRenew - 1,
+          ...updateIssueDto,
+        },
+      };
     } else {
       return { update: false, data: null };
     }

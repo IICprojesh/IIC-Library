@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BookService } from 'src/book/book.service';
+import { Issue } from 'src/issues/entities/issue.entity';
 import { IssuesService } from 'src/issues/issues.service';
 import { StudentService } from 'src/student/student.service';
 
@@ -15,7 +16,8 @@ export class DashboardService {
       totalBooks: (await this.bookService.findAll({})).total,
       totalBorrowed: (await this.issueService.findBorrowedBooks()).length,
       totalExpired: (await this.issueService.findAll({})).data.filter(
-        (each: any) => each.isExpired === true,
+        (each: any) =>
+          each.isExpired === true && (each as Issue).returned === false,
       ).length,
       totalStudents: (await this.studentService.findAll({})).total,
     };

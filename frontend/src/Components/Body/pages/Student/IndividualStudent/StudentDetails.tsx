@@ -9,7 +9,7 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import moment, { deprecationHandler } from "moment";
 import DoneIcon from "@mui/icons-material/Done";
 import { toast } from "react-toastify";
-import { BACKEND_ENDPOINT } from '../../../../../constants/constants';
+import { BACKEND_ENDPOINT } from "../../../../../constants/constants";
 
 export default function StudentDetails() {
   const [Student, setStudent] = useState<any>(null);
@@ -44,23 +44,23 @@ export default function StudentDetails() {
   console.log(issue);
 
   const handleRenew = (id: any) => {
-    console.log("i got it");
     axios({
       method: "patch",
       url: `${BACKEND_ENDPOINT}/issues/${id}`,
       data: { renew: true },
     })
       .then((res) => {
+        console.log(res.data);
         setIssue((prev: any) => {
           const state = [...prev];
           const issue = state.find((each) => {
             return (each.id = id);
           });
           issue.renew = true;
+          issue.latestRenewDate = res.data.data.latestRenewDate;
+          issue.canRenew = res.data.data.canRenew;
           return state;
         });
-        
-        console.log(res.data);
         toast.success("Book Renewed sucessfully");
       })
       .catch((err) => {
@@ -69,7 +69,6 @@ export default function StudentDetails() {
   };
 
   const handleReturn = (id: number) => {
-    console.log("return hit");
     axios({
       method: "patch",
       url: `${BACKEND_ENDPOINT}/issues/${id}`,
@@ -77,7 +76,6 @@ export default function StudentDetails() {
     })
       .then((res) => {
         console.log(res.data);
-
         setIssue((prev: any) => {
           const state = [...prev];
           const issue = state.find((each) => {
@@ -104,7 +102,8 @@ export default function StudentDetails() {
             <div className={styles.imagesection}>
               <img
                 height="150px"
-                src="https://cdn3d.iconscout.com/3d/premium/thumb/graduate-student-6368706-5250853.png" alt="Student Avatar"
+                src="https://cdn3d.iconscout.com/3d/premium/thumb/graduate-student-6368706-5250853.png"
+                alt="Student Avatar"
               />
             </div>
             <div className={styles.details}>

@@ -99,6 +99,7 @@ export class IssuesService {
         student: {
           collegeId: true,
           name: true,
+          contactNumber: true,
         },
       },
     });

@@ -1,6 +1,7 @@
 import { Button } from "@material-ui/core";
-import { Pagination } from '@mui/material';
+import { Pagination } from "@mui/material";
 import axios from "axios";
+import { motion } from 'framer-motion';
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -25,7 +26,11 @@ export default function IssueBook() {
   }, []);
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
+      exit={{ opacity: 0 }}
+    >
       <table className={styles.container}>
         <thead>
           <tr>
@@ -75,6 +80,6 @@ export default function IssueBook() {
           shape="rounded"
         />
       </div>
-    </>
+    </motion.div>
   );
 }

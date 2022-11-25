@@ -13,6 +13,7 @@ import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import FormDialog from "./Dialoguestudent";
 import { useDebounce } from "usehooks-ts";
 import { fetchData } from "../../../../utils/fetch";
+import { motion, MotionConfig } from 'framer-motion';
 
 export default function StudentTable(props: any) {
   const navigate = useNavigate();
@@ -68,14 +69,22 @@ export default function StudentTable(props: any) {
   };
   const handleEdit = (id: any) => {
     setEditid(id);
-    console.log("i got hit", id);
     setShowAddModal(true);
   };
   return (
-    <>
+    <motion.div  initial={{ opacity: 0 }}
+    animate={{ opacity: 1, transition: { duration: 1 } }}
+    exit={{ opacity: 0 }}>
       {showAddModal && (
         <FormDialog
           datas={students[editId]}
+          success = {()=>{
+            setStudent((prev: any) => {
+              console.log(prev)
+              return prev.filter((each: any) => each.id === editId );
+            });
+            toast.success("Student Update Successfully !!!")
+          }}
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
         />
@@ -135,6 +144,6 @@ export default function StudentTable(props: any) {
       <div className={styles.pagination}>
         <Pagination sx={{marginTop:3}} count={100} color="primary" shape="rounded" />
       </div>
-    </>
+    </motion.div>
   );
 }

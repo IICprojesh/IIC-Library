@@ -54,6 +54,7 @@ export default function FormDialog(props: any) {
       .then((res) => {
         toast.success(res.data.message);
         props.onClose();
+        props.success();
         setData(null);
       })
       .catch((err) => {

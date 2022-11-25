@@ -72,8 +72,8 @@ export default function BooksTable(props: BookTableInterface) {
       });
   }, [currentPage, dataPerPage]);
 
-  const handleEdit = (id: any) => {
-    setEditid(id);
+  const handleEdit = (books: any) => {
+    setEditid(books);
     setShowAddModal(true);
   };
 
@@ -116,9 +116,9 @@ export default function BooksTable(props: BookTableInterface) {
     >
       {showAddModal && (
         <FormDialog
-          datas={books[editId]}
+          datas={editId}
           isOpen={showAddModal}
-          success={success}
+          success={()=>{console.log("this is e")}}
           onClose={() => setShowAddModal(false)}
         />
       )}
@@ -166,7 +166,7 @@ export default function BooksTable(props: BookTableInterface) {
                       <Tooltip title="Edit">
                         <Button
                           variant="text"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => handleEdit(each)}
                         >
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>

@@ -78,10 +78,12 @@ export default function FormDialog(props: any) {
       .then((res) => {
         toast.success("Book Added");
         props.onClose();
+        console.log(res.data)
+        props.success(res.data)
         setData(null);
       })
       .catch((err) => {
-        toast.error(err.response.data.message[0]);
+        toast.error(err?.response?.data?.message[0]);
       });
   };
   return (

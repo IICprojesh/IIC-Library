@@ -13,7 +13,7 @@ import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import FormDialog from "./Dialoguestudent";
 import { useDebounce } from "usehooks-ts";
 import { fetchData } from "../../../../utils/fetch";
-import { motion, MotionConfig } from 'framer-motion';
+import { motion, MotionConfig } from "framer-motion";
 
 export default function StudentTable(props: any) {
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ export default function StudentTable(props: any) {
   const [totalPage, setTotalPage] = useState<number>(1);
   const [dataPerPage, setDataPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
 
   useEffect(() => {
     setSearch(props?.searchKey ?? "");
@@ -78,23 +77,28 @@ export default function StudentTable(props: any) {
         toast.error(err.response.data.message);
       });
   };
-  const handleEdit = (id: any) => {
-    setEditid(id);
+  const handleEdit = (studentdetail: any) => {
+    setEditid(studentdetail);
     setShowAddModal(true);
   };
   return (
-    <motion.div  initial={{ opacity: 0 }}
-    animate={{ opacity: 1, transition: { duration: 1 } }}
-    exit={{ opacity: 0 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
+      exit={{ opacity: 0 }}
+    >
       {showAddModal && (
         <FormDialog
-          datas={students[editId]}
-          success = {()=>{
-            setStudent((prev: any) => {
-              console.log(prev)
-              return prev.filter((each: any) => each.id === editId );
-            });
-            toast.success("Student Update Successfully !!!")
+          datas={editId}
+          success={() => {
+            axios({
+              method:'get',
+              url:`${BACKEND_ENDPOINT}/students`
+            }).then((res)=>{
+              setStudent(res.data.data)
+              console.log(res.data.data)
+            })
+            toast.success("Student Update Successfully !!!");
           }}
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
@@ -131,7 +135,7 @@ export default function StudentTable(props: any) {
                       <Tooltip title="Edit">
                         <Button
                           variant="text"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => handleEdit(each)}
                         >
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>

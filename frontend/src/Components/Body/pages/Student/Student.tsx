@@ -5,6 +5,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import DataTable from "../../../common/data-table/DataTable";
 import FormDialog from "./Dialoguestudent";
 import StudentTable from "./StudentTable";
+import { useState } from "react";
 
 export default function Student() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -12,10 +13,11 @@ export default function Student() {
   const [search, setSearch] = React.useState<string>("");
   const [newStudent, setNewStudent] = React.useState<any>(null);
 
+
   React.useEffect(() => {
     setNewStudent(null);
   }, []);
-  
+
   return (
     <Paper
       style={{

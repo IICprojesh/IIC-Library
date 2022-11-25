@@ -50,7 +50,7 @@ export class StudentService {
     if (search) {
       where = [
         { name: ILike(`%${search}%`) },
-        { id: ILike(`%${search}%`) },
+        { collegeId: ILike(`%${search}%`) },
         { contactNumber: Like(`%${search}%`) },
       ];
     }

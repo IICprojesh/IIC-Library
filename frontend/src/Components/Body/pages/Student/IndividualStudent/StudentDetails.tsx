@@ -10,6 +10,7 @@ import moment, { deprecationHandler } from "moment";
 import DoneIcon from "@mui/icons-material/Done";
 import { toast } from "react-toastify";
 import { BACKEND_ENDPOINT } from "../../../../../constants/constants";
+import { Pagination } from '@mui/material';
 
 export default function StudentDetails() {
   const [Student, setStudent] = useState<any>(null);
@@ -219,6 +220,12 @@ export default function StudentDetails() {
               </tbody>
             </table>
           </div>
+          <Pagination
+          sx={{ marginTop: 3 }}
+          count={3}
+          color="primary"
+          shape="rounded"
+        />
         </div>
       ) : (
         <>

@@ -49,7 +49,6 @@ export default function Issuebook(props: any) {
     }).then((res) => {
       setStudentid([
         ...res.data.data.map((each: any) => each?.[props.medium]),
-        "",
       ]);
       setStudents(res.data.data);
     });
@@ -58,12 +57,11 @@ export default function Issuebook(props: any) {
       method: "get",
       url: `${BACKEND_ENDPOINT}/books`,
     }).then((res) => {
-      setIsbn([...res.data.data.map((each: any) => each?.isbn), ""]);
+      setIsbn([...res.data.data.map((each: any) => each?.isbn)]);
     });
   }, []);
 
   const handleBookissue = () => {
-    console.log(issuedetail);
     const student = students.find((each: any) => {
       return (
         each?.collegeId === issuedetail?.studentId ||
@@ -106,6 +104,7 @@ export default function Issuebook(props: any) {
             )}
             <Input
               label="Student ID"
+              required
               value={issuedetail?.studentId}
               onChange={(e: any, value: any) => {
                 setIssuedetail({ ...issuedetail, studentId: value });
@@ -115,6 +114,7 @@ export default function Issuebook(props: any) {
             />
             <Input
               label="ISBN Number"
+              required
               value={issuedetail?.bookId}
               onChange={(e: any, value: any) =>
                 setIssuedetail({ ...issuedetail, bookId: value })

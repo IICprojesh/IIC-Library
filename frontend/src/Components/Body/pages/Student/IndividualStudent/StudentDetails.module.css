@@ -1,15 +1,14 @@
 .container {
   display: flex;
 }
-
 .profilecontainer {
   background-color: rgb(255, 255, 255);
   border-radius: 1%;
-  margin-top: 4vh;
-  padding: 10px 25px;
+  margin-top: 2vh;
+  padding: 5px 25px;
   border: 1px solid #ffff;
   width: 95em;
-  height: 220px;
+  height: 180px;
   padding-bottom: 30px;
   box-shadow: 2px 2px 10px #ccccccd8;
   display: flex;
@@ -35,6 +34,13 @@
 
 .bookissue {
   margin-top: 50px;
+  border-collapse: collapse;
+  display: block;
+  height: 500px;
+  width: 100%;
+  position: relative;
+  border-collapse: collapse;
+  overflow-y: scroll;
 }
 
 .tabledata,
@@ -75,7 +81,7 @@
   z-index: 1;
   width: 340px;
   padding-top: 12px;
-  padding-bottom: 12px;
+  padding-bottom: 15px;
   text-align: left;
 
   background-color: #383C7A;

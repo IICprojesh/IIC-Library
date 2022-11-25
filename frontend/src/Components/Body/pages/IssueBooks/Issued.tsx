@@ -1,11 +1,13 @@
-import { Button } from "@material-ui/core";
+import { Button, Chip } from "@material-ui/core";
 import { Pagination } from "@mui/material";
 import axios from "axios";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
+import DangerousIcon from '@mui/icons-material/Dangerous';
+import DoneIcon from '@mui/icons-material/Done';
 import styles from "./Issued.module.css";
 export default function IssueBook() {
   const [issued, setIssued] = useState<any>(null);
@@ -50,6 +52,7 @@ export default function IssueBook() {
             <th className={styles.tableheading}>Expire Date</th>
             <th className={styles.tableheading}>Fine Amount</th>
             <th className={styles.tableheading}>Total Renewed</th>
+            <th className={styles.tableheading}>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -67,11 +70,17 @@ export default function IssueBook() {
                       {moment(each?.issueDate).format("YYYY-MM-DD   hh:mm a")}
                     </td>
                     <td className={styles.tabledata}>
-                      {" "}
                       {moment(each?.expireDate).format("YYYY-MM-DD   hh:mm a")}
                     </td>
                     <td className={styles.tabledata}>Rs. {each.fine}</td>
                     <td className={styles.tabledata}>{each.totalRenew} </td>
+                    <td className={styles.tabledata}>
+                      {each.isExpired ? (
+                        <Chip label="Expired" icon={<DangerousIcon/>} color="secondary" />
+                      ) : (
+                        <Chip label="Active" icon={<DoneIcon/>} color="primary" />
+                      )}{" "}
+                    </td>
                   </tr>
                 ) : (
                   ""

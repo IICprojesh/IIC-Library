@@ -81,6 +81,9 @@ export class IssuesService {
     const [data, total] = await this.issueRepo.findAndCount({
       where: {
         studentId,
+        ...(() => {
+          return studentId ? {} : { returned: false };
+        })(),
       },
       relations: {
         student: true,

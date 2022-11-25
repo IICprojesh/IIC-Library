@@ -5,12 +5,16 @@ import FormData from "form-data";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { AiOutlineEdit } from "react-icons/ai";
-import { CODE_NETWORK_ERROR,BACKEND_ENDPOINT } from "../../../../constants/constants";
+import {
+  CODE_NETWORK_ERROR,
+  BACKEND_ENDPOINT,
+} from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
 import env from "react-dotenv";
 import { TextField } from "@material-ui/core";
 import { border } from "@mui/system";
+import { motion } from 'framer-motion';
 
 function Boxtitle(props: any) {
   const { title } = props;
@@ -50,20 +54,16 @@ export default function Settings() {
   });
   const [buttonState, setButtonState] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<{
-    avatar: string;
-  }>({
-    avatar: "",
-  });
+  const [avatar, setAvatar] = useState<any>('');
   const { register, handleSubmit } = useForm();
 
   function fetched(data: any) {
     setSettings(data);
     setAdminInfo(data);
-    setData(data);
+    setAvatar(data.avatar);
     setLoading(true);
   }
-
+  console.log(avatar)
   useEffect(() => {
     axios({
       method: "get",
@@ -122,7 +122,7 @@ export default function Settings() {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        setData(res.data);
+        setAvatar(res.data);
         toast.success("Profile Avatar changed!");
       })
       .catch((err) => {
@@ -133,7 +133,11 @@ export default function Settings() {
       });
   };
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
+      exit={{ opacity: 0 }}
+    >
       <Title
         title="Settings"
         leading={
@@ -145,7 +149,7 @@ export default function Settings() {
       <div className={styles.container}>
         <div className={styles.profile}>
           <Boxtitle title="Admin Profile" />
-          <img src={data.avatar} className={styles.imgupload} alt="Profile" />
+          <img src={avatar} className={styles.imgupload} alt="Profile" />
           <form
             onChange={handleSubmit(handleProfileSubmit)}
             className={styles.inputform}
@@ -361,6 +365,6 @@ export default function Settings() {
           </div>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 }

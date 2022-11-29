@@ -37,7 +37,6 @@ export class SettingsController {
     }),
   )
   updateProfile(@UploadedFile() profile: Express.Multer.File) {
-    console.log(profile);
     return this.settingsService.uploadProfile(profile);
   }
 

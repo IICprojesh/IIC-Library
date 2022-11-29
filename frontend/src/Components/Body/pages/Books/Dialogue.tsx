@@ -35,9 +35,9 @@ export default function FormDialog(props: any) {
       data,
     })
       .then((res) => {
-        console.log(res.data.message);
         toast.success(res.data.message);
         props.onClose();
+        props.success(data);
         setData(null);
       })
       .catch((err) => {
@@ -78,7 +78,6 @@ export default function FormDialog(props: any) {
       .then((res) => {
         toast.success("Book Added");
         props.onClose();
-        console.log(res.data)
         props.success(res.data)
         setData(null);
       })

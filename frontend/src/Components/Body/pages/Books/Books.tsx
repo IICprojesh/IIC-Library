@@ -14,6 +14,11 @@ export default function Books() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce<string>(search, 500);
+  const [dailogdata, setDilogdata] = useState(null);
+
+  useEffect(() => {
+    setDilogdata(null);
+  },[]);
 
   return (
     <motion.div
@@ -31,6 +36,9 @@ export default function Books() {
       >
         {showAddModal && (
           <FormDialog
+            success={(data: any) => {
+              setDilogdata(data);
+            }}
             isOpen={showAddModal}
             onClose={() => setShowAddModal(false)}
           />
@@ -64,7 +72,7 @@ export default function Books() {
             />
           </div>
         </div>
-        <BooksTable searchKey={debouncedSearch} />
+        <BooksTable datas={dailogdata} searchKey={debouncedSearch} />
       </Paper>
     </motion.div>
   );

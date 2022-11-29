@@ -32,11 +32,11 @@ const Transition = forwardRef(function Transition(
 
 interface BookTableInterface {
   searchKey?: string;
+  datas?: any;
 }
 
 export default function BooksTable(props: BookTableInterface) {
   const [editId, setEditid] = useState<number>(0);
-  const [success, setSuccess] = useState(false);
   const [books, setBooks] = useState<BookType[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [canDeleteIsbn, setCanDeleteIsbn] = useState("");
@@ -55,6 +55,12 @@ export default function BooksTable(props: BookTableInterface) {
       );
     }
   }, [props?.searchKey]);
+
+  useEffect(() => {
+    if (props.datas) {
+      setBooks([...books, props.datas]);
+    }
+  }, [props.datas]);
 
   useEffect(() => {
     axios({
@@ -118,7 +124,28 @@ export default function BooksTable(props: BookTableInterface) {
         <FormDialog
           datas={editId}
           isOpen={showAddModal}
-          success={()=>{console.log("this is e")}}
+          success={(data: any) => {
+            setBooks((prev: any) => {
+              return prev.map((each:any) => {
+                if (each.isbn === data.isbn) {
+                  return data;
+                } else {
+                  return each;
+                }
+                
+              });
+              
+            });
+
+            setSearchedBook((prev:any)=>{
+              return prev.map((each:any)=>{
+                if(each.isbn === data.isbn){
+                  return data
+                }
+                return each
+              })
+            })
+          }}
           onClose={() => setShowAddModal(false)}
         />
       )}
@@ -164,10 +191,7 @@ export default function BooksTable(props: BookTableInterface) {
                     <td className={styles.tabledata}>{each.authors}</td>
                     <td className={styles.tabledata}>
                       <Tooltip title="Edit">
-                        <Button
-                          variant="text"
-                          onClick={() => handleEdit(each)}
-                        >
+                        <Button variant="text" onClick={() => handleEdit(each)}>
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>
                       </Tooltip>

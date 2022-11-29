@@ -31,7 +31,8 @@ export default function StudentDetails() {
       .then((res) => {
         setStudent(res.data);
         setIsStudent(true);
-        if (!res.data.id) { setIsStudent(false);
+        if (!res.data.id) {
+          setIsStudent(false);
         }
       })
       .catch((_) => {
@@ -57,17 +58,20 @@ export default function StudentDetails() {
     setCurrentPage(value);
   }
 
-  const handleRenew = (id: any) => {
+  const handleRenew = (data: any) => {
+    if (!data.canRenew) {
+      return toast.error("This Book Cannot be Renewed, Return this Book First",{autoClose:5000});
+    }
     axios({
       method: "patch",
-      url: `${BACKEND_ENDPOINT}/issues/${id}`,
+      url: `${BACKEND_ENDPOINT}/issues/${data.id}`,
       data: { renew: true },
     })
       .then((res) => {
         setIssue((prev: any) => {
           const state = [...prev];
           const issue = state.find((each) => {
-            return (each.id = id);
+            return (each.id = data.id);
           });
           issue.renew = true;
           issue.latestRenewDate = res.data.data.latestRenewDate;
@@ -106,6 +110,8 @@ export default function StudentDetails() {
         toast.error("Something Wrong. Contact to maintainer");
       });
   };
+
+  console.log(issue);
 
   return (
     <>
@@ -200,11 +206,16 @@ export default function StudentDetails() {
                                 justifyContent: "space-around",
                               }}
                             >
-                              <Tooltip title="Hello">
+                              <Tooltip
+                                title={
+                                  each.canRenew
+                                    ? "Click to renew"
+                                    : "Cannot renew This book"
+                                }
+                              >
                                 <Button
-                                  onClick={() => handleRenew(each.id)}
+                                  onClick={() => handleRenew(each)}
                                   variant="outlined"
-                                  disabled={!each.canRenew}
                                   style={{
                                     marginRight: "12px",
                                     color: "green",

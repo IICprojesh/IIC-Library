@@ -71,9 +71,7 @@ export default function Settings() {
         fetched(res.data);
       })
       .catch((err) => {
-        console.log("here is error");
         if (err.code === CODE_NETWORK_ERROR) {
-          console.log(err);
           return notifyNetworkError();
         } else {
           toast.error(
@@ -102,12 +100,9 @@ export default function Settings() {
         .then((res) => {
           toast.success("Admin and Library Setting Changed.");
           window.location.reload();
-          console.log(res.data.data);
           setAdminInfo(res.data.data);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     }
   };
   const handleProfileSubmit = async (datas: any) => {
@@ -125,7 +120,6 @@ export default function Settings() {
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
         if (err.code === CODE_NETWORK_ERROR) {
           notifyNetworkError();
         }

@@ -30,10 +30,8 @@ export default function StudentDetails() {
     })
       .then((res) => {
         setStudent(res.data);
-        console.log(res.data.id);
         setIsStudent(true);
-        if (!res.data.id) {
-          setIsStudent(false);
+        if (!res.data.id) { setIsStudent(false);
         }
       })
       .catch((_) => {
@@ -51,7 +49,7 @@ export default function StudentDetails() {
         setIssue(res.data.data);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong. Contact to maintainer");
       });
   }, [currentPage, dataPerPage, id]);
 
@@ -104,8 +102,7 @@ export default function StudentDetails() {
 
         toast.success("Book Retuned Successfully !!!!");
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((_) => {
         toast.error("Something Wrong. Contact to maintainer");
       });
   };
@@ -204,17 +201,20 @@ export default function StudentDetails() {
                               }}
                             >
                               <Tooltip title="Hello">
-                              <Button
-                                onClick={() => handleRenew(each.id)}
-                                variant="outlined"
-                                disabled={!each.canRenew}
-                                style={{ marginRight: "12px", color: "green" }}
-                              >
-                                <RotateLeftIcon
-                                  style={{ marginRight: "5px" }}
-                                />
-                                Renew
-                              </Button>
+                                <Button
+                                  onClick={() => handleRenew(each.id)}
+                                  variant="outlined"
+                                  disabled={!each.canRenew}
+                                  style={{
+                                    marginRight: "12px",
+                                    color: "green",
+                                  }}
+                                >
+                                  <RotateLeftIcon
+                                    style={{ marginRight: "5px" }}
+                                  />
+                                  Renew
+                                </Button>
                               </Tooltip>
                               <Button
                                 onClick={() => handleReturn(each.id)}

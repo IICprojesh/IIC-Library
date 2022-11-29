@@ -73,8 +73,8 @@ export default function BooksTable(props: BookTableInterface) {
         setTotalPage(Math.ceil(res.data.total / dataPerPage));
         setBooks(res.data?.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((_) => {
+        toast.error("Something went wrong. Contact to Maintainer.");
       });
   }, [currentPage, dataPerPage]);
 
@@ -126,25 +126,23 @@ export default function BooksTable(props: BookTableInterface) {
           isOpen={showAddModal}
           success={(data: any) => {
             setBooks((prev: any) => {
-              return prev.map((each:any) => {
+              return prev.map((each: any) => {
                 if (each.isbn === data.isbn) {
                   return data;
                 } else {
                   return each;
                 }
-                
               });
-              
             });
 
-            setSearchedBook((prev:any)=>{
-              return prev.map((each:any)=>{
-                if(each.isbn === data.isbn){
-                  return data
+            setSearchedBook((prev: any) => {
+              return prev.map((each: any) => {
+                if (each.isbn === data.isbn) {
+                  return data;
                 }
-                return each
-              })
-            })
+                return each;
+              });
+            });
           }}
           onClose={() => setShowAddModal(false)}
         />

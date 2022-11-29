@@ -6,8 +6,8 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
-import DangerousIcon from '@mui/icons-material/Dangerous';
-import DoneIcon from '@mui/icons-material/Done';
+import DangerousIcon from "@mui/icons-material/Dangerous";
+import DoneIcon from "@mui/icons-material/Done";
 import styles from "./Issued.module.css";
 export default function IssueBook() {
   const [issued, setIssued] = useState<any>(null);
@@ -28,7 +28,7 @@ export default function IssueBook() {
         toast.success("Issued Fetch From Database");
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong. Contact to maintainer.");
       });
   }, [dataPerPage, currentPage]);
 
@@ -76,9 +76,17 @@ export default function IssueBook() {
                     <td className={styles.tabledata}>{each.totalRenew} </td>
                     <td className={styles.tabledata}>
                       {each.isExpired ? (
-                        <Chip label="Expired" icon={<DangerousIcon/>} color="secondary" />
+                        <Chip
+                          label="Expired"
+                          icon={<DangerousIcon />}
+                          color="secondary"
+                        />
                       ) : (
-                        <Chip label="Active" icon={<DoneIcon/>} color="primary" />
+                        <Chip
+                          label="Active"
+                          icon={<DoneIcon />}
+                          color="primary"
+                        />
                       )}{" "}
                     </td>
                   </tr>

@@ -47,9 +47,7 @@ export default function Issuebook(props: any) {
       method: "get",
       url: `${BACKEND_ENDPOINT}/students`,
     }).then((res) => {
-      setStudentid([
-        ...res.data.data.map((each: any) => each?.[props.medium]),
-      ]);
+      setStudentid([...res.data.data.map((each: any) => each?.[props.medium])]);
       setStudents(res.data.data);
     });
 
@@ -79,7 +77,6 @@ export default function Issuebook(props: any) {
       })
       .catch((err) => {
         toast.error(err.response.data.message);
-        console.log(err);
       });
   };
 

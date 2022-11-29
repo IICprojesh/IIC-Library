@@ -73,7 +73,6 @@ export default function StudentTable(props: any) {
         setStudent(res.data?.data);
       })
       .catch((err) => {
-        console.log(err);
       });
   }, [dataPerPage, currentPage]);
 

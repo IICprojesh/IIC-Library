@@ -46,12 +46,9 @@ export default function DataTable(props: DataTableInterface) {
     if (props?.searchText && props.searchText.length) {
       fetchData(props.resource + `?search=${props.searchText}`).then(
         (data) => {
-          console.log(data);
           setFilter((prev: any[]) => [...data.data]);
         },
-        (err: any) => {
-          console.error(err);
-        }
+        (err: any) => {}
       );
     }
   }, [props.searchText, props.resource]);

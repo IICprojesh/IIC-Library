@@ -49,11 +49,11 @@ export default function FormDialog(props: any) {
   };
 
   const editStudent = () => {
-    const {email,...s} = data;
+    const { email, ...s } = data;
     axios({
       method: "patch",
       url: `${BACKEND_ENDPOINT}/students/${data.id}`,
-      data:{...s}
+      data: { ...s },
     })
       .then((res) => {
         toast.success(res.data.message);
@@ -61,9 +61,8 @@ export default function FormDialog(props: any) {
         props.success(data);
         setData(null);
       })
-      .catch((err) => {
-        console.log(err);
-        toast.error("something went wrong check console");
+      .catch((_) => {
+        toast.error("something went wrong. Contact to the maintainer.");
       });
   };
   return (

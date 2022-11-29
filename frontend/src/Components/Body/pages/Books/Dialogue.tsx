@@ -41,8 +41,7 @@ export default function FormDialog(props: any) {
         setData(null);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error("something went wrong check console");
+        toast.error("something went wrong. Contact to maintainer.");
       });
   };
 
@@ -206,9 +205,7 @@ export default function FormDialog(props: any) {
                 }}
                 variant="filled"
                 onChange={(e) => {
-                  console.log(data);
                   setData({ ...data, title: e.target.value });
-                  console.log(data);
                 }}
               />
               <TextField

@@ -19,6 +19,10 @@ export default function StudentDetails() {
   const [isStudent, setIsStudent] = useState(true);
   const { id } = useParams();
 
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [dataPerPage, setDataPerPage] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   useEffect(() => {
     axios({
       method: "get",
@@ -32,22 +36,28 @@ export default function StudentDetails() {
           setIsStudent(false);
         }
       })
-      .catch((err) => {
+      .catch((_) => {
         setIsStudent(false);
       });
 
     axios({
       method: "get",
-      url: `${BACKEND_ENDPOINT}/issues?studentId=${id}`,
+      url: `${BACKEND_ENDPOINT}/issues?studentId=${id}&limit=${dataPerPage}&skip=${
+        (currentPage - 1) * dataPerPage
+      }`,
     })
       .then((res) => {
+        setTotalPage(Math.ceil(res.data.total / dataPerPage));
         setIssue(res.data.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
-  console.log(issue);
+  }, [currentPage, dataPerPage, id]);
+
+  function handlePagination(event: React.ChangeEvent<unknown>, value: number) {
+    setCurrentPage(value);
+  }
 
   const handleRenew = (id: any) => {
     axios({
@@ -56,7 +66,6 @@ export default function StudentDetails() {
       data: { renew: true },
     })
       .then((res) => {
-        console.log(res.data);
         setIssue((prev: any) => {
           const state = [...prev];
           const issue = state.find((each) => {
@@ -81,15 +90,16 @@ export default function StudentDetails() {
       data: { returned: true },
     })
       .then((res) => {
-        console.log(res.data);
         setIssue((prev: any) => {
-          const state = [...prev];
-          const issue = state.find((each) => {
+          const state = [...prev.filter((each: any) => each.id !== id)];
+          const notReturned = prev.filter(
+            (each: any) => each.returned === false && each.id !== id
+          );
+          const issue = prev.find((each: any) => {
             return (each.id = id);
           });
-          console.log(issue);
           issue.returned = true;
-          return state;
+          return [...state];
         });
 
         toast.success("Book Retuned Successfully !!!!");
@@ -229,9 +239,10 @@ export default function StudentDetails() {
           </div>
           <Pagination
             sx={{ marginTop: 3 }}
-            count={3}
+            count={totalPage}
             color="primary"
             shape="rounded"
+            onChange={handlePagination}
           />
         </div>
       ) : (

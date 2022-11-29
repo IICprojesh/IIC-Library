@@ -11,10 +11,8 @@ import {
 } from "../../../../constants/constants";
 import { notifyNetworkError } from "../../../../utils/notify";
 import { Title } from "../../../common/title/Title";
-import env from "react-dotenv";
 import { TextField } from "@material-ui/core";
-import { border } from "@mui/system";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 function Boxtitle(props: any) {
   const { title } = props;
@@ -54,7 +52,7 @@ export default function Settings() {
   });
   const [buttonState, setButtonState] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [avatar, setAvatar] = useState<any>('');
+  const [avatar, setAvatar] = useState<any>("");
   const { register, handleSubmit } = useForm();
 
   function fetched(data: any) {
@@ -63,7 +61,6 @@ export default function Settings() {
     setAvatar(data.avatar);
     setLoading(true);
   }
-  console.log(avatar)
   useEffect(() => {
     axios({
       method: "get",
@@ -104,6 +101,7 @@ export default function Settings() {
       })
         .then((res) => {
           toast.success("Admin and Library Setting Changed.");
+          window.location.reload();
           console.log(res.data.data);
           setAdminInfo(res.data.data);
         })
@@ -122,8 +120,9 @@ export default function Settings() {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        setAvatar(res.data);
+        setAvatar(res.data.avatar);
         toast.success("Profile Avatar changed!");
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

@@ -122,7 +122,7 @@ export default function Settings() {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        setAvatar(res.data);
+        setAvatar(res.data.avatar);
         toast.success("Profile Avatar changed!");
       })
       .catch((err) => {

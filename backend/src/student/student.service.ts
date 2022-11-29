@@ -32,7 +32,16 @@ export class StudentService {
     } catch (err) {
       const ERR_ALREADY_EXIST = 19;
       if (err.errno === ERR_ALREADY_EXIST) {
-        throw new BadRequestException('contact number already exist.');
+        const errorColumn: keyof Student = err.message
+          .split(':')
+          .at(-1)
+          .split('.')[1];
+        switch (errorColumn) {
+          case 'contactNumber':
+            throw new BadRequestException('Contact number already exist.');
+          case 'collegeId':
+            throw new BadRequestException('College id already exist.');
+        }
       }
     }
   }

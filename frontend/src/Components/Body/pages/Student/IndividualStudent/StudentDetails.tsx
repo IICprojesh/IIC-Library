@@ -31,7 +31,8 @@ export default function StudentDetails() {
       .then((res) => {
         setStudent(res.data);
         setIsStudent(true);
-        if (!res.data.id) { setIsStudent(false);
+        if (!res.data.id) {
+          setIsStudent(false);
         }
       })
       .catch((_) => {
@@ -90,14 +91,11 @@ export default function StudentDetails() {
       .then((res) => {
         setIssue((prev: any) => {
           const state = [...prev.filter((each: any) => each.id !== id)];
-          const notReturned = prev.filter(
-            (each: any) => each.returned === false && each.id !== id
-          );
           const issue = prev.find((each: any) => {
             return (each.id = id);
           });
           issue.returned = true;
-          return [...state];
+          return [...state, { ...issue }];
         });
 
         toast.success("Book Retuned Successfully !!!!");

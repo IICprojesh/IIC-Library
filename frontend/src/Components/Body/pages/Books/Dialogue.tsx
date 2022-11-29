@@ -42,8 +42,7 @@ export default function FormDialog(props: any) {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("something went wrong check console")
-
+        toast.error("something went wrong check console");
       });
   };
 
@@ -78,21 +77,22 @@ export default function FormDialog(props: any) {
       .then((res) => {
         toast.success("Book Added");
         props.onClose();
-        props.success(res.data)
+        props.success(res.data);
         setData(null);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.message[0]);
+        if (Array.isArray(err?.response?.data?.message)) {
+          toast.error(err?.response?.data?.message[0]);
+        } else {
+          toast.error(err?.response?.data?.message);
+        }
       });
   };
   return (
     <>
       {!isEdit ? (
         <>
-          <Dialog
-            open={props.isOpen}
-            onClose={props.onClose}
-          >
+          <Dialog open={props.isOpen} onClose={props.onClose}>
             <DialogTitle>Add Book</DialogTitle>
             <DialogContent>
               <DialogContentText>

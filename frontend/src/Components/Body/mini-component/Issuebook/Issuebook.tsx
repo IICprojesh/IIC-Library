@@ -78,8 +78,11 @@ export default function Issuebook(props: any) {
         toast.success("Book Issued");
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
-        console.log(err);
+        if (Array.isArray(err?.response?.data?.message)) {
+          toast.error(err?.response?.data?.message[0]);
+        } else {
+          toast.error(err?.response?.data?.message);
+        }
       });
   };
 
@@ -103,7 +106,7 @@ export default function Issuebook(props: any) {
               </>
             )}
             <Input
-              label="Student ID"
+              label={`Student ${props.medium}`}
               required
               value={issuedetail?.studentId}
               onChange={(e: any, value: any) => {

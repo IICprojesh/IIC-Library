@@ -99,7 +99,11 @@ export default function StudentTable(props: any) {
       .catch((err) => {
         setCanDelete(false);
 
-        toast.error(err.response.data.message);
+        if (Array.isArray(err?.response?.data?.message)) {
+          toast.error(err?.response?.data?.message[0]);
+        } else {
+          toast.error(err?.response?.data?.message);
+        }
       });
   };
   const handleEdit = (studentdetail: any) => {
@@ -133,6 +137,8 @@ export default function StudentTable(props: any) {
                 return each;
               });
             });
+            toast.success("Student Update Success !!!")
+
           }}
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}

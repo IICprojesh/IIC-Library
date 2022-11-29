@@ -33,6 +33,7 @@ export default function Sidebar() {
           <img
             src={setting?.avatar ?? `https://thispersondoesnotexist.com/image`}
             className={styles.avatar}
+            style={{height:45, width:55}}
             alt="profile"
           />
           <h4>

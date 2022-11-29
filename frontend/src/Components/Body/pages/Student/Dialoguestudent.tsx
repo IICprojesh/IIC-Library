@@ -40,7 +40,11 @@ export default function FormDialog(props: any) {
         setData(null);
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        if (Array.isArray(err?.response?.data?.message)) {
+          toast.error(err?.response?.data?.message[0]);
+        } else {
+          toast.error(err?.response?.data?.message);
+        }
       });
   };
 
@@ -54,7 +58,7 @@ export default function FormDialog(props: any) {
       .then((res) => {
         toast.success(res.data.message);
         props.onClose();
-        props.success();
+        props.success(data);
         setData(null);
       })
       .catch((err) => {

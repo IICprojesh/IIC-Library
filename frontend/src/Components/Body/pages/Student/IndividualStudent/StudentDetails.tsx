@@ -1,7 +1,7 @@
 import axios from "axios";
 import styles from "./StudentDetails.module.css";
 import { useEffect, useState } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
@@ -10,14 +10,15 @@ import moment, { deprecationHandler } from "moment";
 import DoneIcon from "@mui/icons-material/Done";
 import { toast } from "react-toastify";
 import { BACKEND_ENDPOINT } from "../../../../../constants/constants";
-import { Pagination } from '@mui/material';
+import { Pagination } from "@mui/material";
+import { Link, useParams } from "react-router-dom";
 
 export default function StudentDetails() {
   const [Student, setStudent] = useState<any>(null);
   const [issue, setIssue] = useState<any>(null);
   const [isStudent, setIsStudent] = useState(true);
-  const url = window.location.pathname;
-  const id = url.split("Student/")[1];
+  const { id } = useParams();
+
   useEffect(() => {
     axios({
       method: "get",
@@ -25,7 +26,11 @@ export default function StudentDetails() {
     })
       .then((res) => {
         setStudent(res.data);
+        console.log(res.data.id);
         setIsStudent(true);
+        if (!res.data.id) {
+          setIsStudent(false);
+        }
       })
       .catch((err) => {
         setIsStudent(false);
@@ -188,6 +193,7 @@ export default function StudentDetails() {
                                 justifyContent: "space-around",
                               }}
                             >
+                              <Tooltip title="Hello">
                               <Button
                                 onClick={() => handleRenew(each.id)}
                                 variant="outlined"
@@ -199,6 +205,7 @@ export default function StudentDetails() {
                                 />
                                 Renew
                               </Button>
+                              </Tooltip>
                               <Button
                                 onClick={() => handleReturn(each.id)}
                                 variant="outlined"
@@ -221,16 +228,18 @@ export default function StudentDetails() {
             </table>
           </div>
           <Pagination
-          sx={{ marginTop: 3 }}
-          count={3}
-          color="primary"
-          shape="rounded"
-        />
+            sx={{ marginTop: 3 }}
+            count={3}
+            color="primary"
+            shape="rounded"
+          />
         </div>
       ) : (
         <>
           <h1>No any student found of id {id}</h1>
-          <Button variant="outlined">Return Back</Button>
+          <Link to="/Students">
+            <Button variant="outlined">Return Back</Button>
+          </Link>
         </>
       )}
     </>

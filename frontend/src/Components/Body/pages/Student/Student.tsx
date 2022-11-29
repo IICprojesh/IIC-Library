@@ -32,7 +32,6 @@ export default function Student() {
           setNewStudent(data);
           setShowModal(false);
         }}
-        success={success}
         onClose={() => {
           setShowModal(false);
         }}
@@ -66,7 +65,7 @@ export default function Student() {
           />
         </div>
       </div>
-      <StudentTable searchKey={search} />
+      <StudentTable data={newStudent} searchKey={search} />
     </Paper>
   );
 }

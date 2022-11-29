@@ -1,6 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { forwardRef, useEffect, useState } from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import styles from "./StudentTable.module.css";
 import { Button, Pagination, TextField } from "@mui/material";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
@@ -8,12 +12,22 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Tooltip } from "@material-ui/core";
+import { Slide, Tooltip } from "@material-ui/core";
 import { BACKEND_ENDPOINT } from "../../../../constants/constants";
 import FormDialog from "./Dialoguestudent";
 import { useDebounce } from "usehooks-ts";
 import { fetchData } from "../../../../utils/fetch";
 import { motion, MotionConfig } from "framer-motion";
+import { TransitionProps } from "@mui/material/transitions";
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function StudentTable(props: any) {
   const navigate = useNavigate();
@@ -26,10 +40,18 @@ export default function StudentTable(props: any) {
   const [totalPage, setTotalPage] = useState<number>(1);
   const [dataPerPage, setDataPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [candelete, setCanDelete] = useState(false);
+  const [candeleteId, setCanDeleteId] = useState("");
 
   useEffect(() => {
     setSearch(props?.searchKey ?? "");
   }, [props.searchKey]);
+
+  useEffect(() => {
+    if (props.data) {
+      setStudent([...students, props.data]);
+    }
+  }, [props.data]);
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
@@ -68,12 +90,15 @@ export default function StudentTable(props: any) {
       url: `${BACKEND_ENDPOINT}/students/${id}`,
     })
       .then((res) => {
+        setCanDelete(false);
         setStudent((prev: any) => {
           return prev.filter((each: any) => each.id !== id);
         });
         toast.success("Student Deleted ");
       })
       .catch((err) => {
+        setCanDelete(false);
+
         toast.error(err.response.data.message);
       });
   };
@@ -90,20 +115,43 @@ export default function StudentTable(props: any) {
       {showAddModal && (
         <FormDialog
           datas={editId}
-          success={() => {
-            axios({
-              method:'get',
-              url:`${BACKEND_ENDPOINT}/students`
-            }).then((res)=>{
-              setStudent(res.data.data)
-              console.log(res.data.data)
-            })
-            toast.success("Student Update Successfully !!!");
+          success={(data: any) => {
+            setStudent((prev: any) => {
+              return prev.map((each: any) => {
+                if (each.id === data.id) {
+                  return data;
+                }
+                return each;
+              });
+            });
+
+            setSearchedData((prev: any) => {
+              return prev.map((each: any) => {
+                if (each.id === data.id) {
+                  return data;
+                }
+                return each;
+              });
+            });
           }}
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
         />
       )}
+      <Dialog
+        open={candelete}
+        TransitionComponent={Transition}
+        keepMounted
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          Are You Sure You Want to Delete this Student ?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={() => handleDelete(candeleteId)}>Yes</Button>
+          <Button onClick={() => setCanDelete(false)}>NO</Button>
+        </DialogActions>
+      </Dialog>
       <table className={styles.container}>
         <thead>
           <tr>
@@ -133,17 +181,17 @@ export default function StudentTable(props: any) {
                         </Button>
                       </Tooltip>
                       <Tooltip title="Edit">
-                        <Button
-                          variant="text"
-                          onClick={() => handleEdit(each)}
-                        >
+                        <Button variant="text" onClick={() => handleEdit(each)}>
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>
                       </Tooltip>
                       <Tooltip title="Delete">
                         <Button
                           variant="text"
-                          onClick={() => handleDelete(each.id)}
+                          onClick={() => {
+                            setCanDelete(true);
+                            setCanDeleteId(each.id);
+                          }}
                         >
                           <DeleteOutlineIcon color="error" />
                         </Button>

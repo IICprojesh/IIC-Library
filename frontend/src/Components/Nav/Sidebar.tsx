@@ -3,19 +3,23 @@ import styles from "./Sidebar.module.css";
 import logo from "./iiconly.png";
 import { Link } from "react-router-dom";
 import { Icon } from "../common/icons/Icon";
+import { useEffect, useState } from "react";
+import { fetchData } from "../../utils/fetch";
 
 export default function Sidebar() {
+  const [setting, setSetting] = useState<any>(null);
+
+  useEffect(() => {
+    fetchData("settings").then((data: any) => {
+      setSetting(data);
+    });
+  }, []);
+
   return (
     <div className={styles.container}>
       <div>
         <div>
           <img src={logo} className={styles.logo} alt="logo" />
-          {/* change to above code during production */}
-          {/* <img
-            src="https://nepal.gov.np/splash/nepal-govt.png"
-            className={styles.logo}
-            alt="logo"
-          /> */}
         </div>
         <ul className={styles.navitems}>
           <Navitems link="/" icon="dashboard" text="Dashboard" />
@@ -27,11 +31,13 @@ export default function Sidebar() {
       <div className={styles.navfooter}>
         <div className={styles.footercontains}>
           <img
-            src="https://thispersondoesnotexist.com/image"
+            src={setting?.avatar ?? `https://thispersondoesnotexist.com/image`}
             className={styles.avatar}
             alt="profile"
           />
-          <h4>Librarian Mam</h4>
+          <h4>
+            {setting?.firstName} {setting?.lastName}
+          </h4>
           <div className={styles.hr}></div>
           <li className={styles.footeritems}>
             <Link to="/settings">

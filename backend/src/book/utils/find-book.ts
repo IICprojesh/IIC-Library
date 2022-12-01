@@ -3,7 +3,56 @@ import { BookType } from '../types/book.types';
 import * as qs from 'node:querystring';
 import { AxiosInstance } from 'axios';
 import { HttpException, HttpStatus } from '@nestjs/common';
-export async function findBookFromInternet(isbn: string, axios: AxiosInstance) {
+
+export async function findBookFromInternet(
+  isbn: string,
+  axios: AxiosInstance,
+): Promise<BookType | { found: false }> {
+  return Promise.any([
+    searchBookFromBooksCouter(isbn, axios),
+    searchFromBookFinder(isbn, axios),
+  ])
+    .then((data) => data)
+    .catch((_) => ({ found: false }));
+}
+
+async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
+  const url = `https://api.bookscouter.com/v4/prices/sell/${isbn}?base64=1`;
+
+  const { data } = await axios.get(url, {
+    timeout: 30 * 1000,
+    headers: {
+      'content-type': 'application/ld+json; charset=utf-8',
+    },
+  });
+  if (!data.book || !data.book.title.length) return Promise.reject();
+  console.log('here ');
+
+  return {
+    isbn,
+    title: data.book.title,
+    image: data.book.image,
+    authors: data.book.author + '',
+    summary: '',
+  } as BookType;
+}
+
+export async function searchBookFromBookFinder4U(
+  isbn: string,
+  axios: AxiosInstance,
+) {
+  const url = `http://www.bookfinder4u.com/IsbnSearch.aspx?isbn=${isbn}&mode=direct&second_search=true`;
+
+  try {
+    const data = await axios.get(url, { timeout: 500 * 1000 });
+    const $ = load(data.data);
+    const image = $('.solid_box_large_font img').attr('src');
+  } catch (err) {
+    return Promise.reject();
+  }
+}
+
+async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
   const options = {
     keywords: isbn,
     currency: 'USD',
@@ -36,6 +85,10 @@ export async function findBookFromInternet(isbn: string, axios: AxiosInstance) {
   const authors = $('span[itemprop=author]').text();
   const image = $('img[id=coverImage]').attr('src');
   const error = $('p[align=center]').text();
+  const found = !error;
+  if (!found) {
+    return Promise.reject();
+  }
   return {
     isbn,
     title,

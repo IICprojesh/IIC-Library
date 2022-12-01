@@ -11,9 +11,28 @@ export async function findBookFromInternet(
   return Promise.any([
     searchBookFromBooksCouter(isbn, axios),
     searchFromBookFinder(isbn, axios),
+    searchBookFromAbeBooks(isbn, axios),
   ])
     .then((data) => data)
     .catch((_) => ({ found: false }));
+}
+
+async function searchBookFromAbeBooks(
+  isbn: string,
+  axios: AxiosInstance,
+): Promise<BookType> {
+  const url = `https://www.abebooks.com/servlet/SearchResults?kn=${isbn}&sts=t&cm_sp=SearchF-_-topnav-_-Results`;
+
+  const { data } = await axios.get(url, { timeout: 30 * 1000 });
+
+  const $ = load(data);
+  const image = $('.srp-item-image').attr('src');
+  const title = $('.title').text().trim();
+  const authors = $('.author').text().trim();
+  console.log({ image, title, authors });
+  if (!title) return Promise.reject();
+
+  return { image, title, authors, isbn, summary: '' };
 }
 
 async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
@@ -26,7 +45,6 @@ async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
     },
   });
   if (!data.book || !data.book.title.length) return Promise.reject();
-  console.log('here ');
 
   return {
     isbn,
@@ -65,7 +83,7 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
   };
   const query = qs.stringify(options);
   try {
-    const url = 'https://www.bookfinder.com/search/?' + query;
+    const url = 'https://www.bookfinder.com/search?' + query;
     // eslint-disable-next-line no-var
     var data = await axios.get(url, {
       timeout: 20 * 1000, // 20 sec
@@ -86,7 +104,7 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
   const image = $('img[id=coverImage]').attr('src');
   const error = $('p[align=center]').text();
   const found = !error;
-  if (!found) {
+  if (!found || !title.length) {
     return Promise.reject();
   }
   return {
@@ -95,6 +113,5 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
     image,
     summary,
     authors,
-    found: !Boolean(error),
   } as BookType;
 }

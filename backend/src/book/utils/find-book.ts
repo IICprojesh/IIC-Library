@@ -9,6 +9,7 @@ export async function findBookFromInternet(
   axios: AxiosInstance,
 ): Promise<BookType | { found: false }> {
   return Promise.any([
+    searchBookFromOpenLibrary(isbn, axios),
     searchBookFromBooksCouter(isbn, axios),
     searchFromBookFinder(isbn, axios),
     searchBookFromAbeBooks(isbn, axios),
@@ -113,4 +114,32 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
     summary,
     authors,
   } as BookType;
+}
+
+async function searchBookFromOpenLibrary(
+  isbn: string,
+  axios: AxiosInstance,
+): Promise<BookType> {
+  function generateImageUri(image: string) {
+    const imagePlaceholder = `https://covers.openlibrary.org/b/id/${image}-M.jpg`;
+    return imagePlaceholder;
+  }
+
+  const searchByIsbn = `https://openlibrary.org/isbn/${isbn}.json`;
+
+  const { data } = await axios.get(searchByIsbn, { timeout: 30 * 1000 });
+  const title = data.title;
+  const image = generateImageUri(data.covers[0]);
+
+  const authors =
+    (await Promise.all(
+      data.authors.map(async (each: { key: string }) => {
+        return axios
+          .get(`https://openlibrary.org/authors/${each.key}.json`)
+          .then((res) => {
+            return res.data.name;
+          });
+      }),
+    )) + '';
+  return { title, isbn, authors, image, summary: '' };
 }

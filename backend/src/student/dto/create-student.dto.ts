@@ -3,11 +3,11 @@ import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateStudentDto {
-  @IsString()
+  @IsString({ message: 'College Id must not be empty' })
   @IsOptional()
   collegeId?: string;
 
-  @IsString()
+  @IsString({ message: 'Name must not be empty' })
   @ApiProperty({ example: 'Sujan Parajuli' })
   @Transform((options) => {
     return (options.value as string).toLowerCase();

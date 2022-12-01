@@ -24,6 +24,10 @@ export class BookService {
   ) {}
 
   async create(createBookDto: CreateBookDto) {
+    const book = await this.bookRepo.findOne({
+      where: { isbn: createBookDto.isbn },
+    });
+    if (book) throw new BadRequestException('Book already exist');
     return await this.bookRepo.save(createBookDto);
   }
 

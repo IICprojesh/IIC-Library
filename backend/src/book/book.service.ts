@@ -47,6 +47,7 @@ export class BookService {
   }) {
     let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
     if (search) {
+      search = search.replace(/-/g, '');
       where = [
         { title: ILike(`%${search}%`) },
         { summary: ILike(`%${search}%`) },

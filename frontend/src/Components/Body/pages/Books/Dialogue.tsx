@@ -81,7 +81,12 @@ export default function FormDialog(props: any) {
       })
       .catch((err) => {
         if (Array.isArray(err?.response?.data?.message)) {
-          toast.error(err?.response?.data?.message[0]);
+          if(err?.response?.data?.message[0] === 'isbn must be an ISBN'){
+            toast.error('ISBN Must be Valid.');
+          }else{
+            toast.error(err?.response?.data?.message[0]);
+
+          }
         } else {
           toast.error(err?.response?.data?.message);
         }

@@ -4,7 +4,6 @@ import { Transform } from 'class-transformer';
 
 export class CreateBookDto {
   @ApiProperty({ example: '12313123', type: 'isbn' })
-  @IsString()
   @IsISBN()
   @Transform(({ value }) => {
     return value.replace(/[\s-]/g, '');
@@ -12,7 +11,7 @@ export class CreateBookDto {
   isbn: string;
 
   @ApiProperty({ example: 'book title' })
-  @IsString()
+  @IsString({ message: 'Title must not be empty.' })
   title: string;
 
   @ApiProperty({ example: 'book summary' })

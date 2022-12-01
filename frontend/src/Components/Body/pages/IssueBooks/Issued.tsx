@@ -47,6 +47,7 @@ export default function IssueBook() {
           <tr>
             <th className={styles.tableheading}>Student ID</th>
             <th className={styles.tableheading}>Student Name</th>
+            <th className={styles.tableheading}>Student Contact Number</th>
             <th className={styles.tableheading}>Book ISBN</th>
             <th className={styles.tableheading}>Issue Date</th>
             <th className={styles.tableheading}>Expire Date</th>
@@ -65,6 +66,7 @@ export default function IssueBook() {
                       {each.student.collegeId}
                     </td>
                     <td className={styles.tabledata}>{each.student.name}</td>
+                    <td className={styles.tabledata}>{each.student.contactNumber}</td>
                     <td className={styles.tabledata}>{each.bookId}</td>
                     <td className={styles.tabledata}>
                       {moment(each?.issueDate).format("YYYY-MM-DD   hh:mm a")}

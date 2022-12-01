@@ -183,6 +183,7 @@ export default function BooksTable(props: BookTableInterface) {
                       <img
                         height="50px"
                         width="50px"
+                        onError={(e)=> (e.target as any).src = 'https://assets.prod.abebookscdn.com/cdn/com/images/servlets/shared/search/no-image.gif'}
                         style={{ objectFit: "cover" }}
                         src={each.image}
                         alt={each.title}
@@ -192,12 +193,12 @@ export default function BooksTable(props: BookTableInterface) {
                     <td className={styles.tabledata}>{each.title}</td>
                     <td className={styles.tabledata}>{each.authors}</td>
                     <td className={styles.tabledata}>
-                      <Tooltip title="Edit">
+                      <Tooltip  title={<h2>Edit</h2>}>
                         <Button variant="text" onClick={() => handleEdit(each)}>
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip  title={<h2>Delete</h2>}>
                         <Button
                           variant="text"
                           onClick={() => handleDelete(each)}

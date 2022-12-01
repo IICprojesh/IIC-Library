@@ -24,19 +24,16 @@ export class BookService {
   ) {}
 
   async create(createBookDto: CreateBookDto) {
+    const book = await this.bookRepo.findOne({
+      where: { isbn: createBookDto.isbn },
+    });
+    if (book) throw new BadRequestException('Book already exist');
     return await this.bookRepo.save(createBookDto);
   }
 
   async seachBook(isbn: string) {
-    const book = await this.findOne(isbn);
-    if (!book) {
-      const data = await findBookFromInternet(isbn, this.httpService.axiosRef);
-      return data;
-    }
-    return {
-      exist: true,
-      ...book,
-    };
+    const data = await findBookFromInternet(isbn, this.httpService.axiosRef);
+    return data;
   }
 
   async findAll({
@@ -50,6 +47,7 @@ export class BookService {
   }) {
     let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
     if (search) {
+      search = search.replace(/-/g, '');
       where = [
         { title: ILike(`%${search}%`) },
         { summary: ILike(`%${search}%`) },

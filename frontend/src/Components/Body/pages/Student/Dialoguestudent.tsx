@@ -32,7 +32,7 @@ export default function FormDialog(props: any) {
     axios({
       method: "post",
       url: `${BACKEND_ENDPOINT}/students`,
-      data,
+      data:{...data, contactNumber:+data.contactNumber}
     })
       .then((res) => {
         props.onSuccess(res.data);
@@ -109,10 +109,12 @@ export default function FormDialog(props: any) {
               value={data?.contactNumber}
               sx={{ marginRight: 2 }}
               label="Contact Number"
+              error={data?.contactNumber?.length < 10}
+              
               onChange={(e) =>
                 setData({ ...data, contactNumber: e.target.value })
               }
-              type="text"
+              type="number"
               InputLabelProps={{
                 shrink: true,
               }}

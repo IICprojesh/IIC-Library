@@ -1,7 +1,7 @@
 # Online Library Management System
 #### An interactive web portal for automating various manual processes done by librarian.
 
- [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Hitex-Solution/Library-Management-System.svg?logo=git&style=social)](https://Hitex-Solution.github.io/Library-Management-System/) [![GitHub license](https://img.shields.io/github/license/Hitex-Solution/Library-Management-System.svg?style=social&logo=github)](https://github.com/Hitex-Solution/Library-Management-System/blob/master/LICENSE)
+ ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Hitex-Solution/Library-Management-System.svg?logo=git&style=social)
 
 ## Abstract
 

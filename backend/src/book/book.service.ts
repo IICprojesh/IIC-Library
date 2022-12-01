@@ -28,15 +28,8 @@ export class BookService {
   }
 
   async seachBook(isbn: string) {
-    const book = await this.findOne(isbn);
-    if (!book) {
-      const data = await findBookFromInternet(isbn, this.httpService.axiosRef);
-      return data;
-    }
-    return {
-      exist: true,
-      ...book,
-    };
+    const data = await findBookFromInternet(isbn, this.httpService.axiosRef);
+    return data;
   }
 
   async findAll({

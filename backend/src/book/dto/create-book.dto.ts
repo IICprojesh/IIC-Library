@@ -12,7 +12,7 @@ export class CreateBookDto {
   isbn: string;
 
   @ApiProperty({ example: 'book title' })
-  @IsString()
+  @IsString({ message: 'Title must not be empty.' })
   title: string;
 
   @ApiProperty({ example: 'book summary' })

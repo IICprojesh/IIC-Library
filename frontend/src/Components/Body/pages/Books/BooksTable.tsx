@@ -183,6 +183,7 @@ export default function BooksTable(props: BookTableInterface) {
                       <img
                         height="50px"
                         width="50px"
+                        onError={(e)=> (e.target as any).src = 'https://assets.prod.abebookscdn.com/cdn/com/images/servlets/shared/search/no-image.gif'}
                         style={{ objectFit: "cover" }}
                         src={each.image}
                         alt={each.title}

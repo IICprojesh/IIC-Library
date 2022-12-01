@@ -26,10 +26,9 @@ async function searchBookFromAbeBooks(
   const { data } = await axios.get(url, { timeout: 30 * 1000 });
 
   const $ = load(data);
-  const image = $('.srp-item-image').attr('src');
-  const title = $('.title').text().trim();
-  const authors = $('.author').text().trim();
-  console.log({ image, title, authors });
+  const title = $('.title').first().text().trim();
+  const authors = $('.author').first().text().trim();
+  const image = $('div[data-cy=listing-image] img').first().attr('src');
   if (!title) return Promise.reject();
 
   return { image, title, authors, isbn, summary: '' };

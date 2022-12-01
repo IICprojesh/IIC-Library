@@ -72,8 +72,7 @@ export default function StudentTable(props: any) {
         setTotalPage(Math.ceil(res.data.total / dataPerPage));
         setStudent(res.data?.data);
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
   }, [dataPerPage, currentPage]);
 
   function handlePagination(event: React.ChangeEvent<unknown>, value: number) {
@@ -136,8 +135,7 @@ export default function StudentTable(props: any) {
                 return each;
               });
             });
-            toast.success("Student Update Success !!!")
-
+            toast.success("Student Update Success !!!");
           }}
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
@@ -180,17 +178,17 @@ export default function StudentTable(props: any) {
                     <td className={styles.tabledata}>{each.contactNumber}</td>
                     <td className={styles.tabledata}>{each.email}</td>
                     <td className={styles.tabledata}>
-                      <Tooltip title="View">
+                      <Tooltip title={<h2>View</h2>}>
                         <Button variant="text" onClick={() => handleView(each)}>
                           <RemoveRedEyeIcon color="success" />
                         </Button>
                       </Tooltip>
-                      <Tooltip title="Edit">
+                      <Tooltip  title={<h2>Edit</h2>}>
                         <Button variant="text" onClick={() => handleEdit(each)}>
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip  title={<h2>Delete</h2>}>
                         <Button
                           variant="text"
                           onClick={() => {

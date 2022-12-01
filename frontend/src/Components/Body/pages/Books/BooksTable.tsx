@@ -192,12 +192,12 @@ export default function BooksTable(props: BookTableInterface) {
                     <td className={styles.tabledata}>{each.title}</td>
                     <td className={styles.tabledata}>{each.authors}</td>
                     <td className={styles.tabledata}>
-                      <Tooltip title="Edit">
+                      <Tooltip  title={<h2>Edit</h2>}>
                         <Button variant="text" onClick={() => handleEdit(each)}>
                           <DriveFileRenameOutlineIcon color="primary" />
                         </Button>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip  title={<h2>Delete</h2>}>
                         <Button
                           variant="text"
                           onClick={() => handleDelete(each)}

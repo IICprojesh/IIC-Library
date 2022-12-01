@@ -171,6 +171,7 @@ export default function Settings() {
                 variant="outlined"
                 focused={buttonState}
                 value={settings?.firstName}
+
                 onChange={(e) =>
                   setSettings({ ...settings, firstName: e.target.value })
                 }
@@ -266,6 +267,7 @@ export default function Settings() {
                 variant="outlined"
                 type="Email"
                 label="Email Suffix"
+                helperText="please enter college email suffix eg: @iic.edu.np"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -286,6 +288,7 @@ export default function Settings() {
                 variant="outlined"
                 type="number"
                 label="Books Renew (/times)"
+                helperText="How many times one student can renew one Book"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -300,15 +303,24 @@ export default function Settings() {
                   translate: "border 200ms",
                 }}
                 value={settings?.renewBefore}
-                onChange={(e) =>
-                  setSettings({ ...settings, renewBefore: e.target.value })
-                }
+                onChange={(e) => {
+                  if (+e.target.value < 0) {
+                    toast.error(
+                      "What do you think student Is? Time Traveller ??", {autoClose:5000}
+                    );
+                  } else {
+                    setSettings({ ...settings, renewBefore: e.target.value });
+                  }
+                }}
                 variant="outlined"
                 type="number"
                 label="Borrow Days"
-                inputProps={{
-                  pattern: "[0-9]*",
-                }}
+                error={settings?.renewBefore < 0}
+                helperText={
+                  settings?.renewBefore < 0
+                    ? "Days cannot be Negative"
+                    : "On How Many days student should return a book "
+                }
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -329,6 +341,7 @@ export default function Settings() {
                 variant="outlined"
                 type="text"
                 label="Total Borrow (/student)"
+                helperText="How many Books one Student can Issue "
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -347,6 +360,7 @@ export default function Settings() {
                   setSettings({ ...settings, fineAmount: e.target.value })
                 }
                 variant="outlined"
+                helperText="Fine Amount after book expire"
                 type="text"
                 label="Fine (/day)"
                 InputLabelProps={{

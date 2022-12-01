@@ -47,7 +47,7 @@ export class BookController {
     @Query('search') search?: string,
   ) {
     if (isbn) {
-      return this.bookService.seachBook(isbn);
+      return this.bookService.seachBook(isbn.replace('-', ''));
     } else {
       return this.bookService.findAll({ limit, skip, search });
     }

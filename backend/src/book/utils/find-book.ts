@@ -32,6 +32,7 @@ async function searchBookFromAbeBooks(
   const image = $('div[data-cy=listing-image] img').first().attr('src');
   if (!title) return Promise.reject();
 
+  console.log('searched book from Abe books');
   return { image, title, authors, isbn, summary: '' };
 }
 
@@ -45,6 +46,8 @@ async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
     },
   });
   if (!data.book || !data.book.title.length) return Promise.reject();
+
+  console.log('searched book from books counter');
 
   return {
     isbn,
@@ -65,6 +68,7 @@ export async function searchBookFromBookFinder4U(
     const data = await axios.get(url, { timeout: 500 * 1000 });
     const $ = load(data.data);
     const image = $('.solid_box_large_font img').attr('src');
+    console.log('searched book from finder 4u');
   } catch (err) {
     return Promise.reject();
   }
@@ -88,6 +92,7 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
     var data = await axios.get(url, {
       timeout: 20 * 1000, // 20 sec
     });
+    console.log('searched book from books finder');
   } catch (err) {
     if (err.code === 'ECONNABORTED') {
       throw new HttpException(

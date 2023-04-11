@@ -31,7 +31,7 @@ export class BookService {
     return await this.bookRepo.save(createBookDto);
   }
 
-  async seachBook(isbn: string) {
+  async searchBook(isbn: string) {
     const data = await findBookFromInternet(isbn, this.httpService.axiosRef);
     return data;
   }

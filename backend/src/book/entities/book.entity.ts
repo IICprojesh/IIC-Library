@@ -14,6 +14,12 @@ export class Book {
   @Column()
   authors: string;
 
+  // @Column({ type: 'text' })
+  // totalBooks: number;
+
+  // @Column()
+  // availableBooks: number;
+
   @Column({
     default:
       'https://assets.prod.abebookscdn.com/cdn/com/images/servlets/shared/search/no-image.gif',

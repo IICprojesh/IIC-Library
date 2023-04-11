@@ -3,9 +3,10 @@ import { IsISBN, IsString, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateBookDto {
-  @ApiProperty({ example: '12313123', type: 'isbn' })
+  @ApiProperty({ example: '1212124321', type: 'isbn' })
   @IsISBN()
   @Transform(({ value }) => {
+    if (typeof value === 'number') return value;
     return value.replace(/[\s-]/g, '');
   })
   isbn: string;

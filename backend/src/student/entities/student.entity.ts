@@ -11,8 +11,21 @@ export class Student {
   @Column()
   name: string;
 
+  @Column({ type: 'text', nullable: true, default: null })
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // transformUndefinedToNull() {
+  //   if (typeof this.avatar === 'undefined') {
+  //     this.avatar = null;
+  //   }
+  // }
+  avatar: string;
+
   @Column({ unique: true })
   contactNumber: string;
+
+  @Column({ unique: true })
+  email: string;
 
   @OneToMany(() => Issue, (issue) => issue.student, {
     onDelete: 'CASCADE',

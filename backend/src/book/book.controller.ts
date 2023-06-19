@@ -39,17 +39,39 @@ export class BookController {
     name: 'search',
     required: false,
   })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    description: 'Category id of the book',
+  })
+  @ApiQuery({
+    name: 'subcategory',
+    required: false,
+    description: 'Subcategory id of the book',
+  })
   @Get()
   search(
-    @Query('network') isbn?: string,
-    @Query('limit') limit?: number,
-    @Query('skip') skip?: number,
-    @Query('search') search?: string,
+    @Query('network') searchIsbn?: string,
+    @Query('limit') limit = 10,
+    @Query('skip') skip = 0,
+    @Query('isbn') isbn?: string,
+    @Query('title') title?: string,
+    @Query('authors') authors?: string,
+    @Query('category') category?: string,
+    @Query('subcategory') subcategory?: string,
   ) {
-    if (isbn) {
-      return this.bookService.searchBook(isbn.replace(/-/g, ''));
+    if (searchIsbn) {
+      return this.bookService.searchBook(searchIsbn.replace(/-/g, ''));
     } else {
-      return this.bookService.findAll({ limit, skip, search });
+      return this.bookService.findAll({
+        limit,
+        skip,
+        isbn,
+        title,
+        authors,
+        category,
+        subcategory,
+      });
     }
   }
 
@@ -57,7 +79,8 @@ export class BookController {
   findOne(@Param('isbn') isbn: string) {
     return this.bookService.findOne(isbn, {
       relations: {
-        authors: true,
+        category: true,
+        subCategory: true,
       },
     });
   }

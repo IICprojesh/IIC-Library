@@ -15,5 +15,6 @@ function getDateDifferenceInDay(dateA: Date, dateB: Date) {
 }
 
 export function getDateAfter(day: number) {
-  return new Date(new Date().getTime() + day * 24 * 60 * 60 * 1000);
+  const date = new Date(new Date().getTime() + day * 24 * 60 * 60 * 1000);
+  return date;
 }

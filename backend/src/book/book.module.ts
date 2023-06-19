@@ -5,9 +5,16 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { Issue } from 'src/issues/entities/issue.entity';
+import { CategoryModule } from 'src/category/category.module';
+import { SubCategoryModule } from 'src/sub-category/sub-category.module';
 
 @Module({
-  imports: [HttpModule, TypeOrmModule.forFeature([Book, Issue])],
+  imports: [
+    HttpModule,
+    TypeOrmModule.forFeature([Book, Issue]),
+    CategoryModule,
+    SubCategoryModule,
+  ],
   controllers: [BookController],
   providers: [BookService],
   exports: [BookService],

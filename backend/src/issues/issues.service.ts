@@ -1,23 +1,26 @@
 import {
   BadGatewayException,
   BadRequestException,
+  HttpStatus,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, FindOneOptions } from 'typeorm';
+import { Repository, FindOneOptions, Between } from 'typeorm';
 import { SettingsService } from 'src/settings/settings.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { Issue } from './entities/issue.entity';
 import { getDateAfter, getDateDifference } from 'src/utils/date-difference';
 import { SettingEntity } from 'src/settings/entities/setting.entity';
+import { Book } from 'src/book/entities/book.entity';
+import { SearchParams } from './types/SearchParams.type';
 
 @Injectable()
 export class IssuesService {
   constructor(
     private readonly settingsService: SettingsService,
     @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
-    private readonly dataSource: DataSource,
+    @InjectRepository(Book) private readonly bookRepository: Repository<Book>,
   ) {}
 
   async create(createIssueDto: CreateIssueDto) {
@@ -41,10 +44,27 @@ export class IssuesService {
       throw new BadGatewayException(
         'User cannot borrow more than ' + settings.maxIssue + ' books.',
       );
+
+    const books = await this.bookRepository.findOne({
+      where: {
+        isbn: createIssueDto.bookId,
+      },
+    });
+
+    if (!books.availableCopies) {
+      throw new BadGatewayException(
+        `No copy of ${books.title} is currently available`,
+      );
+    }
+    books.availableCopies--;
+
     const issue = this.issueRepo.create({
       ...createIssueDto,
     });
-    return this.issueRepo.save(issue);
+    // await this.bookService.updateAvailableBookCopy(createIssueDto.bookId);
+    const issueDetails = await this.issueRepo.save(issue);
+    await this.bookRepository.save(books);
+    return issueDetails;
   }
 
   private fineCalculator(issue: Issue, settings: SettingEntity) {
@@ -69,40 +89,54 @@ export class IssuesService {
     });
   }
 
-  async findAll({
-    limit,
-    skip,
-    studentId,
-  }: {
-    limit?: number;
-    skip?: number;
-    studentId?: string;
-  }) {
-    const [data, total] = await this.issueRepo.findAndCount({
-      where: {
-        studentId,
-        ...(() => {
-          return studentId ? {} : { returned: false };
-        })(),
-      },
-      relations: {
-        student: true,
-      },
-      skip,
-      take: limit,
-      order: {
-        returned: {
-          direction: 'ASC',
-        },
-      },
-      select: {
-        student: {
-          collegeId: true,
-          name: true,
-          contactNumber: true,
-        },
-      },
-    });
+  async findAll(searchParams: SearchParams) {
+    // using query builder
+    const queryBuilder = await this.issueRepo
+      .createQueryBuilder('issue')
+      .leftJoinAndSelect('issue.book', 'book')
+      .leftJoinAndSelect('book.category', 'category')
+      .leftJoinAndSelect('issue.student', 'student');
+
+    if (searchParams.bookIsbn) {
+      queryBuilder.andWhere('book.isbn LIKE :isbn', {
+        isbn: `%${searchParams.bookIsbn}%`,
+      });
+    }
+
+    if (searchParams.bookName) {
+      queryBuilder.andWhere('book.title LIKE :bookName', {
+        bookName: `%${searchParams.bookName}%`,
+      });
+    }
+
+    if (searchParams.categoryName) {
+      queryBuilder.andWhere('category.category LIKE :categoryName', {
+        categoryName: `%${searchParams.categoryName}%`,
+      });
+    }
+
+    if (searchParams.studentId) {
+      queryBuilder.andWhere('student.collegeId LIKE :studentId', {
+        studentId: `%${searchParams.studentId}%`,
+      });
+    }
+
+    if (searchParams.studentName) {
+      queryBuilder.andWhere('student.name LIKE :studentName', {
+        studentName: `%${searchParams.studentName}%`,
+      });
+    }
+
+    if (searchParams.returned !== undefined) {
+      queryBuilder.andWhere('issue.returned = :returned', {
+        returned: searchParams.returned,
+      });
+    }
+    const [data, total] = await queryBuilder
+      .take(searchParams.limit)
+      .skip(searchParams.skip)
+      .getManyAndCount();
+
     const settings = await this.settingsService.findOne();
     const extendedData: (Issue & {
       canRenew: boolean;
@@ -123,7 +157,8 @@ export class IssuesService {
         );
       }
       if (!issue.returned) issue.fine = this.fineCalculator(issue, settings);
-      if (issue.totalRenew >= settings.maxRenew)
+
+      if (issue.totalRenew >= settings.maxRenew || issue.returned)
         return {
           ...issue,
           canRenew: false,
@@ -142,22 +177,24 @@ export class IssuesService {
   }
 
   findOne(id: number, option?: FindOneOptions<Issue>) {
-    const { where, ...rest } = option;
-    return this.issueRepo.findOne({
-      where: {
-        id,
-        ...where,
-      },
-      ...rest,
-    });
+    // const { where, ...rest } = option;
+    // return this.issueRepo.findOne({
+    //   where: {
+    //     id,
+    //     ...where,
+    //   },
+    //   ...rest,
+    // });
+    return this.getExpiredIssues();
   }
 
   async update(id: number, updateIssueDto: UpdateIssueDto) {
     const issue = await this.issueRepo.findOne({
       where: { id, returned: false },
     });
-    if (!issue)
+    if (!issue) {
       throw new BadRequestException(`Issue with id ${id} is not active issue.`);
+    }
 
     const settings = await this.settingsService.findOne();
 
@@ -168,14 +205,30 @@ export class IssuesService {
     if (updateIssueDto.renew) {
       delete updateIssueDto.renew; // delete this property as this in to required
 
-      if (issue.totalRenew >= settings.maxRenew)
-        throw new BadRequestException('This book cannot be renewed.');
+      if (issue.totalRenew >= settings.maxRenew) {
+        throw new BadRequestException(
+          HttpStatus.BAD_REQUEST,
+          'This book cannot be renewed.',
+        );
+      }
 
       (updateIssueDto as Issue).totalRenew = issue.totalRenew + 1;
       (updateIssueDto as Issue).latestRenewDate = new Date();
     }
 
     const updated = await this.issueRepo.update({ id }, updateIssueDto);
+
+    if (updateIssueDto.returned) {
+      const books = await this.bookRepository.findOne({
+        where: {
+          isbn: issue.bookId,
+        },
+      });
+
+      books.availableCopies++;
+      this.bookRepository.save(books);
+    }
+
     if (updated.affected) {
       return {
         update: true,
@@ -188,5 +241,91 @@ export class IssuesService {
     } else {
       return { update: false, data: null };
     }
+  }
+
+  async getOverdueIssues() {
+    const settings = await this.settingsService.findOne();
+    const currentDate = getDateAfter(
+      settings.warningBeforeExpiry - settings.renewBefore,
+    );
+    const startDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    const endDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + 1,
+    );
+    const overdueIssues = await this.issueRepo.find({
+      where: [
+        {
+          issueDate: Between(startDate, endDate),
+          totalRenew: 0,
+        },
+        {
+          latestRenewDate: Between(startDate, endDate),
+        },
+      ],
+      relations: {
+        student: true,
+        book: true,
+      },
+      select: {
+        student: {
+          name: true,
+          email: true,
+        },
+        book: {
+          isbn: true,
+          title: true,
+        },
+      },
+    });
+
+    return { overdueIssues, warningBefore: settings.warningBeforeExpiry };
+  }
+
+  async getExpiredIssues() {
+    const settings = await this.settingsService.findOne();
+    const currentDate = getDateAfter(-settings.renewBefore);
+    const startDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    const endDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + 1,
+    );
+    const expiredIssues = await this.issueRepo.find({
+      where: [
+        {
+          issueDate: Between(startDate, endDate),
+          totalRenew: 0,
+        },
+        {
+          latestRenewDate: Between(startDate, endDate),
+        },
+      ],
+      relations: {
+        student: true,
+        book: true,
+      },
+      select: {
+        student: {
+          name: true,
+          email: true,
+        },
+        book: {
+          isbn: true,
+          title: true,
+        },
+      },
+    });
+
+    return { expiredIssues, expireDays: settings.renewBefore };
   }
 }

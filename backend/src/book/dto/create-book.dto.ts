@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISBN, IsString, IsOptional } from 'class-validator';
+import {
+  IsISBN,
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsUUID,
+  IsNotEmpty,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateBookDto {
@@ -23,6 +30,36 @@ export class CreateBookDto {
   @ApiProperty({ example: 'author 1, author b, author z' })
   @IsString()
   authors: string;
+
+  @ApiProperty({ example: 'number of total books' })
+  @IsNumber()
+  @Transform(({ value }) => Number.parseInt(value))
+  totalCopies: number;
+
+  @ApiProperty({ example: 'number of available books' })
+  @IsNumber()
+  @IsOptional()
+  availableCopies?: number;
+
+  @ApiProperty({ example: 'publisher' })
+  @IsString()
+  @IsOptional()
+  publisher?: string;
+
+  @ApiProperty({ example: 'publication date' })
+  @IsString()
+  @IsOptional()
+  publishedDate?: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  category?: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  subCategory?: string;
 
   @ApiProperty({ example: 'https:google.com' })
   @IsString()

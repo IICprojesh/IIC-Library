@@ -1,19 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Issue } from 'src/issues/entities/issue.entity';
-import {
-  Repository,
-  FindOneOptions,
-  FindOptionsWhere,
-  Like,
-  ILike,
-} from 'typeorm';
+import { Repository, FindOneOptions, Brackets } from 'typeorm';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './entities/book.entity';
 
 import { findBookFromInternet } from './utils/find-book';
+import { CategoryService } from 'src/category/category.service';
+import { SubCategoryService } from 'src/sub-category/sub-category.service';
 
 @Injectable()
 export class BookService {
@@ -21,6 +17,8 @@ export class BookService {
     private readonly httpService: HttpService,
     @InjectRepository(Book) private readonly bookRepo: Repository<Book>,
     @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
+    private readonly categoryService: CategoryService,
+    private readonly subCategoryService: SubCategoryService,
   ) {}
 
   async create(createBookDto: CreateBookDto) {
@@ -28,7 +26,31 @@ export class BookService {
       where: { isbn: createBookDto.isbn },
     });
     if (book) throw new BadRequestException('Book already exist');
-    return await this.bookRepo.save(createBookDto);
+    const category = await this.categoryService.findOne(createBookDto.category);
+    if (!category)
+      throw new BadRequestException(
+        HttpStatus.BAD_REQUEST,
+        'Invalid category!! Please select valid category',
+      );
+
+    const subCategory = await this.subCategoryService.findOne(
+      createBookDto.subCategory,
+    );
+    if (!subCategory)
+      throw new BadRequestException(
+        HttpStatus.BAD_REQUEST,
+        'Invalid sub category!! Please select valid sub category',
+      );
+
+    if (!createBookDto.availableCopies) {
+      createBookDto.availableCopies = createBookDto.totalCopies;
+    }
+
+    return await this.bookRepo.save({
+      ...createBookDto,
+      category,
+      subCategory,
+    });
   }
 
   async searchBook(isbn: string) {
@@ -39,27 +61,68 @@ export class BookService {
   async findAll({
     limit,
     skip,
-    search,
+    isbn,
+    title,
+    authors,
+    category,
+    subcategory,
   }: {
     limit?: number;
     skip?: number;
-    search?: string;
+    isbn?: string;
+    title?: string;
+    authors?: string;
+    category?: string;
+    subcategory?: string;
   }) {
-    let where: FindOptionsWhere<Book> | FindOptionsWhere<Book>[] = null;
-    if (search) {
-      search = search.replace(/-/g, '');
-      where = [
-        { title: ILike(`%${search}%`) },
-        { summary: ILike(`%${search}%`) },
-        { isbn: Like(`%${search}%`) },
-      ];
+    const queryBuilder = this.bookRepo
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.category', 'category')
+      .leftJoinAndSelect('book.subCategory', 'subcategory');
+
+    if (isbn) {
+      isbn = isbn.replace(/-/g, '');
+
+      queryBuilder.andWhere('book.isbn LIKE :isbn', { isbn: `%${isbn}%` });
+
+      // queryBuilder.andWhere(
+      //   new Brackets((qb) => {
+      //     qb.where('book.title LIKE :search', {
+      //       search: `%${search}%`,
+      //     })
+      //       .orWhere('book.isbn LIKE :search', { search: `%${search}%` })
+      //       .orWhere('book.summary LIKE :search', { search: `%${search}%` });
+      //   }),
+      // );
     }
-    const total = await this.bookRepo.count();
-    const books = await this.bookRepo.find({
-      skip,
-      take: limit || 10,
-      where,
-    });
+
+    if (title) {
+      queryBuilder.andWhere('book.title LIKE :title', { title: `%${title}%` });
+    }
+
+    if (authors) {
+      queryBuilder.andWhere('book.authors LIKE :authors', {
+        authors: `%${authors}%`,
+      });
+    }
+
+    if (category) {
+      queryBuilder.andWhere('category.category LIKE :category', {
+        category: `%${category}%`,
+      });
+    }
+
+    if (subcategory) {
+      queryBuilder.andWhere('book.subCategory LIKE :subcategory', {
+        subcategory: `%${subcategory}%`,
+      });
+    }
+
+    const [books, total] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
     return { total, data: books };
   }
 
@@ -73,7 +136,25 @@ export class BookService {
   }
 
   async update(isbn: string, updateBookDto: UpdateBookDto) {
-    const updated = await this.bookRepo.update({ isbn }, updateBookDto);
+    const category = await this.categoryService.findOne(updateBookDto.category);
+    if (!category)
+      throw new BadRequestException(
+        HttpStatus.BAD_REQUEST,
+        'Invalid category!! Please select valid category',
+      );
+
+    const subCategory = await this.subCategoryService.findOne(
+      updateBookDto.subCategory,
+    );
+    if (!subCategory)
+      throw new BadRequestException(
+        HttpStatus.BAD_REQUEST,
+        'Invalid sub category!! Please select valid sub category',
+      );
+    const updated = await this.bookRepo.update(
+      { isbn },
+      { ...updateBookDto, category, subCategory },
+    );
     if (updated.affected)
       return { message: 'book updated successfully.', success: true };
     else return { message: 'book update failed', success: false };

@@ -1,11 +1,13 @@
-import Sidebar from "./Components/Nav/Sidebar";
-import Body from "./Components/Body/Body";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GlobalStyles } from "./styles/global";
+import Sidebar from "./components/sidebar/Sidebar";
+import Body from "./body/Body";
 
 function App() {
   return (
     <>
+      <GlobalStyles />
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -18,9 +20,11 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <div className="App">
+      <div style={{ display: "flex" }}>
         <Sidebar />
-        <Body />
+        <div style={{ height: "100vh", overflowY: "scroll", width: "100%" }}>
+          <Body />
+        </div>
       </div>
     </>
   );

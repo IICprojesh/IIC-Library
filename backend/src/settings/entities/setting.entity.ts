@@ -34,4 +34,7 @@ export class SettingEntity {
 
   @Column({ default: 5 })
   fineAmount: number;
+
+  @Column({ default: 2 })
+  warningBeforeExpiry: number;
 }

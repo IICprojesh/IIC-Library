@@ -4,9 +4,10 @@ import { IssuesController } from './issues.controller';
 import { SettingsModule } from 'src/settings/settings.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Issue } from './entities/issue.entity';
+import { Book } from 'src/book/entities/book.entity';
 
 @Module({
-  imports: [SettingsModule, TypeOrmModule.forFeature([Issue])],
+  imports: [SettingsModule, TypeOrmModule.forFeature([Issue, Book])],
   controllers: [IssuesController],
   providers: [IssuesService],
   exports: [IssuesService],

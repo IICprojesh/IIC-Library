@@ -8,20 +8,34 @@ import { IssuesModule } from './issues/issues.module';
 import { BookModule } from './book/book.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
+import { ConfigModule } from '@nestjs/config';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EmailSchedulerService } from './email_scheduler/email_scheduler.service';
 
 @Module({
   imports: [
-    StudentModule,
-    SettingsModule,
+    ScheduleModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'lms',
       entities: [`${__dirname}/**/entities/*.*.js`],
       synchronize: true,
     }),
+    StudentModule,
+    SettingsModule,
     IssuesModule,
     BookModule,
     DashboardModule,
+    CategoryModule,
+    SubCategoryModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [
@@ -30,6 +44,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
+    EmailSchedulerService,
   ],
 })
 export class AppModule {}

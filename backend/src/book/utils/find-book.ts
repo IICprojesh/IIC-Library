@@ -30,10 +30,11 @@ async function searchBookFromAbeBooks(
   const title = $('.title').first().text().trim();
   const authors = $('.author').first().text().trim();
   const image = $('div[data-cy=listing-image] img').first().attr('src');
+  const publisher = $('.opt-publisher').first().text().trim();
   if (!title) return Promise.reject();
 
   console.log('searched book from Abe books');
-  return { image, title, authors, isbn, summary: '' };
+  return { image, title, authors, isbn, publisher, summary: '' };
 }
 
 async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
@@ -47,32 +48,31 @@ async function searchBookFromBooksCouter(isbn: string, axios: AxiosInstance) {
   });
   if (!data.book || !data.book.title.length) return Promise.reject();
 
-  console.log('searched book from books counter');
-
   return {
     isbn,
     title: data.book.title,
     image: data.book.image,
     authors: data.book.author + '',
+    publisher: data.book.publisher,
+    publishedDate: data.book.publishedDate,
     summary: '',
   } as BookType;
 }
 
-export async function searchBookFromBookFinder4U(
-  isbn: string,
-  axios: AxiosInstance,
-) {
-  const url = `http://www.bookfinder4u.com/IsbnSearch.aspx?isbn=${isbn}&mode=direct&second_search=true`;
+// export async function searchBookFromBookFinder4U(
+//   isbn: string,
+//   axios: AxiosInstance,
+// ) {
+//   const url = `http://www.bookfinder4u.com/IsbnSearch.aspx?isbn=${isbn}&mode=direct&second_search=true`;
 
-  try {
-    const data = await axios.get(url, { timeout: 500 * 1000 });
-    const $ = load(data.data);
-    const image = $('.solid_box_large_font img').attr('src');
-    console.log('searched book from finder 4u');
-  } catch (err) {
-    return Promise.reject();
-  }
-}
+//   try {
+//     const data = await axios.get(url, { timeout: 500 * 1000 });
+//     const $ = load(data.data);
+//     const image = $('.solid_box_large_font img').attr('src');
+//   } catch (err) {
+//     return Promise.reject();
+//   }
+// }
 
 async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
   const options = {
@@ -87,12 +87,11 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
   };
   const query = qs.stringify(options);
   try {
-    const url = 'https://www.bookfinder.com/search?' + query;
+    const url = `https://www.bookfinder.com/isbn/${isbn}/?` + query;
     // eslint-disable-next-line no-var
     var data = await axios.get(url, {
       timeout: 20 * 1000, // 20 sec
     });
-    console.log('searched book from books finder');
   } catch (err) {
     if (err.code === 'ECONNABORTED') {
       throw new HttpException(
@@ -103,10 +102,10 @@ async function searchFromBookFinder(isbn: string, axios: AxiosInstance) {
     throw new HttpException('ERROR.UNKNOWN', HttpStatus.SERVICE_UNAVAILABLE);
   }
   const $ = load(data.data);
-  const title = $('#describe-isbn-title').text().trim();
-  const summary = $('#bookSummary').text().trim();
-  const authors = $('span[itemprop=author]').text();
-  const image = $('img[id=coverImage]').attr('src');
+  const title = $('.bf-content-header-book-title a').first().text().trim();
+  const summary = $('#book-summary-main').text().trim();
+  const authors = $('.bf-content-header-book-author a').first().text();
+  const image = $('img[class=bf-content-header-img]').first().attr('src');
   const error = $('p[align=center]').text();
   const found = !error;
   if (!found || !title.length) {
@@ -140,11 +139,22 @@ async function searchBookFromOpenLibrary(
     (await Promise.all(
       data.authors.map(async (each: { key: string }) => {
         return axios
-          .get(`https://openlibrary.org/authors/${each.key}.json`)
+          .get(`https://openlibrary.org${each.key}.json`)
           .then((res) => {
             return res.data.name;
           });
       }),
     )) + '';
-  return { title, isbn, authors, image, summary: '' };
+
+  const publisher = data.publishers.toString();
+  const publishedDate = data.publish_date;
+  return {
+    title,
+    isbn,
+    authors,
+    image,
+    publisher,
+    publishedDate,
+    summary: '',
+  };
 }

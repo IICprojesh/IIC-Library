@@ -11,6 +11,7 @@ import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { FindBookDto } from './dto/find-book.dto';
 
 @ApiTags('issues')
 @Controller('issues')
@@ -23,15 +24,39 @@ export class IssuesController {
   }
 
   @ApiQuery({
-    name: 'limit',
-    example: 5,
+    name: 'studentId',
+    example: 26031755,
     type: Number,
     required: false,
   })
   @ApiQuery({
-    name: 'studentId',
-    example: 5,
-    type: Number,
+    name: 'studentName',
+    example: 'John Doe',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'bookIsbn',
+    example: '9789111290',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'bookName',
+    example: 'Rich dad Poor dad',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'categoryName',
+    example: 'Programming',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'returned',
+    example: true,
+    type: Boolean,
     required: false,
   })
   @ApiQuery({
@@ -40,13 +65,15 @@ export class IssuesController {
     type: Number,
     required: false,
   })
+  @ApiQuery({
+    name: 'limit',
+    example: 5,
+    type: Number,
+    required: false,
+  })
   @Get()
-  findAll(
-    @Query('studentId') studentId: string,
-    @Query('limit') limit: number,
-    @Query('skip') skip: number,
-  ) {
-    return this.issuesService.findAll({ limit, skip, studentId });
+  findAll(@Query() queryParams: FindBookDto) {
+    return this.issuesService.findAll(queryParams);
   }
 
   @Get(':id')

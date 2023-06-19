@@ -24,7 +24,7 @@ export class SettingsController {
     FileInterceptor('file', {
       fileFilter: (_, file, callback) => {
         if (!file)
-          callback(new BadRequestException('File is not valide image.'), false);
+          callback(new BadRequestException('File is not valid image.'), false);
         const validMimeTypes = ['image/jpeg', 'image/png'];
         if (validMimeTypes.find((mimetype) => mimetype === file.mimetype))
           callback(null, true);

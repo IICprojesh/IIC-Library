@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateStudentDto {
   @IsString({ message: 'College Id must not be empty' })
@@ -15,10 +15,17 @@ export class CreateStudentDto {
   name: string;
 
   @ApiProperty({ example: '9842104063' })
+  @Transform((options) => {
+    return parseInt(options.value);
+  })
   @IsNumber(
     { allowInfinity: false, allowNaN: false },
     { message: 'Contact number is not valid' },
   )
   @Min(10, { message: 'Contact number must be minimum of 10 digits' })
   contactNumber: string;
+
+  @IsEmail()
+  @IsOptional({ message: 'Invalid email address' })
+  email: string;
 }

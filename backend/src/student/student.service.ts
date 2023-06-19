@@ -16,7 +16,10 @@ export class StudentService {
     private readonly settingService: SettingsService,
   ) {}
 
-  async create(createStudentDto: CreateStudentDto) {
+  async create(
+    student_avatar: Express.Multer.File,
+    createStudentDto: CreateStudentDto,
+  ) {
     const setting = await this.settingService.findOne();
     if (!setting) {
       throw new BadRequestException('initial setting must be created!!');
@@ -24,11 +27,15 @@ export class StudentService {
     try {
       const email = createStudentDto?.collegeId
         ? `${createStudentDto.collegeId}${setting.emailSuffix}`
-        : null;
+        : createStudentDto?.email;
+
+      const avatar = student_avatar.buffer.toString('base64');
       const student = await this.studentRepository.save({
         ...createStudentDto,
+        email,
+        avatar,
       });
-      return { ...student, email };
+      return { ...student };
     } catch (err) {
       const ERR_ALREADY_EXIST = 19;
       if (err.errno === ERR_ALREADY_EXIST) {
@@ -68,20 +75,21 @@ export class StudentService {
       skip,
       take: limit,
     });
-    const settings = await this.settingService.findOne();
     const total = await this.studentRepository.count();
-    const data = students.map((each) => ({
-      ...each,
-      email: each?.collegeId
-        ? `${each.collegeId}${settings.emailSuffix}`
-        : null,
-    }));
-    return { total, data };
+    // const data = students.map((each) => ({
+    //   ...each,
+    //   email: each?.collegeId
+    //     ? `${each.collegeId}${settings.emailSuffix}`
+    //     : null,
+    // }));
+    return { total, data: students };
   }
 
   async findOne(id: string) {
     const settings = await this.settingService.findOne();
-    const student = await this.studentRepository.findOne({ where: { id } });
+    const student = await this.studentRepository.findOne({
+      where: { collegeId: id },
+    });
     return {
       ...student,
       email: student?.collegeId
@@ -91,6 +99,7 @@ export class StudentService {
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {
+
     return this.studentRepository.update({ id }, updateStudentDto);
   }
 

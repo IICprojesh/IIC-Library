@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/utils/multer-options';
 
 @ApiTags('books')
 @Controller('books')
@@ -23,6 +28,12 @@ export class BookController {
     return this.bookService.create(createBookDto);
   }
 
+  @Post('bulk')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  bulkCreate(@UploadedFile() booksCsv: Express.Multer.File) {
+    console.log(booksCsv.path);
+    return this.bookService.bulkAddBook(booksCsv);
+  }
   @ApiQuery({
     name: 'network',
     required: false,

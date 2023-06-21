@@ -10,11 +10,13 @@ import { Book } from './entities/book.entity';
 import { findBookFromInternet } from './utils/find-book';
 import { CategoryService } from 'src/category/category.service';
 import { SubCategoryService } from 'src/sub-category/sub-category.service';
+import { CsvService } from 'src/csv/csv.service';
 
 @Injectable()
 export class BookService {
   constructor(
     private readonly httpService: HttpService,
+    private readonly csvService: CsvService,
     @InjectRepository(Book) private readonly bookRepo: Repository<Book>,
     @InjectRepository(Issue) private readonly issueRepo: Repository<Issue>,
     private readonly categoryService: CategoryService,
@@ -51,6 +53,42 @@ export class BookService {
       category,
       subCategory,
     });
+  }
+
+  /* 
+    - get a category by name
+    - get a sub category by name
+    - create a book object (or something)
+    - return that book object
+  */
+
+  async bulkAddBook(csvFile: Express.Multer.File) {
+    console.log('book service called');
+    const a = await this.csvService.importDataFromCsv<Book>(
+      csvFile,
+      this.bookRepo,
+      (data) => {
+        console.log('callback');
+        const book = new Book();
+
+        console.log(book['isbn']);
+        book.isbn = data.isbn;
+        book.title = data.title;
+        book.summary = data.summary;
+        book.authors = data.authors;
+        book.totalCopies = data.totalCopies;
+        book.publisher = data.publisher;
+        book.publishedDate = data.publishedDate;
+        book.availableCopies = data.totalCopies;
+        console.log('Book: ', book);
+        return book;
+      },
+    );
+
+    console.log('Hey mate');
+
+    console.log('This is a bulk add book: ', a);
+    return a;
   }
 
   async searchBook(isbn: string) {

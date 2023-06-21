@@ -99,7 +99,6 @@ export class StudentService {
   }
 
   update(id: string, updateStudentDto: UpdateStudentDto) {
-
     return this.studentRepository.update({ id }, updateStudentDto);
   }
 

@@ -14,10 +14,16 @@ import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailSchedulerService } from './email_scheduler/email_scheduler.service';
+import { CsvService } from './csv/csv.service';
+import { CsvModule } from './csv/csv.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -36,6 +42,7 @@ import { EmailSchedulerService } from './email_scheduler/email_scheduler.service
     CategoryModule,
     SubCategoryModule,
     EmailModule,
+    CsvModule,
   ],
   controllers: [AppController],
   providers: [
@@ -45,6 +52,7 @@ import { EmailSchedulerService } from './email_scheduler/email_scheduler.service
       useClass: ClassSerializerInterceptor,
     },
     EmailSchedulerService,
+    CsvService,
   ],
 })
 export class AppModule {}

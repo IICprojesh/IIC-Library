@@ -113,7 +113,7 @@ function ManageBooksTable() {
                         : "N/A"}
                     </p>
                   </td>
-                  <td>{`${book?.category.category} (${book?.subCategory.name})`}</td>
+                  <td>{`${book?.category?.category} (${book?.subCategory?.name})`}</td>
                   <td>{book?.totalCopies}</td>
                   <td>{book?.availableCopies}</td>
                   <td>{book?.authors}</td>

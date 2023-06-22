@@ -32,7 +32,6 @@ function SubCategorySelectComponent({
           idKey="subCategoryId"
           labelKey="name"
           data={subCategories}
-          valueKey="subCategory"
           // setValue={setValue}
           selectedValue={selectedSubCategory}
           setSelectedValue={onSelectedChange}

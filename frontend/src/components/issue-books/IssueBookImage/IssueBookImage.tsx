@@ -7,10 +7,9 @@ function IssueBookImage() {
     issue: { student },
   } = useIssueBookContext();
 
-
   return (
     <div>
-      <Image imageUrl={student?.imageUrl} alt={`Image of ${student.name}`} />
+      <Image imageUrl={student?.imageUrl} alt={`Image of ${student?.name}`} />
       <ImageLabelContainer>
         <ImageLabel style={{ textTransform: "capitalize" }}>
           {student?.name ?? "Name"}

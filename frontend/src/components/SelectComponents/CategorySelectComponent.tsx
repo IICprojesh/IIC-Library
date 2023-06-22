@@ -26,7 +26,6 @@ function CategorySelectComponent({ selected, onSelectedChange }: any) {
           idKey="catgory_id"
           labelKey="category"
           data={categories}
-          valueKey="category"
           // setValue={setValue}
           selectedValue={selected}
           setSelectedValue={onSelectedChange}

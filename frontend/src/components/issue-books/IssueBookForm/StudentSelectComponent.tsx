@@ -9,10 +9,10 @@ function StudentSelectComponent() {
     issue: { student },
     setStudent,
   } = useIssueBookContext();
-  const [students, setStudents] = React.useState([]);
+  const [students, setStudents] = React.useState(null);
 
   React.useEffect(() => {
-    getStudents({ limit: 2 }).then((students) => {
+    getStudents({ limit: 5 }).then((students) => {
       setStudents(students.data.data);
     });
   }, []);

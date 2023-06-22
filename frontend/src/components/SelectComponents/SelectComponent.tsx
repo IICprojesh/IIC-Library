@@ -6,7 +6,6 @@ interface PropsOptions {
   idKey: string;
   labelKey: string;
   data: any;
-  valueKey: string;
   selectFor?: string;
   setValue?: any;
   disabled?: boolean;
@@ -37,7 +36,12 @@ function SelectComponent({
     }
   };
 
+  const handleInputChange = (input: any) => {
+    setInputValue(input);
+  };
+
   const loadOptions = async () => {
+    console.log("load option called");
     const matchedOptions = data.filter((option: any) =>
       option[labelKey].toLowerCase().includes(inputValue.toLowerCase())
     );
@@ -45,6 +49,7 @@ function SelectComponent({
       return Promise.resolve(matchedOptions);
     }
     const response = await get(`${selectFor}?${labelKey}=${inputValue}`);
+    console.log(response);
     return Promise.resolve(response.data.data);
   };
 
@@ -59,7 +64,8 @@ function SelectComponent({
       }}
       getOptionLabel={(option: any) => option[labelKey]}
       onChange={handleChange}
-      onInputChange={(input) => setInputValue(input)}
+      // onInputChange={(input) => setInputValue(input)}
+      onInputChange={(input) => handleInputChange(input)}
       isDisabled={disabled}
       isClearable
     />

@@ -3,7 +3,7 @@ import PageSizeDropdown from "@/components/PageSizeDropdown";
 import SearchBox from "@/components/SearchBox";
 import { useBooksContext } from "@/contexts/manage-books_context/ViewBookContext";
 import flat from "flat";
-import { useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
 const options = {
@@ -17,8 +17,16 @@ const options = {
 function ViewBookSearchBar() {
   const [flatenedData, setFlatenedData] = useState([]);
 
+  // const DownloadCsvRef = createRef();
+
   const { queryParams, updateQueryParams, searchBookDebounced } =
     useBooksContext();
+
+  // useEffect(() => {
+  //   if (flatenedData.length > 0) {
+  //     DownloadCsvRef.current.link.click();
+  //   }
+  // });
 
   // rest of the table implementation...
   const setPageSize = (value: number) => {
@@ -56,6 +64,7 @@ function ViewBookSearchBar() {
         <CSVLink
           data={flatenedData}
           filename={"books.csv"}
+          // ref={DownloadCsvRef}
           style={{
             backgroundColor: "coral",
             padding: ".25em .5em",

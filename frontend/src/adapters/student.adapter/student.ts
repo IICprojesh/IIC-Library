@@ -1,9 +1,9 @@
 import { QueryType } from "@/types/query.interface";
 import { get, patch, post, remove } from "../xhr";
 
-export const getStudents = ({ search, limit, skip }: QueryType) => {
+export const getStudents = ({ limit, skip }: QueryType) => {
   let url = "students?";
-  if (search) url += `search?${search}&`;
+  // if (search) url += `search?${search}&`;
   if (limit) url += `limit=${limit}&`;
   if (skip) url += `skip=${skip}&`;
 

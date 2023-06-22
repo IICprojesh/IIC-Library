@@ -134,7 +134,7 @@ function FormModal({
                     <ModalInput
                       type={typeof value === "number" ? "number" : "text"}
                       name={key}
-                      value={value ?? ""}
+                      value={value ? `${value}` : ""}
                       onChange={handleInputChange}
                     />
                   </div>
